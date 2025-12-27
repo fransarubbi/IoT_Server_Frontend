@@ -1,5 +1,3 @@
-// src/lib/types.ts
-
 export type PageType = 'networks' | 'certificates' | 'firmware' | 'notifications';
 
 export type Theme = 'light' | 'dark';
