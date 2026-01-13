@@ -1,41 +1,43 @@
-// src/lib/stores/theme.ts
-import { writable } from 'svelte/store';
-import type { Theme } from '../types';
+import { writable } from "svelte/store"
 
-// Detectar preferencia del sistema
-const getInitialTheme = (): Theme => {
-  if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('theme') as Theme;
-    if (stored) return stored;
-    
-    return window.matchMedia('(prefers-color-scheme: dark)').matches 
-      ? 'dark' 
-      : 'light';
-  }
-  return 'light';
-};
+type Theme = "light" | "dark"
 
-const createThemeStore = () => {
-  const { subscribe, set, update } = writable<Theme>(getInitialTheme());
+// Simple browser detection for non-SvelteKit environments
+const isBrowser = typeof window !== "undefined"
+
+function createThemeStore() {
+  const defaultTheme: Theme = isBrowser ? (localStorage.getItem("theme") as Theme) || "dark" : "dark"
+
+  const { subscribe, set, update } = writable<Theme>(defaultTheme)
 
   return {
     subscribe,
-    set: (value: Theme) => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('theme', value);
-      }
-      set(value);
-    },
-    update: (fn: (value: Theme) => Theme) => {
+    toggle: () => {
       update((current) => {
-        const newValue = fn(current);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('theme', newValue);
+        const newTheme = current === "dark" ? "light" : "dark"
+        if (isBrowser) {
+          localStorage.setItem("theme", newTheme)
+          document.documentElement.classList.toggle("dark", newTheme === "dark")
         }
-        return newValue;
-      });
-    }
-  };
-};
+        return newTheme
+      })
+    },
+    set: (theme: Theme) => {
+      if (isBrowser) {
+        localStorage.setItem("theme", theme)
+        document.documentElement.classList.toggle("dark", theme === "dark")
+      }
+      set(theme)
+    },
+    init: () => {
+      if (isBrowser) {
+        const saved = localStorage.getItem("theme") as Theme
+        const theme = saved || "dark"
+        document.documentElement.classList.toggle("dark", theme === "dark")
+        set(theme)
+      }
+    },
+  }
+}
 
-export const theme = createThemeStore();
+export const theme = createThemeStore()

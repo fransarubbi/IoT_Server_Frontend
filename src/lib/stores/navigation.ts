@@ -1,5 +1,5 @@
-// src/lib/stores/navigation.ts
-import { writable } from 'svelte/store';
-import type { PageType } from '../types';
+import { writable } from "svelte/store"
 
-export const currentPage = writable<PageType>('networks');
+export type Page = "edge" | "certificates" | "notifications" | "firmware"
+
+export const currentPage = writable<Page>("edge")
