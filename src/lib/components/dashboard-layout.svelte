@@ -1,15 +1,21 @@
 <script lang="ts">
-  import Sidebar from './sidebar.svelte';
-  import { currentPage } from '$lib/stores/navigation';
-  import EdgePage from '$lib/pages/edge-page.svelte';
-  import CertificatesPage from '$lib/pages/certificates-page.svelte';
-  import NotificationsPage from '$lib/pages/notifications-page.svelte';
-  import FirmwarePage from '$lib/pages/firmware-page.svelte';
+  import Sidebar from "./sidebar.svelte";
+  import { currentPage } from "$lib/stores/navigation";
+  import EdgePage from "$lib/pages/edge-page.svelte";
+  import CertificatesPage from "$lib/pages/certificates-page.svelte";
+  import NotificationsPage from "$lib/pages/notifications-page.svelte";
+  import FirmwarePage from "$lib/pages/firmware-page.svelte";
+
+  import EdgeNetworksPage from "$lib/pages/edge-networks-page.svelte";
+
+  import type { Component } from "svelte";
+  import type { Page } from "$lib/stores/navigation";
 
   let { onLogout }: { onLogout?: () => void } = $props();
 
-  const pages = {
+  const pages: Record<Page, Component> = {
     edge: EdgePage,
+    "edge-networks": EdgeNetworksPage,
     certificates: CertificatesPage,
     notifications: NotificationsPage,
     firmware: FirmwarePage,
@@ -22,12 +28,16 @@
 <div class="min-h-screen bg-background">
   <!-- Subtle background gradient -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden">
-    <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/5 rounded-full blur-3xl"></div>
+    <div
+      class="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"
+    ></div>
+    <div
+      class="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/5 rounded-full blur-3xl"
+    ></div>
   </div>
-  
+
   <Sidebar {onLogout} />
-  
+
   <main class="relative ml-64 min-h-screen p-8">
     <div class="mx-auto max-w-7xl animate-fade-in">
       {#key $currentPage}

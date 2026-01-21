@@ -66,7 +66,7 @@
             <Cpu class="h-8 w-8 text-primary-foreground" />
           </div>
         </div>
-        <h1 class="mt-6 text-2xl font-bold text-card-foreground">IoT Hub</h1>
+        <h1 class="mt-6 text-2xl font-bold text-card-foreground">IoT Server</h1>
         <p class="mt-2 text-sm text-muted-foreground">
           Inicia sesión para acceder al panel de control
         </p>
@@ -91,7 +91,7 @@
               id="email"
               type="email"
               bind:value={email}
-              placeholder="admin@empresa.com"
+              placeholder="correo@gmail.com"
               class="input-field pl-11"
               required
             />
@@ -172,7 +172,7 @@
 
     <!-- Version -->
     <p class="mt-8 text-center text-xs text-muted-foreground">
-      IoT Hub v2.0.0 • © 2025
+      IoT Server © 2026
     </p>
   </div>
 </div>

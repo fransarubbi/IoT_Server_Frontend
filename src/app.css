@@ -36,21 +36,21 @@
   }
 
   .dark {
-    /* Blue-based modern palette - Dark Mode */
-    --background: hsl(222 47% 8%);
+    /* Modern Dark Palette - Slick Black & Greys with Blue Accent */
+    --background: hsl(0 0% 5%); /* Almost black */
     --foreground: hsl(210 40% 98%);
-    --card: hsl(222 47% 12%);
+    --card: hsl(0 0% 9%); /* Slightly lighter than bg */
     --card-foreground: hsl(210 40% 98%);
-    --popover: hsl(222 47% 12%);
+    --popover: hsl(0 0% 9%);
     --popover-foreground: hsl(210 40% 98%);
-    --primary: hsl(217 91% 60%);
+    --primary: hsl(217 91% 60%); /* Keep the blue accent */
     --primary-hover: hsl(217 91% 65%);
     --primary-foreground: hsl(0 0% 100%);
-    --secondary: hsl(222 47% 16%);
+    --secondary: hsl(0 0% 15%); /* Dark grey for secondary elements */
     --secondary-foreground: hsl(210 40% 98%);
-    --muted: hsl(222 47% 16%);
+    --muted: hsl(0 0% 15%);
     --muted-foreground: hsl(215 20% 65%);
-    --accent: hsl(199 89% 48%);
+    --accent: hsl(217 91% 60%); /* Align accent with primary blue */
     --accent-foreground: hsl(0 0% 100%);
     --destructive: hsl(0 84% 60%);
     --destructive-foreground: hsl(0 0% 100%);
@@ -58,13 +58,13 @@
     --success-foreground: hsl(0 0% 100%);
     --warning: hsl(38 92% 50%);
     --warning-foreground: hsl(0 0% 100%);
-    --border: hsl(222 47% 20%);
-    --input: hsl(222 47% 20%);
+    --border: hsl(0 0% 15%); /* Subtle borders */
+    --input: hsl(0 0% 15%);
     --ring: hsl(217 91% 60%);
-    --sidebar: hsl(222 47% 10%);
+    --sidebar: hsl(0 0% 7%); /* Distinct but dark sidebar */
     --sidebar-foreground: hsl(210 40% 98%);
-    --sidebar-border: hsl(222 47% 18%);
-    --sidebar-accent: hsl(222 47% 15%);
+    --sidebar-border: hsl(0 0% 15%);
+    --sidebar-accent: hsl(0 0% 12%);
   }
 }
 
