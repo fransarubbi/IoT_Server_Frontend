@@ -16,7 +16,6 @@
     { id: "edge", label: "Edge", icon: Server },
     { id: "certificates", label: "Certificados", icon: ShieldCheck },
     { id: "notifications", label: "Notificaciones", icon: Bell },
-    { id: "firmware", label: "Firmware", icon: HardDrive },
   ];
 
   function navigate(page: Page) {

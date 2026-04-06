@@ -15,6 +15,18 @@ export interface Network {
   gateway: string
   status: "active" | "inactive"
   devices: number
+  hubs: Hub[]
+}
+
+export interface Hub {
+  id: string
+  network: string
+  wifi_ssid: string
+  wifi_password: string
+  mqtt_uri: string
+  device_name: string
+  sample: string
+  energy_mode: string
 }
 
 export interface Certificate {

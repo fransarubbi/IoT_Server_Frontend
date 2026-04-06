@@ -11,6 +11,7 @@
     import Settings from "lucide-svelte/icons/settings";
     import Trash2 from "lucide-svelte/icons/trash-2";
     import Plus from "lucide-svelte/icons/plus";
+    import ArrowRight from "lucide-svelte/icons/arrow-right";
     import type { Network, Edge } from "$lib/types";
 
     let edgeId = $state<string>("");
@@ -158,10 +159,16 @@
 
                         <div class="mt-4 flex gap-2">
                             <button
-                                class="btn-secondary flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs"
+                                onclick={() => navigateTo('network-hubs', { edgeId: currentEdge.id, networkId: network.id })}
+                                class="btn-primary flex items-center justify-center gap-1.5 rounded-lg py-2 px-3 text-xs flex-1"
+                            >
+                                Ver Hubs
+                                <ArrowRight class="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                                class="btn-secondary flex items-center justify-center gap-1.5 rounded-lg py-2 px-3 text-xs"
                             >
                                 <Settings class="h-3.5 w-3.5" />
-                                Configurar
                             </button>
                             <button
                                 onclick={() => deleteNetwork(network.id)}

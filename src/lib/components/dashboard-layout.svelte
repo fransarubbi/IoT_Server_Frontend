@@ -7,6 +7,7 @@
   import FirmwarePage from "$lib/pages/firmware-page.svelte";
 
   import EdgeNetworksPage from "$lib/pages/edge-networks-page.svelte";
+  import NetworkHubsPage from "$lib/pages/network-hubs-page.svelte";
 
   import type { Component } from "svelte";
   import type { Page } from "$lib/stores/navigation";
@@ -19,6 +20,7 @@
     certificates: CertificatesPage,
     notifications: NotificationsPage,
     firmware: FirmwarePage,
+    "network-hubs": NetworkHubsPage,
   };
 
   let SvelteComponent = $derived(pages[$currentPage]);
