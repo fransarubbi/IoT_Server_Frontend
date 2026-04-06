@@ -19,7 +19,7 @@
 
     let edgeId = $derived($pageParams.edgeId);
     let networkId = $derived($pageParams.networkId);
-    let currentEdge = $derived($edges.find((e) => e.id === edgeId));
+    let currentEdge = $derived($edges.find((e) => e.id_edge === edgeId));
     let currentNetwork = $derived(currentEdge?.networks.find((n) => n.id === networkId));
 
     function goBack() {

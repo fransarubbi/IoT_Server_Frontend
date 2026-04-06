@@ -15,7 +15,7 @@
     import type { Network } from "$lib/types";
 
     let edgeId = $derived($pageParams.edgeId);
-    let currentEdge = $derived($edges.find((e) => e.id === edgeId));
+    let currentEdge = $derived($edges.find((e) => e.id_edge === edgeId));
 
     // Create Modal states
     let showCreateNetworkModal = $state(false);
@@ -32,6 +32,10 @@
     let showFirmwareModal = $state(false);
     let firmwareTargets = $state<Network | null>(null);
 
+    // Delete Network Modal
+    let showDeleteNetworkModal = $state(false);
+    let targetDeleteNetwork = $state<Network | null>(null);
+
     function goBack() {
         navigateTo("edge");
     }
@@ -44,12 +48,12 @@
             id: newNetworkId,
             description: newNetworkDesc,
             ubication: newNetworkLoc,
-            edgeId: currentEdge.id,
+            edgeId: currentEdge.id_edge,
             status: "active",
             hubs: [],
         };
 
-        edges.addNetwork(currentEdge.id, newNetwork);
+        edges.addNetwork(currentEdge.id_edge, newNetwork);
 
         newNetworkId = "";
         newNetworkDesc = "";
@@ -65,13 +69,20 @@
 
     function saveNetwork() {
         if (!currentEdge || !editForm.id) return;
-        edges.updateNetwork(currentEdge.id, editingOldId, editForm as Network);
+        edges.updateNetwork(currentEdge.id_edge, editingOldId, editForm as Network);
         showEditNetworkModal = false;
     }
 
-    function deleteNetwork(networkId: string) {
-        if (confirm("¿Estás seguro de eliminar esta red? Se perderán todos sus Hubs asociados.")) {
-            edges.removeNetwork(edgeId, networkId);
+    function deleteNetworkPrompt(network: Network) {
+        targetDeleteNetwork = network;
+        showDeleteNetworkModal = true;
+    }
+
+    function confirmDeleteNetwork() {
+        if (targetDeleteNetwork) {
+            edges.removeNetwork(edgeId, targetDeleteNetwork.id);
+            showDeleteNetworkModal = false;
+            targetDeleteNetwork = null;
         }
     }
 
@@ -164,7 +175,7 @@
 
                         <div class="mt-5 border-t border-border pt-4">
                             <button
-                                onclick={() => navigateTo('network-hubs', { edgeId: currentEdge.id, networkId: network.id })}
+                                onclick={() => navigateTo('network-hubs', { edgeId: currentEdge.id_edge, networkId: network.id })}
                                 class="w-full btn-primary flex flex-1 items-center justify-between gap-1.5 rounded-lg py-2.5 px-4 text-xs font-semibold mb-2"
                             >
                                 <span>Ver Hubs</span>
@@ -186,7 +197,7 @@
                                     Configurar
                                 </button>
                                 <button
-                                    onclick={() => deleteNetwork(network.id)}
+                                    onclick={() => deleteNetworkPrompt(network)}
                                     class="flex flex-none items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20"
                                 >
                                     <Trash2 class="h-4 w-4" />
@@ -304,4 +315,39 @@
         </div>
     </div>
     {/if}
+</Modal>
+
+<!-- Delete Network Protection Modal -->
+<Modal
+  open={showDeleteNetworkModal}
+  title="Protección de Borrado"
+  onClose={() => (showDeleteNetworkModal = false)}
+>
+  {#if targetDeleteNetwork}
+    <div class="space-y-4 pt-2">
+        <div class="flex flex-col items-center justify-center p-6 bg-destructive/10 border border-destructive/20 rounded-xl text-center">
+            <div class="bg-destructive text-destructive-foreground p-3 rounded-full mb-3">
+                <Trash2 class="h-8 w-8" />
+            </div>
+            <p class="text-sm font-bold text-destructive">Eliminación Destructiva</p>
+        </div>
+
+        <p class="text-card-foreground text-center text-sm px-2">
+            ¿Estas seguro que queres eliminar la red <strong class="font-bold underline decoration-destructive underline-offset-2">{targetDeleteNetwork.id}</strong>?
+        </p>
+
+        <p class="text-xs text-muted-foreground text-center bg-muted/50 p-3 rounded-lg border border-border mx-2">
+            Perderás automáticamente todos sus Hubs anexados de modo irreversible.
+        </p>
+
+        <div class="flex gap-3 pt-4">
+            <button type="button" onclick={() => (showDeleteNetworkModal = false)} class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">
+                Cancelar
+            </button>
+            <button type="button" onclick={confirmDeleteNetwork} class="bg-destructive hover:bg-destructive/90 text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] flex-1 rounded-xl py-3 text-sm font-medium">
+                Confirmar
+            </button>
+        </div>
+    </div>
+  {/if}
 </Modal>

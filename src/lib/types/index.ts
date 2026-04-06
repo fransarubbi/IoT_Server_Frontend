@@ -1,8 +1,26 @@
 export interface Edge {
-  id: string
+  id_edge: string
   name: string
+  ubication: string
+  host_server: string
+  host_port: string
+  cn: string
+  host_local: string
+  db_path: string
+  buffer_size: number
+  rust_log: "Debug" | "Info" | "Error"
+  max_attempts: number
+  frequency_phase: number
+  frequency_safe_mode: number
+  timeout_handshake: number
+  timeout_phase: number
+  timeout_safe_mode: number
+  time_between_heartbeats_balance_mode: number
+  time_between_heartbeats_normal: number
+  time_between_heartbeats_safe_mode: number
+  
+  // Non-editable dashboard functional fields
   status: "online" | "offline" | "warning"
-  location: string
   lastSeen: Date
   networks: Network[]
 }
