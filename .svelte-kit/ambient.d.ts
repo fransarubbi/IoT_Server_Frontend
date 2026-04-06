@@ -42,7 +42,9 @@ declare module '$env/static/private' {
 	export const npm_command: string;
 	export const npm_config_userconfig: string;
 	export const npm_config_cache: string;
+	export const npm_package_integrity: string;
 	export const NODE: string;
+	export const npm_config_ignore_scripts: string;
 	export const COLOR: string;
 	export const npm_config_local_prefix: string;
 	export const npm_config_globalconfig: string;
@@ -53,6 +55,8 @@ declare module '$env/static/private' {
 	export const HOME: string;
 	export const LANG: string;
 	export const npm_package_version: string;
+	export const npm_config_pack_destination: string;
+	export const npm_package_resolved: string;
 	export const INIT_CWD: string;
 	export const npm_lifecycle_script: string;
 	export const npm_config_npm_version: string;
@@ -70,8 +74,8 @@ declare module '$env/static/private' {
 	export const PATH: string;
 	export const npm_config_node_gyp: string;
 	export const npm_config_python: string;
-	export const npm_config_global_prefix: string;
 	export const npm_config_update_notifier: string;
+	export const npm_config_global_prefix: string;
 	export const npm_node_execpath: string;
 	export const npm_config_engine_strict: string;
 }
@@ -164,7 +168,9 @@ declare module '$env/dynamic/private' {
 		npm_command: string;
 		npm_config_userconfig: string;
 		npm_config_cache: string;
+		npm_package_integrity: string;
 		NODE: string;
+		npm_config_ignore_scripts: string;
 		COLOR: string;
 		npm_config_local_prefix: string;
 		npm_config_globalconfig: string;
@@ -175,6 +181,8 @@ declare module '$env/dynamic/private' {
 		HOME: string;
 		LANG: string;
 		npm_package_version: string;
+		npm_config_pack_destination: string;
+		npm_package_resolved: string;
 		INIT_CWD: string;
 		npm_lifecycle_script: string;
 		npm_config_npm_version: string;
@@ -192,8 +200,8 @@ declare module '$env/dynamic/private' {
 		PATH: string;
 		npm_config_node_gyp: string;
 		npm_config_python: string;
-		npm_config_global_prefix: string;
 		npm_config_update_notifier: string;
+		npm_config_global_prefix: string;
 		npm_node_execpath: string;
 		npm_config_engine_strict: string;
 		[key: `PUBLIC_${string}`]: undefined;

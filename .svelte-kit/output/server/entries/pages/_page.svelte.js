@@ -3,6 +3,11 @@ import { w as writable } from "../../chunks/index.js";
 import { f as fallback, e as escape_html } from "../../chunks/equality.js";
 import "clsx";
 const currentPage = writable("edge");
+const pageParams = writable({});
+function navigateTo(page, params = {}) {
+  pageParams.set(params);
+  currentPage.set(page);
+}
 function createAuthStore() {
   const { subscribe, set, update } = writable(null);
   return {
@@ -112,6 +117,37 @@ function Icon($$renderer, $$props) {
       iconNode
     });
   });
+}
+function Arrow_left($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  const iconNode = [
+    ["path", { "d": "m12 19-7-7 7-7" }],
+    ["path", { "d": "M19 12H5" }]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "arrow-left" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name ArrowLeft
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJtMTIgMTktNy03IDctNyIgLz4KICA8cGF0aCBkPSJNMTkgMTJINSIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/arrow-left
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
 }
 function Arrow_right($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
@@ -391,6 +427,43 @@ function Clock($$renderer, $$props) {
        * @description Lucide SVG icon component, renders SVG Element with children.
        *
        * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTIgNnY2bDQgMiIgLz4KICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/clock
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
+function Cloud_upload($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  const iconNode = [
+    ["path", { "d": "M12 13v8" }],
+    [
+      "path",
+      {
+        "d": "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"
+      }
+    ],
+    ["path", { "d": "m8 17 4-4 4 4" }]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "cloud-upload" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name CloudUpload
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTIgMTN2OCIgLz4KICA8cGF0aCBkPSJNNCAxNC44OTlBNyA3IDAgMSAxIDE1LjcxIDhoMS43OWE0LjUgNC41IDAgMCAxIDIuNSA4LjI0MiIgLz4KICA8cGF0aCBkPSJtOCAxNyA0LTQgNCA0IiAvPgo8L3N2Zz4K) - https://lucide.dev/icons/cloud-upload
        * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
        *
        * @param {Object} props - Lucide icons props and any valid SVG attribute
@@ -1097,6 +1170,42 @@ function Server($$renderer, $$props) {
     }
   ]));
 }
+function Settings($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  const iconNode = [
+    [
+      "path",
+      {
+        "d": "M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
+      }
+    ],
+    ["circle", { "cx": "12", "cy": "12", "r": "3" }]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "settings" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name Settings
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNOS42NzEgNC4xMzZhMi4zNCAyLjM0IDAgMCAxIDQuNjU5IDAgMi4zNCAyLjM0IDAgMCAwIDMuMzE5IDEuOTE1IDIuMzQgMi4zNCAwIDAgMSAyLjMzIDQuMDMzIDIuMzQgMi4zNCAwIDAgMCAwIDMuODMxIDIuMzQgMi4zNCAwIDAgMS0yLjMzIDQuMDMzIDIuMzQgMi4zNCAwIDAgMC0zLjMxOSAxLjkxNSAyLjM0IDIuMzQgMCAwIDEtNC42NTkgMCAyLjM0IDIuMzQgMCAwIDAtMy4zMi0xLjkxNSAyLjM0IDIuMzQgMCAwIDEtMi4zMy00LjAzMyAyLjM0IDIuMzQgMCAwIDAgMC0zLjgzMUEyLjM0IDIuMzQgMCAwIDEgNi4zNSA2LjA1MWEyLjM0IDIuMzQgMCAwIDAgMy4zMTktMS45MTUiIC8+CiAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/settings
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
 function Shield_check($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   const iconNode = [
@@ -1274,6 +1383,39 @@ function Upload($$renderer, $$props) {
     }
   ]));
 }
+function Wifi($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  const iconNode = [
+    ["path", { "d": "M12 20h.01" }],
+    ["path", { "d": "M2 8.82a15 15 0 0 1 20 0" }],
+    ["path", { "d": "M5 12.859a10 10 0 0 1 14 0" }],
+    ["path", { "d": "M8.5 16.429a5 5 0 0 1 7 0" }]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "wifi" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name Wifi
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTIgMjBoLjAxIiAvPgogIDxwYXRoIGQ9Ik0yIDguODJhMTUgMTUgMCAwIDEgMjAgMCIgLz4KICA8cGF0aCBkPSJNNSAxMi44NTlhMTAgMTAgMCAwIDEgMTQgMCIgLz4KICA8cGF0aCBkPSJNOC41IDE2LjQyOWE1IDUgMCAwIDEgNyAwIiAvPgo8L3N2Zz4K) - https://lucide.dev/icons/wifi
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
 function X($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   const iconNode = [
@@ -1386,7 +1528,7 @@ function Modal($$renderer, $$props) {
     let { children, open = false, title, onClose } = $$props;
     if (open) {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"><div class="absolute inset-0 bg-background/80 backdrop-blur-md cursor-pointer" role="button" tabindex="-1" aria-label="Close modal"></div> <div class="relative z-10 w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-2xl shadow-black/20 animate-scale-in"><div class="flex items-center justify-between mb-5"><h2 class="text-lg font-semibold text-card-foreground">${escape_html(title)}</h2> <button type="button" class="flex h-9 w-9 items-center justify-center rounded-xl text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive hover:rotate-90 active:scale-90" aria-label="Close">`);
+      $$renderer2.push(`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"><div class="absolute inset-0 bg-background/80 backdrop-blur-md cursor-pointer" role="button" tabindex="-1" aria-label="Close modal"></div> <div class="relative z-10 m-auto w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-2xl shadow-black/20 animate-scale-in"><div class="flex items-center justify-between mb-5"><h2 class="text-lg font-semibold text-card-foreground">${escape_html(title)}</h2> <button type="button" class="flex h-9 w-9 items-center justify-center rounded-xl text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive hover:rotate-90 active:scale-90" aria-label="Close">`);
       X($$renderer2, { class: "h-5 w-5" });
       $$renderer2.push(`<!----></button></div> `);
       if (children) {
@@ -1517,8 +1659,27 @@ const initialEdges = [
     location: "Datacenter Principal",
     lastSeen: /* @__PURE__ */ new Date(),
     networks: [
-      { id: "n1", name: "Red Industrial", edgeId: "1", subnet: "192.168.1.0/24", gateway: "192.168.1.1", status: "active", devices: 24, hubs: [] },
-      { id: "n2", name: "Red Sensores", edgeId: "1", subnet: "192.168.2.0/24", gateway: "192.168.2.1", status: "active", devices: 156, hubs: [] }
+      {
+        id: "RED-IND-01",
+        description: "Red de sensores industriales de temperatura y humedad en área caliente",
+        ubication: "Planta Principal - Sector A",
+        edgeId: "1",
+        status: "active",
+        hubs: [
+          { id: "H-XW9R", network: "RED-IND-01", device_name: "Sensor Cintas", wifi_ssid: "IoT_Industrial_Net", wifi_password: "pass_industrial", mqtt_uri: "mqtt://broker.hivemq.com:1883", sample: "30", energy_mode: "Bajo consumo" },
+          { id: "H-Q1L2", network: "RED-IND-01", device_name: "Medidor Nivel Tanque 3", wifi_ssid: "IoT_Industrial_Net", wifi_password: "pass_industrial", mqtt_uri: "mqtt://broker.hivemq.com:1883", sample: "15", energy_mode: "Balanceado" }
+        ]
+      },
+      {
+        id: "RED-PRESION-02",
+        description: "Monitoreo de válvulas de presión y control de fluidos",
+        ubication: "Planta Principal - Anexo Tuberías",
+        edgeId: "1",
+        status: "active",
+        hubs: [
+          { id: "H-Z8K0", network: "RED-PRESION-02", device_name: "Válvula Reguladora P09", wifi_ssid: "SensorNet", wifi_password: "sensor_pass", mqtt_uri: "mqtt://broker.hivemq.com:1883", sample: "5", energy_mode: "Performance" }
+        ]
+      }
     ]
   },
   {
@@ -1528,7 +1689,14 @@ const initialEdges = [
     location: "Planta Norte",
     lastSeen: new Date(Date.now() - 3e5),
     networks: [
-      { id: "n3", name: "Red Producción", edgeId: "2", subnet: "10.0.1.0/24", gateway: "10.0.1.1", status: "active", devices: 48, hubs: [] }
+      {
+        id: "RED-MANT",
+        description: "Sensores de diagnóstico de equipos inactivos",
+        ubication: "Almacén 2",
+        edgeId: "2",
+        status: "active",
+        hubs: []
+      }
     ]
   },
   {
@@ -1550,6 +1718,9 @@ function createEdgesStore() {
     // specific network helpers to avoid complex logic in components
     addNetwork: (edgeId, network) => update(
       (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: [...e.networks, network] } : e)
+    ),
+    updateNetwork: (edgeId, oldNetworkId, newNetwork) => update(
+      (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: e.networks.map((n) => n.id === oldNetworkId ? newNetwork : n) } : e)
     ),
     removeNetwork: (edgeId, networkId) => update(
       (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: e.networks.filter((n) => n.id !== networkId) } : e)
@@ -2081,29 +2252,121 @@ function Firmware_page($$renderer, $$props) {
 }
 function Edge_networks_page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
+    var $$store_subs;
+    let edgeId = derived(() => store_get($$store_subs ??= {}, "$pageParams", pageParams).edgeId);
+    let currentEdge = derived(() => store_get($$store_subs ??= {}, "$edges", edges).find((e) => e.id === edgeId()));
     let showCreateNetworkModal = false;
-    let newNetworkName = "";
-    let newNetworkSubnet = "";
-    let newNetworkGateway = "";
+    let newNetworkId = "";
+    let newNetworkDesc = "";
+    let newNetworkLoc = "";
+    let showEditNetworkModal = false;
+    let editForm = {};
+    let showFirmwareModal = false;
     $$renderer2.push(`<div class="space-y-6">`);
-    {
+    if (currentEdge()) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<div class="flex items-center gap-4"><button class="flex items-center gap-2 text-sm text-muted-foreground transition-all duration-200 hover:text-foreground hover:gap-3 group">`);
+      Arrow_left($$renderer2, {
+        class: "h-4 w-4 transition-transform group-hover:-translate-x-1"
+      });
+      $$renderer2.push(`<!----> Volver a Edge Devices</button></div> `);
+      Page_header($$renderer2, {
+        title: `Redes de Edge`,
+        description: `Gestiona las redes asociadas al dispositivo ${currentEdge().name}`
+      });
+      $$renderer2.push(`<!----> <div class="card-interactive p-6 animate-fade-in"><div class="flex items-center justify-between"><div><h3 class="text-xl font-bold text-card-foreground">Redes Activas</h3> <p class="text-sm text-muted-foreground mt-1">${escape_html(currentEdge().networks.length)} redes configuradas</p></div> <button class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm">`);
+      Plus($$renderer2, { class: "h-4 w-4" });
+      $$renderer2.push(`<!----> Nueva Red</button></div></div> `);
+      if (currentEdge().networks.length === 0) {
+        $$renderer2.push("<!--[0-->");
+        Empty_state($$renderer2, {
+          icon: Wifi,
+          title: "Sin redes configuradas",
+          description: "Este Edge no tiene redes asociadas. Crea una nueva red para comenzar.",
+          actionLabel: "Crear Red",
+          onAction: () => showCreateNetworkModal = true
+        });
+      } else {
+        $$renderer2.push("<!--[-1-->");
+        $$renderer2.push(`<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"><!--[-->`);
+        const each_array = ensure_array_like(currentEdge().networks);
+        for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+          let network = each_array[$$index];
+          $$renderer2.push(`<div class="card-interactive group p-5 flex flex-col h-full"><div class="flex items-start justify-between"><div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent/20 to-accent/10">`);
+          Wifi($$renderer2, { class: "h-5 w-5 text-accent" });
+          $$renderer2.push(`<!----></div> `);
+          Status_badge($$renderer2, { status: network.status });
+          $$renderer2.push(`<!----></div> <div class="flex-1"><h4 class="mt-4 font-semibold text-lg text-card-foreground">${escape_html(network.id)}</h4> <p class="text-xs text-muted-foreground mt-1 line-clamp-2">${escape_html(network.description)}</p> <div class="mt-4 space-y-2 text-sm bg-muted/40 p-3 rounded-lg"><div class="flex justify-between items-center border-b border-border/50 pb-1.5"><span class="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Ubicación</span> <span class="font-medium text-card-foreground">${escape_html(network.ubication)}</span></div> <div class="flex justify-between items-center pt-1"><span class="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Dispositivos</span> <div class="flex items-center justify-center bg-primary/10 text-primary font-bold px-2.5 py-0.5 rounded-full">${escape_html(network.hubs?.length || 0)}</div></div></div></div> <div class="mt-5 border-t border-border pt-4"><button class="w-full btn-primary flex flex-1 items-center justify-between gap-1.5 rounded-lg py-2.5 px-4 text-xs font-semibold mb-2"><span>Ver Hubs</span> `);
+          Arrow_right($$renderer2, { class: "h-4 w-4" });
+          $$renderer2.push(`<!----></button> <button class="w-full relative overflow-hidden bg-white dark:bg-zinc-800 text-info font-medium border border-info/30 transition-all duration-300 ease-out hover:bg-info/10 active:scale-[0.98] flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs mb-2">`);
+          Cloud_upload($$renderer2, { class: "h-4 w-4" });
+          $$renderer2.push(`<!----> Actualizar Firmware</button> <div class="flex gap-2"><button class="btn-secondary flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs">`);
+          Settings($$renderer2, { class: "h-4 w-4" });
+          $$renderer2.push(`<!----> Configurar</button> <button class="flex flex-none items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20">`);
+          Trash_2($$renderer2, { class: "h-4 w-4" });
+          $$renderer2.push(`<!----></button></div></div></div>`);
+        }
+        $$renderer2.push(`<!--]--></div>`);
+      }
+      $$renderer2.push(`<!--]-->`);
+    } else {
       $$renderer2.push("<!--[-1-->");
-      $$renderer2.push(`<div class="flex flex-col items-center justify-center h-64 text-muted-foreground"><p>Dispositivo no encontrado o no seleccionado.</p> <button class="mt-4 btn-secondary rounded-lg px-4 py-2">Volver</button></div>`);
+      $$renderer2.push(`<div class="flex flex-col items-center justify-center h-64 text-muted-foreground"><p>Dispositivo Edge no encontrado o no seleccionado.</p> <button class="mt-4 btn-secondary rounded-lg px-4 py-2">Volver</button></div>`);
     }
     $$renderer2.push(`<!--]--></div> `);
     Modal($$renderer2, {
       open: showCreateNetworkModal,
-      title: "Nueva Red",
+      title: "Añadir Nueva Red",
       onClose: () => showCreateNetworkModal = false,
       children: ($$renderer3) => {
-        $$renderer3.push(`<form class="space-y-5"><div class="space-y-2"><label for="network-name" class="block text-sm font-medium text-card-foreground">Nombre de la Red</label> <input id="network-name" type="text"${attr("value", newNetworkName)} placeholder="Red Industrial..." class="input-field" required=""/></div> <div class="space-y-2"><label for="network-subnet" class="block text-sm font-medium text-card-foreground">Subnet (CIDR)</label> <input id="network-subnet" type="text"${attr("value", newNetworkSubnet)} placeholder="192.168.1.0/24" class="input-field font-mono" required=""/></div> <div class="space-y-2"><label for="network-gateway" class="block text-sm font-medium text-card-foreground">Gateway</label> <input id="network-gateway" type="text"${attr("value", newNetworkGateway)} placeholder="192.168.1.1" class="input-field font-mono"/></div> <div class="flex gap-3 pt-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm">Cancelar</button> <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm">Crear Red</button></div></form>`);
+        $$renderer3.push(`<form class="space-y-4 px-1"><div class="space-y-1.5"><label for="new-network-id" class="block text-sm font-medium text-card-foreground">ID de la Red</label> <input id="new-network-id" type="text"${attr("value", newNetworkId)} class="input-field font-mono" required="" placeholder="RED-001"/></div> <div class="space-y-1.5"><label for="new-network-desc" class="block text-sm font-medium text-card-foreground">Descripción</label> <textarea id="new-network-desc" class="input-field min-h-[80px]" required="" placeholder="Red de sensores de planta...">`);
+        const $$body = escape_html(newNetworkDesc);
+        if ($$body) {
+          $$renderer3.push(`${$$body}`);
+        }
+        $$renderer3.push(`</textarea></div> <div class="space-y-1.5"><label for="new-network-loc" class="block text-sm font-medium text-card-foreground">Ubicación</label> <input id="new-network-loc" type="text"${attr("value", newNetworkLoc)} class="input-field" required="" placeholder="Planta Baja"/></div> <div class="flex gap-3 pt-6 pb-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">Cancelar</button> <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium">Crear Red</button></div></form>`);
+      }
+    });
+    $$renderer2.push(`<!----> `);
+    Modal($$renderer2, {
+      open: showEditNetworkModal,
+      title: "Configurar Red",
+      onClose: () => showEditNetworkModal = false,
+      children: ($$renderer3) => {
+        $$renderer3.push(`<form class="space-y-4 px-1"><div class="space-y-1.5"><label for="edit-network-id" class="block text-sm font-medium text-card-foreground">ID de la Red</label> <input id="edit-network-id" type="text"${attr("value", editForm.id)} class="input-field font-mono" required="" placeholder="RED-001"/></div> <div class="space-y-1.5"><label for="edit-network-desc" class="block text-sm font-medium text-card-foreground">Descripción</label> <textarea id="edit-network-desc" class="input-field min-h-[80px]" required="" placeholder="Red de sensores de planta...">`);
+        const $$body_1 = escape_html(editForm.description);
+        if ($$body_1) {
+          $$renderer3.push(`${$$body_1}`);
+        }
+        $$renderer3.push(`</textarea></div> <div class="space-y-1.5"><label for="edit-network-loc" class="block text-sm font-medium text-card-foreground">Ubicación</label> <input id="edit-network-loc" type="text"${attr("value", editForm.ubication)} class="input-field" required="" placeholder="Planta Baja"/></div> <div class="flex gap-3 pt-6 pb-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">Cancelar</button> <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium">Guardar</button></div></form>`);
+      }
+    });
+    $$renderer2.push(`<!----> `);
+    Modal($$renderer2, {
+      open: showFirmwareModal,
+      title: "Actualización de Firmware",
+      onClose: () => showFirmwareModal = false,
+      children: ($$renderer3) => {
+        {
+          $$renderer3.push("<!--[-1-->");
+        }
+        $$renderer3.push(`<!--]-->`);
       }
     });
     $$renderer2.push(`<!---->`);
+    if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
 function Network_hubs_page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
+    var $$store_subs;
+    let edgeId = derived(() => store_get($$store_subs ??= {}, "$pageParams", pageParams).edgeId);
+    let networkId = derived(() => store_get($$store_subs ??= {}, "$pageParams", pageParams).networkId);
+    let currentEdge = derived(() => store_get($$store_subs ??= {}, "$edges", edges).find((e) => e.id === edgeId()));
+    let currentNetwork = derived(() => currentEdge()?.networks.find((n) => n.id === networkId()));
+    function goBack() {
+      navigateTo("edge-networks", { edgeId: edgeId() });
+    }
     let showInfoModal = false;
     let showEditModal = false;
     let formHub = {
@@ -2117,7 +2380,49 @@ function Network_hubs_page($$renderer, $$props) {
       energy_mode: "Normal"
     };
     $$renderer2.push(`<div class="space-y-6">`);
-    {
+    if (currentEdge() && currentNetwork()) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<div class="flex items-center gap-4"><button class="flex items-center gap-2 text-sm text-muted-foreground transition-all duration-200 hover:text-foreground hover:gap-3 group">`);
+      Arrow_left($$renderer2, {
+        class: "h-4 w-4 transition-transform group-hover:-translate-x-1"
+      });
+      $$renderer2.push(`<!----> Volver a Redes (${escape_html(currentEdge().name)})</button></div> `);
+      Page_header($$renderer2, {
+        title: `Hubs de la red: ${currentNetwork().id}`,
+        description: `Gestiona los hubs de esta familia de sensores`
+      });
+      $$renderer2.push(`<!----> <div class="card-interactive p-6 animate-fade-in"><div class="flex items-center justify-between"><div><h3 class="text-xl font-bold text-card-foreground">Hubs Activos</h3> <p class="text-sm text-muted-foreground mt-1">${escape_html(currentNetwork().hubs?.length || 0)} dispositivos encontrados</p></div></div></div> `);
+      if (!currentNetwork().hubs || currentNetwork().hubs.length === 0) {
+        $$renderer2.push("<!--[0-->");
+        Empty_state($$renderer2, {
+          icon: Cpu,
+          title: "Sin dispositivos Hub",
+          description: "Esta red aún no tiene Hubs asignados. Contacta a un administrador para provisionar uno.",
+          actionLabel: "Volver a Redes",
+          onAction: goBack
+        });
+      } else {
+        $$renderer2.push("<!--[-1-->");
+        $$renderer2.push(`<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"><!--[-->`);
+        const each_array = ensure_array_like(currentNetwork().hubs);
+        for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+          let hub = each_array[$$index];
+          $$renderer2.push(`<div class="card-interactive group p-5 flex flex-col h-full"><div class="flex items-start justify-between"><div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">`);
+          Cpu($$renderer2, { class: "h-6 w-6 text-primary" });
+          $$renderer2.push(`<!----></div> `);
+          Status_badge($$renderer2, { status: "active" });
+          $$renderer2.push(`<!----></div> <div class="mt-4 flex-1"><h4 class="text-2xl font-bold tracking-tight text-card-foreground">${escape_html(hub.id)}</h4> <div class="mt-2 space-y-1"><p class="text-xs font-semibold uppercase text-muted-foreground tracking-wider">${escape_html(hub.network)}</p> <p class="text-sm text-card-foreground/80">${escape_html(hub.device_name)}</p> <div${attr_class(`inline-block mt-2 px-2.5 py-0.5 rounded-full border ${hub.energy_mode === "Bajo consumo" ? "bg-success/10 border-success/20 text-success" : hub.energy_mode === "Balanceado" ? "bg-blue-500/10 border-blue-500/20 text-blue-500" : hub.energy_mode === "Performance" ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-accent/10 border-accent/20 text-accent"}`)}><span class="text-[10px] font-medium currentColor">Modo Energía: ${escape_html(hub.energy_mode)}</span></div></div></div> <div class="mt-6 flex gap-2 border-t border-border pt-4"><button class="btn-secondary flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs font-medium" aria-label="Ver información del Hub">`);
+          Eye($$renderer2, { class: "h-4 w-4" });
+          $$renderer2.push(`<!----> Ver Info</button> <button class="btn-secondary flex items-center justify-center rounded-lg p-2.5 border border-border" aria-label="Configurar Hub">`);
+          Settings($$renderer2, { class: "h-4 w-4" });
+          $$renderer2.push(`<!----></button> <button class="flex items-center justify-center rounded-lg border border-border bg-card p-2.5 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20" aria-label="Eliminar Hub">`);
+          Trash_2($$renderer2, { class: "h-4 w-4" });
+          $$renderer2.push(`<!----></button></div></div>`);
+        }
+        $$renderer2.push(`<!--]--></div>`);
+      }
+      $$renderer2.push(`<!--]-->`);
+    } else {
       $$renderer2.push("<!--[-1-->");
       $$renderer2.push(`<div class="flex flex-col items-center justify-center h-64 text-muted-foreground"><p>Red o Edge no encontrados.</p> <button class="mt-4 btn-secondary rounded-lg px-4 py-2">Volver a Inicio</button></div>`);
     }
@@ -2136,10 +2441,10 @@ function Network_hubs_page($$renderer, $$props) {
     $$renderer2.push(`<!----> `);
     Modal($$renderer2, {
       open: showEditModal,
-      title: "Añadir Nuevo Hub",
+      title: `Configurando Hub ID: ${formHub.id}`,
       onClose: () => showEditModal = false,
       children: ($$renderer3) => {
-        $$renderer3.push(`<form class="space-y-4 max-h-[70vh] overflow-y-auto px-1"><div class="space-y-1.5"><label for="hub-id" class="block text-sm font-medium text-card-foreground">ID del Hub</label> <input id="hub-id" type="text"${attr("value", formHub.id)} class="input-field font-mono" required="" placeholder="H-0001"/></div> <div class="space-y-1.5"><label for="hub-network" class="block text-sm font-medium text-card-foreground">Red (Nombre)</label> <input id="hub-network" type="text"${attr("value", formHub.network)} class="input-field" required="" placeholder="Red Industrial Beta..."/></div> <div class="space-y-1.5"><label for="hub-name" class="block text-sm font-medium text-card-foreground">Nombre (Device Name)</label> <input id="hub-name" type="text"${attr("value", formHub.device_name)} class="input-field" required="" placeholder="Sensor Temperatura Planta 1"/></div> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="hub-ssid" class="block text-sm font-medium text-card-foreground">WIFI SSID</label> <input id="hub-ssid" type="text"${attr("value", formHub.wifi_ssid)} class="input-field" required="" placeholder="IoT_Network_5G"/></div> <div class="space-y-1.5"><label for="hub-password" class="block text-sm font-medium text-card-foreground">WIFI Contraseña</label> <input id="hub-password" type="text"${attr("value", formHub.wifi_password)} class="input-field" required="" placeholder="***********"/></div></div> <div class="space-y-1.5"><label for="hub-mqtt" class="block text-sm font-medium text-card-foreground">MQTT URI</label> <input id="hub-mqtt" type="text"${attr("value", formHub.mqtt_uri)} class="input-field font-mono" required="" placeholder="mqtt://broker.hivemq.com"/></div> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="hub-sample" class="block text-sm font-medium text-card-foreground">Sample (ms)</label> <input id="hub-sample" type="number"${attr("value", formHub.sample)} class="input-field" required="" placeholder="1000"/></div> <div class="space-y-1.5"><label for="hub-energy" class="block text-sm font-medium text-card-foreground">Modo Energía</label> `);
+        $$renderer3.push(`<form class="space-y-4 px-1"><div class="space-y-1.5"><label for="hub-network" class="block text-sm font-medium text-card-foreground">Red</label> <input id="hub-network" type="text"${attr("value", formHub.network)} class="input-field" required="" placeholder="Red Industrial Beta..."/></div> <div class="space-y-1.5"><label for="hub-name" class="block text-sm font-medium text-card-foreground">Nombre</label> <input id="hub-name" type="text"${attr("value", formHub.device_name)} class="input-field" required="" placeholder="Sensor Temperatura Planta 1"/></div> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="hub-ssid" class="block text-sm font-medium text-card-foreground">WIFI SSID</label> <input id="hub-ssid" type="text"${attr("value", formHub.wifi_ssid)} class="input-field" required="" placeholder="IoT_Network_5G"/></div> <div class="space-y-1.5"><label for="hub-password" class="block text-sm font-medium text-card-foreground">WIFI Contraseña</label> <input id="hub-password" type="text"${attr("value", formHub.wifi_password)} class="input-field" required="" placeholder="***********"/></div></div> <div class="space-y-1.5"><label for="hub-mqtt" class="block text-sm font-medium text-card-foreground">MQTT URI</label> <input id="hub-mqtt" type="text"${attr("value", formHub.mqtt_uri)} class="input-field font-mono" required="" placeholder="mqtt://broker.hivemq.com"/></div> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="hub-sample" class="block text-sm font-medium text-card-foreground">Sample (min)</label> <input id="hub-sample" type="number"${attr("value", formHub.sample)} class="input-field" required="" placeholder="5"/></div> <div class="space-y-1.5"><label for="hub-energy" class="block text-sm font-medium text-card-foreground">Modo Energía</label> `);
         $$renderer3.select(
           {
             id: "hub-energy",
@@ -2147,17 +2452,14 @@ function Network_hubs_page($$renderer, $$props) {
             class: "input-field"
           },
           ($$renderer4) => {
-            $$renderer4.option({ value: "Normal" }, ($$renderer5) => {
-              $$renderer5.push(`Normal`);
+            $$renderer4.option({ value: "Bajo consumo" }, ($$renderer5) => {
+              $$renderer5.push(`Bajo consumo`);
             });
-            $$renderer4.option({ value: "Ahorro Básico" }, ($$renderer5) => {
-              $$renderer5.push(`Ahorro Básico`);
+            $$renderer4.option({ value: "Balanceado" }, ($$renderer5) => {
+              $$renderer5.push(`Balanceado`);
             });
-            $$renderer4.option({ value: "Ultra Ahorro" }, ($$renderer5) => {
-              $$renderer5.push(`Ultra Ahorro (Deep Sleep)`);
-            });
-            $$renderer4.option({ value: "Alto Rendimiento" }, ($$renderer5) => {
-              $$renderer5.push(`Alto Rendimiento`);
+            $$renderer4.option({ value: "Performance" }, ($$renderer5) => {
+              $$renderer5.push(`Performance`);
             });
           }
         );
@@ -2165,6 +2467,7 @@ function Network_hubs_page($$renderer, $$props) {
       }
     });
     $$renderer2.push(`<!---->`);
+    if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
 function Dashboard_layout($$renderer, $$props) {

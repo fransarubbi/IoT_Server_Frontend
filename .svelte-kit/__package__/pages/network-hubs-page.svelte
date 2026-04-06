@@ -17,26 +17,10 @@
     
     import type { Edge, Network, Hub } from "../types";
 
-    let edgeId = $state<string>("");
-    let networkId = $state<string>("");
-    let currentEdge = $state<Edge | undefined>(undefined);
-    let currentNetwork = $state<Network | undefined>(undefined);
-
-    // Initial reactiveness based on route params
-    $effect(() => {
-        edgeId = $pageParams.edgeId;
-        networkId = $pageParams.networkId;
-        if (edgeId) {
-            currentEdge = $edges.find((e) => e.id === edgeId);
-            if (currentEdge && networkId) {
-                currentNetwork = currentEdge.networks.find((n) => n.id === networkId);
-                // Si hubs no existe aún en el store (compatibilidad por el mock the initial data editado)
-                if (currentNetwork && !currentNetwork.hubs) {
-                     currentNetwork.hubs = [];
-                }
-            }
-        }
-    });
+    let edgeId = $derived($pageParams.edgeId);
+    let networkId = $derived($pageParams.networkId);
+    let currentEdge = $derived($edges.find((e) => e.id === edgeId));
+    let currentNetwork = $derived(currentEdge?.networks.find((n) => n.id === networkId));
 
     function goBack() {
         navigateTo("edge-networks", { edgeId });
@@ -66,21 +50,6 @@
         energy_mode: "Normal"
     });
 
-    function openCreateModal() {
-        isEditing = false;
-        formHub = {
-            id: crypto.randomUUID().split("-")[0].toUpperCase(),
-            network: currentNetwork?.name || "",
-            wifi_ssid: "",
-            wifi_password: "",
-            mqtt_uri: "mqtt://broker.hivemq.com",
-            device_name: "Nuevo Hub",
-            sample: "1000",
-            energy_mode: "Normal"
-        };
-        showEditModal = true;
-    }
-
     function openEditModal(hub: Hub) {
         isEditing = true;
         // Deep copy
@@ -91,22 +60,7 @@
     function saveHub() {
         if (!currentNetwork) return;
         
-        if (isEditing) {
-            edges.updateHub(edgeId, networkId, formHub as Hub);
-        } else {
-             // Create as full object Hub
-             const newHub: Hub = {
-                id: formHub.id as string,
-                network: formHub.network as string,
-                wifi_ssid: formHub.wifi_ssid as string,
-                wifi_password: formHub.wifi_password as string,
-                mqtt_uri: formHub.mqtt_uri as string,
-                device_name: formHub.device_name as string,
-                sample: formHub.sample as string,
-                energy_mode: formHub.energy_mode as string
-             };
-             edges.addHub(edgeId, networkId, newHub);
-        }
+        edges.updateHub(edgeId, networkId, formHub as Hub);
 
         showEditModal = false;
         isEditing = false;
@@ -132,8 +86,8 @@
         </div>
 
         <PageHeader
-            title={`Hubs de la red: ${currentNetwork.name}`}
-            description="Gestiona y monitorea los dispositivos Hub conectados a esta red"
+            title={`Hubs de la red: ${currentNetwork.id}`}
+            description={`Gestiona los hubs de esta familia de sensores`}
         />
 
         <div class="card-interactive p-6 animate-fade-in">
@@ -146,13 +100,6 @@
                         {currentNetwork.hubs?.length || 0} dispositivos encontrados
                     </p>
                 </div>
-                <button
-                    onclick={openCreateModal}
-                    class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm"
-                >
-                    <Plus class="h-4 w-4" />
-                    Añadir Hub
-                </button>
             </div>
         </div>
 
@@ -160,9 +107,9 @@
             <EmptyState
                 icon={Cpu}
                 title="Sin dispositivos Hub"
-                description="Esta red aún no tiene Hubs asignados. Añade un nuevo dispositivo para empezar a recolectar datos."
-                actionLabel="Añadir Hub"
-                onAction={openCreateModal}
+                description="Esta red aún no tiene Hubs asignados. Contacta a un administrador para provisionar uno."
+                actionLabel="Volver a Redes"
+                onAction={goBack}
             />
         {:else}
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -182,8 +129,13 @@
                             <div class="mt-2 space-y-1">
                                 <p class="text-xs font-semibold uppercase text-muted-foreground tracking-wider">{hub.network}</p>
                                 <p class="text-sm text-card-foreground/80">{hub.device_name}</p>
-                                <div class="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-accent/10 border border-accent/20">
-                                    <span class="text-[10px] font-medium text-accent">Modo Energía: {hub.energy_mode}</span>
+                                <div class={`inline-block mt-2 px-2.5 py-0.5 rounded-full border ${
+                                    hub.energy_mode === 'Bajo consumo' ? 'bg-success/10 border-success/20 text-success' : 
+                                    hub.energy_mode === 'Balanceado' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' : 
+                                    hub.energy_mode === 'Performance' ? 'bg-destructive/10 border-destructive/20 text-destructive' : 
+                                    'bg-accent/10 border-accent/20 text-accent'
+                                }`}>
+                                    <span class="text-[10px] font-medium currentColor">Modo Energía: {hub.energy_mode}</span>
                                 </div>
                             </div>
                         </div>
@@ -257,10 +209,10 @@
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
                     <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">MQTT URI</span>
-                    <span class="text-sm font-medium font-mono truncate" title={selectedHub.mqtt_uri}>{selectedHub.mqtt_uri}</span>
+                    <span class="text-sm font-medium font-mono break-all" title={selectedHub.mqtt_uri}>{selectedHub.mqtt_uri}</span>
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
-                    <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Sample (ms)</span>
+                    <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Sample (min)</span>
                     <span class="text-sm font-medium">{selectedHub.sample}</span>
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
@@ -276,27 +228,21 @@
     {/if}
 </Modal>
 
-<!-- Edit/Create Modal -->
+<!-- Edit Modal -->
 <Modal
     open={showEditModal}
-    title={isEditing ? "Configurar Hub" : "Añadir Nuevo Hub"}
+    title={`Configurando Hub ID: ${formHub.id}`}
     onClose={() => (showEditModal = false)}
 >
     <!-- Use preventDefault properly -->
-    <form onsubmit={(e) => { e.preventDefault(); saveHub(); }} class="space-y-4 max-h-[70vh] overflow-y-auto px-1">
+    <form onsubmit={(e) => { e.preventDefault(); saveHub(); }} class="space-y-4 px-1">
         <div class="space-y-1.5">
-            <label for="hub-id" class="block text-sm font-medium text-card-foreground">ID del Hub</label>
-            <!-- ID usually cannot change if already created, but requirement says "modificar" - we will allow it or keep it static. Better to allow modify if the business logic allows. -->
-            <input id="hub-id" type="text" bind:value={formHub.id} class="input-field font-mono" required placeholder="H-0001" />
-        </div>
-
-        <div class="space-y-1.5">
-            <label for="hub-network" class="block text-sm font-medium text-card-foreground">Red (Nombre)</label>
+            <label for="hub-network" class="block text-sm font-medium text-card-foreground">Red</label>
             <input id="hub-network" type="text" bind:value={formHub.network} class="input-field" required placeholder="Red Industrial Beta..." />
         </div>
 
         <div class="space-y-1.5">
-            <label for="hub-name" class="block text-sm font-medium text-card-foreground">Nombre (Device Name)</label>
+            <label for="hub-name" class="block text-sm font-medium text-card-foreground">Nombre</label>
             <input id="hub-name" type="text" bind:value={formHub.device_name} class="input-field" required placeholder="Sensor Temperatura Planta 1" />
         </div>
         
@@ -318,16 +264,15 @@
 
         <div class="grid grid-cols-2 gap-3">
             <div class="space-y-1.5">
-                <label for="hub-sample" class="block text-sm font-medium text-card-foreground">Sample (ms)</label>
-                <input id="hub-sample" type="number" bind:value={formHub.sample} class="input-field" required placeholder="1000" />
+                <label for="hub-sample" class="block text-sm font-medium text-card-foreground">Sample (min)</label>
+                <input id="hub-sample" type="number" bind:value={formHub.sample} class="input-field" required placeholder="5" />
             </div>
             <div class="space-y-1.5">
                 <label for="hub-energy" class="block text-sm font-medium text-card-foreground">Modo Energía</label>
                 <select id="hub-energy" bind:value={formHub.energy_mode} class="input-field">
-                    <option value="Normal">Normal</option>
-                    <option value="Ahorro Básico">Ahorro Básico</option>
-                    <option value="Ultra Ahorro">Ultra Ahorro (Deep Sleep)</option>
-                    <option value="Alto Rendimiento">Alto Rendimiento</option>
+                    <option value="Bajo consumo">Bajo consumo</option>
+                    <option value="Balanceado">Balanceado</option>
+                    <option value="Performance">Performance</option>
                 </select>
             </div>
         </div>

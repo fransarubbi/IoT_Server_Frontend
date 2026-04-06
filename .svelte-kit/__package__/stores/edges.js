@@ -8,8 +8,19 @@ const initialEdges = [
         location: 'Datacenter Principal',
         lastSeen: new Date(),
         networks: [
-            { id: 'n1', name: 'Red Industrial', edgeId: '1', subnet: '192.168.1.0/24', gateway: '192.168.1.1', status: 'active', devices: 24, hubs: [] },
-            { id: 'n2', name: 'Red Sensores', edgeId: '1', subnet: '192.168.2.0/24', gateway: '192.168.2.1', status: 'active', devices: 156, hubs: [] },
+            {
+                id: 'RED-IND-01', description: 'Red de sensores industriales de temperatura y humedad en área caliente', ubication: 'Planta Principal - Sector A', edgeId: '1', status: 'active',
+                hubs: [
+                    { id: 'H-XW9R', network: 'RED-IND-01', device_name: 'Sensor Cintas', wifi_ssid: 'IoT_Industrial_Net', wifi_password: 'pass_industrial', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '30', energy_mode: 'Bajo consumo' },
+                    { id: 'H-Q1L2', network: 'RED-IND-01', device_name: 'Medidor Nivel Tanque 3', wifi_ssid: 'IoT_Industrial_Net', wifi_password: 'pass_industrial', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '15', energy_mode: 'Balanceado' }
+                ]
+            },
+            {
+                id: 'RED-PRESION-02', description: 'Monitoreo de válvulas de presión y control de fluidos', ubication: 'Planta Principal - Anexo Tuberías', edgeId: '1', status: 'active',
+                hubs: [
+                    { id: 'H-Z8K0', network: 'RED-PRESION-02', device_name: 'Válvula Reguladora P09', wifi_ssid: 'SensorNet', wifi_password: 'sensor_pass', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '5', energy_mode: 'Performance' }
+                ]
+            },
         ]
     },
     {
@@ -19,7 +30,9 @@ const initialEdges = [
         location: 'Planta Norte',
         lastSeen: new Date(Date.now() - 300000),
         networks: [
-            { id: 'n3', name: 'Red Producción', edgeId: '2', subnet: '10.0.1.0/24', gateway: '10.0.1.1', status: 'active', devices: 48, hubs: [] },
+            {
+                id: 'RED-MANT', description: 'Sensores de diagnóstico de equipos inactivos', ubication: 'Almacén 2', edgeId: '2', status: 'active', hubs: []
+            },
         ]
     },
     {
@@ -40,6 +53,7 @@ function createEdgesStore() {
         update: (edge) => update(n => n.map(e => e.id === edge.id ? edge : e)),
         // specific network helpers to avoid complex logic in components
         addNetwork: (edgeId, network) => update(edges => edges.map(e => e.id === edgeId ? { ...e, networks: [...e.networks, network] } : e)),
+        updateNetwork: (edgeId, oldNetworkId, newNetwork) => update(edges => edges.map(e => e.id === edgeId ? { ...e, networks: e.networks.map(n => n.id === oldNetworkId ? newNetwork : n) } : e)),
         removeNetwork: (edgeId, networkId) => update(edges => edges.map(e => e.id === edgeId ? { ...e, networks: e.networks.filter(n => n.id !== networkId) } : e)),
         addHub: (edgeId, networkId, hub) => update(edges => edges.map(e => e.id === edgeId ? { ...e, networks: e.networks.map(n => n.id === networkId ? { ...n, hubs: [...n.hubs, hub] } : n) } : e)),
         removeHub: (edgeId, networkId, hubId) => update(edges => edges.map(e => e.id === edgeId ? { ...e, networks: e.networks.map(n => n.id === networkId ? { ...n, hubs: n.hubs.filter(h => h.id !== hubId) } : n) } : e)),

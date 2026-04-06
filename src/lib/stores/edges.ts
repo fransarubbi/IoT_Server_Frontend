@@ -11,16 +11,16 @@ const initialEdges: Edge[] = [
         lastSeen: new Date(),
         networks: [
             { 
-                id: 'n1', name: 'Red Industrial', edgeId: '1', subnet: '192.168.1.0/24', gateway: '192.168.1.1', status: 'active', devices: 24, 
+                id: 'RED-IND-01', description: 'Red de sensores industriales de temperatura y humedad en área caliente', ubication: 'Planta Principal - Sector A', edgeId: '1', status: 'active', 
                 hubs: [
-                    { id: 'H-XW9R', network: 'Red Industrial', device_name: 'Sensor Humedad y Tº', wifi_ssid: 'IoT_Industrial_Net', wifi_password: 'pass_industrial', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '2000', energy_mode: 'Bajo consumo' },
-                    { id: 'H-Q1L2', network: 'Red Industrial', device_name: 'Medidor de Nivel', wifi_ssid: 'IoT_Industrial_Net', wifi_password: 'pass_industrial', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '5000', energy_mode: 'Balanceado' }
+                    { id: 'H-XW9R', network: 'RED-IND-01', device_name: 'Sensor Cintas', wifi_ssid: 'IoT_Industrial_Net', wifi_password: 'pass_industrial', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '30', energy_mode: 'Bajo consumo' },
+                    { id: 'H-Q1L2', network: 'RED-IND-01', device_name: 'Medidor Nivel Tanque 3', wifi_ssid: 'IoT_Industrial_Net', wifi_password: 'pass_industrial', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '15', energy_mode: 'Balanceado' }
                 ] 
             },
             { 
-                id: 'n2', name: 'Red Sensores', edgeId: '1', subnet: '192.168.2.0/24', gateway: '192.168.2.1', status: 'active', devices: 156, 
+                id: 'RED-PRESION-02', description: 'Monitoreo de válvulas de presión y control de fluidos', ubication: 'Planta Principal - Anexo Tuberías', edgeId: '1', status: 'active', 
                 hubs: [
-                    { id: 'H-Z8K0', network: 'Red Sensores', device_name: 'Monitor de Presión', wifi_ssid: 'SensorNet', wifi_password: 'sensor_pass', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '1000', energy_mode: 'Performance' }
+                    { id: 'H-Z8K0', network: 'RED-PRESION-02', device_name: 'Válvula Reguladora P09', wifi_ssid: 'SensorNet', wifi_password: 'sensor_pass', mqtt_uri: 'mqtt://broker.hivemq.com:1883', sample: '5', energy_mode: 'Performance' }
                 ] 
             },
         ]
@@ -32,7 +32,9 @@ const initialEdges: Edge[] = [
         location: 'Planta Norte',
         lastSeen: new Date(Date.now() - 300000),
         networks: [
-            { id: 'n3', name: 'Red Producción', edgeId: '2', subnet: '10.0.1.0/24', gateway: '10.0.1.1', status: 'active', devices: 48, hubs: [] },
+            { 
+                id: 'RED-MANT', description: 'Sensores de diagnóstico de equipos inactivos', ubication: 'Almacén 2', edgeId: '2', status: 'active', hubs: [] 
+            },
         ]
     },
     {
@@ -56,6 +58,9 @@ function createEdgesStore() {
         // specific network helpers to avoid complex logic in components
         addNetwork: (edgeId: string, network: any) => update(edges =>
             edges.map(e => e.id === edgeId ? { ...e, networks: [...e.networks, network] } : e)
+        ),
+        updateNetwork: (edgeId: string, oldNetworkId: string, newNetwork: any) => update(edges =>
+            edges.map(e => e.id === edgeId ? { ...e, networks: e.networks.map(n => n.id === oldNetworkId ? newNetwork : n) } : e)
         ),
         removeNetwork: (edgeId: string, networkId: string) => update(edges =>
             edges.map(e => e.id === edgeId ? { ...e, networks: e.networks.filter(n => n.id !== networkId) } : e)

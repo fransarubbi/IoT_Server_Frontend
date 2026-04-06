@@ -9,10 +9,9 @@ export interface Edge {
 
 export interface Network {
   id: string
-  name: string
+  description: string
+  ubication: string
   edgeId: string
-  subnet: string
-  gateway: string
   status: "active" | "inactive"
   devices: number
   hubs: Hub[]

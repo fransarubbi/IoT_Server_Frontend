@@ -86,8 +86,8 @@
         </div>
 
         <PageHeader
-            title={`Hubs de la red: ${currentNetwork.name}`}
-            description="Gestiona y monitorea los dispositivos Hub conectados a esta red"
+            title={`Hubs de la red: ${currentNetwork.id}`}
+            description={`Gestiona los hubs de esta familia de sensores`}
         />
 
         <div class="card-interactive p-6 animate-fade-in">
