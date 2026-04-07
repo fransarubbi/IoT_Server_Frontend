@@ -107,7 +107,7 @@
 
 <div class="space-y-6">
   <PageHeader 
-    title="Certificados mTLS"
+    title="Certificados Digitales"
     description="Gestiona los certificados de autenticación mutua del sistema"
   />
 

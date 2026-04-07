@@ -130,7 +130,7 @@
 
 <div class="space-y-6">
   <PageHeader
-    title="Edge Devices"
+    title="Dispositivos Edge"
     description="Administra y supervisa tus dispositivos Edge"
   />
 

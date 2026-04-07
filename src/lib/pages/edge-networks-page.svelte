@@ -108,7 +108,7 @@
         </div>
 
         <PageHeader
-            title={`Redes de Edge`}
+            title={`Redes`}
             description={`Gestiona las redes asociadas al dispositivo ${currentEdge.name}`}
         />
 
@@ -183,7 +183,7 @@
                             </button>
                             <button
                                 onclick={() => { firmwareTargets = network; showFirmwareModal = true; }}
-                                class="w-full flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs mb-2 transition-all duration-200 ease-out active:scale-[0.98] font-medium border bg-blue-950/30 hover:bg-blue-900/50 text-blue-400 border-blue-800 shadow-sm hover:shadow-md"
+                                class="w-full flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs mb-2 transition-all duration-200 ease-out active:scale-[0.98] font-medium border bg-blue-950/30 hover:bg-blue-900/50 text-white dark:text-blue-400 border-blue-800 shadow-sm hover:shadow-md"
                             >
                                 <UploadCloud class="h-4 w-4" />
                                 Actualizar Firmware
