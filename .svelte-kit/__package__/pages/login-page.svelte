@@ -2,7 +2,7 @@
   import { theme } from '../stores/theme';
   import { auth } from '../stores/auth';
   import ThemeToggle from '../components/theme-toggle.svelte';
-  import { Server, Mail, Lock, ArrowRight, Eye, EyeOff, Cpu } from 'lucide-svelte';
+  import { Server, Mail, Lock, ArrowRight, Eye, EyeOff, LayoutDashboard } from 'lucide-svelte';
 
   let email = $state('');
   let password = $state('');
@@ -63,10 +63,10 @@
           <div class="absolute inset-0 rounded-2xl bg-primary/30 blur-xl"></div>
           <div class="relative flex h-16 w-16 items-center justify-center rounded-2xl 
                       bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30">
-            <Cpu class="h-8 w-8 text-primary-foreground" />
+            <LayoutDashboard class="h-8 w-8 text-primary-foreground" />
           </div>
         </div>
-        <h1 class="mt-6 text-2xl font-bold text-card-foreground">IoT Server</h1>
+        <h1 class="mt-6 text-2xl font-bold text-card-foreground">Manager</h1>
         <p class="mt-2 text-sm text-muted-foreground">
           Inicia sesión para acceder al panel de control
         </p>
@@ -129,20 +129,6 @@
           </div>
         </div>
 
-        <div class="flex items-center justify-between">
-          <label class="flex items-center gap-2 cursor-pointer group">
-            <input type="checkbox" class="h-4 w-4 rounded border-input accent-primary 
-                                          transition-transform group-hover:scale-110" />
-            <span class="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-              Recordarme
-            </span>
-          </label>
-          <button type="button" class="text-sm font-medium text-primary transition-all
-                                       hover:text-primary/80 hover:underline underline-offset-4">
-            ¿Olvidaste tu contraseña?
-          </button>
-        </div>
-
         <button
           type="submit"
           disabled={isLoading}
@@ -158,21 +144,6 @@
           {/if}
         </button>
       </form>
-
-      <!-- Footer -->
-      <div class="mt-8 border-t border-border pt-6 text-center">
-        <p class="text-sm text-muted-foreground">
-          ¿No tienes una cuenta?{' '}
-          <button class="font-medium text-primary transition-colors hover:text-primary/80">
-            Contactar administrador
-          </button>
-        </p>
-      </div>
     </div>
-
-    <!-- Version -->
-    <p class="mt-8 text-center text-xs text-muted-foreground">
-      IoT Server © 2026
-    </p>
   </div>
 </div>

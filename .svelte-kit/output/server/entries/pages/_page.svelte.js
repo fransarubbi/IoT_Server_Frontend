@@ -216,49 +216,6 @@ function Bell($$renderer, $$props) {
     }
   ]));
 }
-function Building($$renderer, $$props) {
-  const $$sanitized_props = sanitize_props($$props);
-  const iconNode = [
-    ["path", { "d": "M12 10h.01" }],
-    ["path", { "d": "M12 14h.01" }],
-    ["path", { "d": "M12 6h.01" }],
-    ["path", { "d": "M16 10h.01" }],
-    ["path", { "d": "M16 14h.01" }],
-    ["path", { "d": "M16 6h.01" }],
-    ["path", { "d": "M8 10h.01" }],
-    ["path", { "d": "M8 14h.01" }],
-    ["path", { "d": "M8 6h.01" }],
-    ["path", { "d": "M9 22v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" }],
-    [
-      "rect",
-      { "x": "4", "y": "2", "width": "16", "height": "20", "rx": "2" }
-    ]
-  ];
-  Icon($$renderer, spread_props([
-    { name: "building" },
-    $$sanitized_props,
-    {
-      /**
-       * @component @name Building
-       * @description Lucide SVG icon component, renders SVG Element with children.
-       *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTIgMTBoLjAxIiAvPgogIDxwYXRoIGQ9Ik0xMiAxNGguMDEiIC8+CiAgPHBhdGggZD0iTTEyIDZoLjAxIiAvPgogIDxwYXRoIGQ9Ik0xNiAxMGguMDEiIC8+CiAgPHBhdGggZD0iTTE2IDE0aC4wMSIgLz4KICA8cGF0aCBkPSJNMTYgNmguMDEiIC8+CiAgPHBhdGggZD0iTTggMTBoLjAxIiAvPgogIDxwYXRoIGQ9Ik04IDE0aC4wMSIgLz4KICA8cGF0aCBkPSJNOCA2aC4wMSIgLz4KICA8cGF0aCBkPSJNOSAyMnYtM2ExIDEgMCAwIDEgMS0xaDRhMSAxIDAgMCAxIDEgMXYzIiAvPgogIDxyZWN0IHg9IjQiIHk9IjIiIHdpZHRoPSIxNiIgaGVpZ2h0PSIyMCIgcng9IjIiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/building
-       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
-       *
-       * @param {Object} props - Lucide icons props and any valid SVG attribute
-       * @returns {FunctionalComponent} Svelte component
-       *
-       */
-      iconNode,
-      children: ($$renderer2) => {
-        $$renderer2.push(`<!--[-->`);
-        slot($$renderer2, $$props, "default", {});
-        $$renderer2.push(`<!--]-->`);
-      },
-      $$slots: { default: true }
-    }
-  ]));
-}
 function Check_check($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   const iconNode = [
@@ -274,34 +231,6 @@ function Check_check($$renderer, $$props) {
        * @description Lucide SVG icon component, renders SVG Element with children.
        *
        * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTggNiA3IDE3bC01LTUiIC8+CiAgPHBhdGggZD0ibTIyIDEwLTcuNSA3LjVMMTMgMTYiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/check-check
-       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
-       *
-       * @param {Object} props - Lucide icons props and any valid SVG attribute
-       * @returns {FunctionalComponent} Svelte component
-       *
-       */
-      iconNode,
-      children: ($$renderer2) => {
-        $$renderer2.push(`<!--[-->`);
-        slot($$renderer2, $$props, "default", {});
-        $$renderer2.push(`<!--]-->`);
-      },
-      $$slots: { default: true }
-    }
-  ]));
-}
-function Check($$renderer, $$props) {
-  const $$sanitized_props = sanitize_props($$props);
-  const iconNode = [["path", { "d": "M20 6 9 17l-5-5" }]];
-  Icon($$renderer, spread_props([
-    { name: "check" },
-    $$sanitized_props,
-    {
-      /**
-       * @component @name Check
-       * @description Lucide SVG icon component, renders SVG Element with children.
-       *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMjAgNiA5IDE3bC01LTUiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/check
        * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
        *
        * @param {Object} props - Lucide icons props and any valid SVG attribute
@@ -464,52 +393,6 @@ function Cloud_upload($$renderer, $$props) {
        * @description Lucide SVG icon component, renders SVG Element with children.
        *
        * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTIgMTN2OCIgLz4KICA8cGF0aCBkPSJNNCAxNC44OTlBNyA3IDAgMSAxIDE1LjcxIDhoMS43OWE0LjUgNC41IDAgMCAxIDIuNSA4LjI0MiIgLz4KICA8cGF0aCBkPSJtOCAxNyA0LTQgNCA0IiAvPgo8L3N2Zz4K) - https://lucide.dev/icons/cloud-upload
-       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
-       *
-       * @param {Object} props - Lucide icons props and any valid SVG attribute
-       * @returns {FunctionalComponent} Svelte component
-       *
-       */
-      iconNode,
-      children: ($$renderer2) => {
-        $$renderer2.push(`<!--[-->`);
-        slot($$renderer2, $$props, "default", {});
-        $$renderer2.push(`<!--]-->`);
-      },
-      $$slots: { default: true }
-    }
-  ]));
-}
-function Copy($$renderer, $$props) {
-  const $$sanitized_props = sanitize_props($$props);
-  const iconNode = [
-    [
-      "rect",
-      {
-        "width": "14",
-        "height": "14",
-        "x": "8",
-        "y": "8",
-        "rx": "2",
-        "ry": "2"
-      }
-    ],
-    [
-      "path",
-      {
-        "d": "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
-      }
-    ]
-  ];
-  Icon($$renderer, spread_props([
-    { name: "copy" },
-    $$sanitized_props,
-    {
-      /**
-       * @component @name Copy
-       * @description Lucide SVG icon component, renders SVG Element with children.
-       *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cmVjdCB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIHg9IjgiIHk9IjgiIHJ4PSIyIiByeT0iMiIgLz4KICA8cGF0aCBkPSJNNCAxNmMtMS4xIDAtMi0uOS0yLTJWNGMwLTEuMS45LTIgMi0yaDEwYzEuMSAwIDIgLjkgMiAyIiAvPgo8L3N2Zz4K) - https://lucide.dev/icons/copy
        * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
        *
        * @param {Object} props - Lucide icons props and any valid SVG attribute
@@ -793,27 +676,72 @@ function Info($$renderer, $$props) {
     }
   ]));
 }
-function Key($$renderer, $$props) {
+function Layout_dashboard($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   const iconNode = [
     [
-      "path",
-      {
-        "d": "m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"
-      }
+      "rect",
+      { "width": "7", "height": "9", "x": "3", "y": "3", "rx": "1" }
     ],
-    ["path", { "d": "m21 2-9.6 9.6" }],
-    ["circle", { "cx": "7.5", "cy": "15.5", "r": "5.5" }]
+    [
+      "rect",
+      { "width": "7", "height": "5", "x": "14", "y": "3", "rx": "1" }
+    ],
+    [
+      "rect",
+      { "width": "7", "height": "9", "x": "14", "y": "12", "rx": "1" }
+    ],
+    [
+      "rect",
+      { "width": "7", "height": "5", "x": "3", "y": "16", "rx": "1" }
+    ]
   ];
   Icon($$renderer, spread_props([
-    { name: "key" },
+    { name: "layout-dashboard" },
     $$sanitized_props,
     {
       /**
-       * @component @name Key
+       * @component @name LayoutDashboard
        * @description Lucide SVG icon component, renders SVG Element with children.
        *
-       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJtMTUuNSA3LjUgMi4zIDIuM2ExIDEgMCAwIDAgMS40IDBsMi4xLTIuMWExIDEgMCAwIDAgMC0xLjRMMTkgNCIgLz4KICA8cGF0aCBkPSJtMjEgMi05LjYgOS42IiAvPgogIDxjaXJjbGUgY3g9IjcuNSIgY3k9IjE1LjUiIHI9IjUuNSIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/key
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSI5IiB4PSIzIiB5PSIzIiByeD0iMSIgLz4KICA8cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSI1IiB4PSIxNCIgeT0iMyIgcng9IjEiIC8+CiAgPHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iOSIgeD0iMTQiIHk9IjEyIiByeD0iMSIgLz4KICA8cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSI1IiB4PSIzIiB5PSIxNiIgcng9IjEiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/layout-dashboard
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
+function Loader($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  const iconNode = [
+    ["path", { "d": "M12 2v4" }],
+    ["path", { "d": "m16.2 7.8 2.9-2.9" }],
+    ["path", { "d": "M18 12h4" }],
+    ["path", { "d": "m16.2 16.2 2.9 2.9" }],
+    ["path", { "d": "M12 18v4" }],
+    ["path", { "d": "m4.9 19.1 2.9-2.9" }],
+    ["path", { "d": "M2 12h4" }],
+    ["path", { "d": "m4.9 4.9 2.9 2.9" }]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "loader" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name Loader
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJNMTIgMnY0IiAvPgogIDxwYXRoIGQ9Im0xNi4yIDcuOCAyLjktMi45IiAvPgogIDxwYXRoIGQ9Ik0xOCAxMmg0IiAvPgogIDxwYXRoIGQ9Im0xNi4yIDE2LjIgMi45IDIuOSIgLz4KICA8cGF0aCBkPSJNMTIgMTh2NCIgLz4KICA8cGF0aCBkPSJtNC45IDE5LjEgMi45LTIuOSIgLz4KICA8cGF0aCBkPSJNMiAxMmg0IiAvPgogIDxwYXRoIGQ9Im00LjkgNC45IDIuOSAyLjkiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/loader
        * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
        *
        * @param {Object} props - Lucide icons props and any valid SVG attribute
@@ -1242,6 +1170,48 @@ function Shield_check($$renderer, $$props) {
     }
   ]));
 }
+function Shield_off($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  const iconNode = [
+    ["path", { "d": "m2 2 20 20" }],
+    [
+      "path",
+      {
+        "d": "M5 5a1 1 0 0 0-1 1v7c0 5 3.5 7.5 7.67 8.94a1 1 0 0 0 .67.01c2.35-.82 4.48-1.97 5.9-3.71"
+      }
+    ],
+    [
+      "path",
+      {
+        "d": "M9.309 3.652A12.252 12.252 0 0 0 11.24 2.28a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1v7a9.784 9.784 0 0 1-.08 1.264"
+      }
+    ]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "shield-off" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name ShieldOff
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8cGF0aCBkPSJtMiAyIDIwIDIwIiAvPgogIDxwYXRoIGQ9Ik01IDVhMSAxIDAgMCAwLTEgMXY3YzAgNSAzLjUgNy41IDcuNjcgOC45NGExIDEgMCAwIDAgLjY3LjAxYzIuMzUtLjgyIDQuNDgtMS45NyA1LjktMy43MSIgLz4KICA8cGF0aCBkPSJNOS4zMDkgMy42NTJBMTIuMjUyIDEyLjI1MiAwIDAgMCAxMS4yNCAyLjI4YTEuMTcgMS4xNyAwIDAgMSAxLjUyIDBDMTQuNTEgMy44MSAxNyA1IDE5IDVhMSAxIDAgMCAxIDEgMXY3YTkuNzg0IDkuNzg0IDAgMCAxLS4wOCAxLjI2NCIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/shield-off
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
 function Sun($$renderer, $$props) {
   const $$sanitized_props = sanitize_props($$props);
   const iconNode = [
@@ -1264,6 +1234,74 @@ function Sun($$renderer, $$props) {
        * @description Lucide SVG icon component, renders SVG Element with children.
        *
        * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI0IiAvPgogIDxwYXRoIGQ9Ik0xMiAydjIiIC8+CiAgPHBhdGggZD0iTTEyIDIwdjIiIC8+CiAgPHBhdGggZD0ibTQuOTMgNC45MyAxLjQxIDEuNDEiIC8+CiAgPHBhdGggZD0ibTE3LjY2IDE3LjY2IDEuNDEgMS40MSIgLz4KICA8cGF0aCBkPSJNMiAxMmgyIiAvPgogIDxwYXRoIGQ9Ik0yMCAxMmgyIiAvPgogIDxwYXRoIGQ9Im02LjM0IDE3LjY2LTEuNDEgMS40MSIgLz4KICA8cGF0aCBkPSJtMTkuMDcgNC45My0xLjQxIDEuNDEiIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/sun
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
+function Toggle_left($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  const iconNode = [
+    ["circle", { "cx": "9", "cy": "12", "r": "3" }],
+    [
+      "rect",
+      { "width": "20", "height": "14", "x": "2", "y": "5", "rx": "7" }
+    ]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "toggle-left" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name ToggleLeft
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8Y2lyY2xlIGN4PSI5IiBjeT0iMTIiIHI9IjMiIC8+CiAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjE0IiB4PSIyIiB5PSI1IiByeD0iNyIgLz4KPC9zdmc+Cg==) - https://lucide.dev/icons/toggle-left
+       * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
+       *
+       * @param {Object} props - Lucide icons props and any valid SVG attribute
+       * @returns {FunctionalComponent} Svelte component
+       *
+       */
+      iconNode,
+      children: ($$renderer2) => {
+        $$renderer2.push(`<!--[-->`);
+        slot($$renderer2, $$props, "default", {});
+        $$renderer2.push(`<!--]-->`);
+      },
+      $$slots: { default: true }
+    }
+  ]));
+}
+function Toggle_right($$renderer, $$props) {
+  const $$sanitized_props = sanitize_props($$props);
+  const iconNode = [
+    ["circle", { "cx": "15", "cy": "12", "r": "3" }],
+    [
+      "rect",
+      { "width": "20", "height": "14", "x": "2", "y": "5", "rx": "7" }
+    ]
+  ];
+  Icon($$renderer, spread_props([
+    { name: "toggle-right" },
+    $$sanitized_props,
+    {
+      /**
+       * @component @name ToggleRight
+       * @description Lucide SVG icon component, renders SVG Element with children.
+       *
+       * @preview ![img](data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHN0cm9rZT0iIzAwMCIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6ICNmZmY7IGJvcmRlci1yYWRpdXM6IDJweCIKICBzdHJva2Utd2lkdGg9IjIiCiAgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIgogIHN0cm9rZS1saW5lam9pbj0icm91bmQiCj4KICA8Y2lyY2xlIGN4PSIxNSIgY3k9IjEyIiByPSIzIiAvPgogIDxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIxNCIgeD0iMiIgeT0iNSIgcng9IjciIC8+Cjwvc3ZnPgo=) - https://lucide.dev/icons/toggle-right
        * @see https://lucide.dev/guide/packages/lucide-svelte - Documentation
        *
        * @param {Object} props - Lucide icons props and any valid SVG attribute
@@ -1475,8 +1513,8 @@ function Sidebar($$renderer, $$props) {
       { id: "notifications", label: "Notificaciones", icon: Bell }
     ];
     $$renderer2.push(`<aside class="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border shadow-xl shadow-black/5"><div class="flex h-16 items-center gap-3 border-b border-sidebar-border px-5"><div class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/30">`);
-    Cpu($$renderer2, { class: "h-5 w-5 text-primary-foreground" });
-    $$renderer2.push(`<!----> <span class="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span> <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success"></span></span></div> <div><span class="text-lg font-bold text-sidebar-foreground">IoT Hub</span> <span class="block text-[10px] font-medium text-primary uppercase tracking-wider">Dashboard</span></div></div> <nav class="flex-1 overflow-y-auto p-4"><p class="mb-3 px-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Panel Principal</p> <div class="space-y-1"><!--[-->`);
+    Layout_dashboard($$renderer2, { class: "h-5 w-5 text-primary-foreground" });
+    $$renderer2.push(`<!----> <span class="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span> <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success"></span></span></div> <div><span class="text-lg font-bold text-sidebar-foreground">Manager</span> <span class="block text-[10px] font-medium text-primary uppercase tracking-wider">Dashboard</span></div></div> <nav class="flex-1 overflow-y-auto p-4"><p class="mb-3 px-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Panel Principal</p> <div class="space-y-1"><!--[-->`);
     const each_array = ensure_array_like(navItems);
     for (let i = 0, $$length = each_array.length; i < $$length; i++) {
       let item = each_array[i];
@@ -1651,110 +1689,58 @@ function Empty_state($$renderer, $$props) {
   }
   $$renderer.push(`<!--]--></div>`);
 }
-const initialEdges = [
-  {
-    id: "1",
-    name: "Edge Gateway Alpha",
-    status: "online",
-    location: "Datacenter Principal",
-    lastSeen: /* @__PURE__ */ new Date(),
-    networks: [
-      {
-        id: "RED-IND-01",
-        description: "Red de sensores industriales de temperatura y humedad en área caliente",
-        ubication: "Planta Principal - Sector A",
-        edgeId: "1",
-        status: "active",
-        hubs: [
-          { id: "H-XW9R", network: "RED-IND-01", device_name: "Sensor Cintas", wifi_ssid: "IoT_Industrial_Net", wifi_password: "pass_industrial", mqtt_uri: "mqtt://broker.hivemq.com:1883", sample: "30", energy_mode: "Bajo consumo" },
-          { id: "H-Q1L2", network: "RED-IND-01", device_name: "Medidor Nivel Tanque 3", wifi_ssid: "IoT_Industrial_Net", wifi_password: "pass_industrial", mqtt_uri: "mqtt://broker.hivemq.com:1883", sample: "15", energy_mode: "Balanceado" }
-        ]
-      },
-      {
-        id: "RED-PRESION-02",
-        description: "Monitoreo de válvulas de presión y control de fluidos",
-        ubication: "Planta Principal - Anexo Tuberías",
-        edgeId: "1",
-        status: "active",
-        hubs: [
-          { id: "H-Z8K0", network: "RED-PRESION-02", device_name: "Válvula Reguladora P09", wifi_ssid: "SensorNet", wifi_password: "sensor_pass", mqtt_uri: "mqtt://broker.hivemq.com:1883", sample: "5", energy_mode: "Performance" }
-        ]
-      }
-    ]
-  },
-  {
-    id: "2",
-    name: "Edge Gateway Beta",
-    status: "warning",
-    location: "Planta Norte",
-    lastSeen: new Date(Date.now() - 3e5),
-    networks: [
-      {
-        id: "RED-MANT",
-        description: "Sensores de diagnóstico de equipos inactivos",
-        ubication: "Almacén 2",
-        edgeId: "2",
-        status: "active",
-        hubs: []
-      }
-    ]
-  },
-  {
-    id: "3",
-    name: "Edge Gateway Gamma",
-    status: "offline",
-    location: "Sucursal Sur",
-    lastSeen: new Date(Date.now() - 864e5),
-    networks: []
-  }
-];
-function createEdgesStore() {
-  const { subscribe, update, set } = writable(initialEdges);
-  return {
-    subscribe,
-    add: (edge) => update((n) => [...n, edge]),
-    remove: (id) => update((n) => n.filter((e) => e.id !== id)),
-    update: (edge) => update((n) => n.map((e) => e.id === edge.id ? edge : e)),
-    // specific network helpers to avoid complex logic in components
-    addNetwork: (edgeId, network) => update(
-      (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: [...e.networks, network] } : e)
-    ),
-    updateNetwork: (edgeId, oldNetworkId, newNetwork) => update(
-      (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: e.networks.map((n) => n.id === oldNetworkId ? newNetwork : n) } : e)
-    ),
-    removeNetwork: (edgeId, networkId) => update(
-      (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: e.networks.filter((n) => n.id !== networkId) } : e)
-    ),
-    addHub: (edgeId, networkId, hub) => update(
-      (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: e.networks.map((n) => n.id === networkId ? { ...n, hubs: [...n.hubs, hub] } : n) } : e)
-    ),
-    removeHub: (edgeId, networkId, hubId) => update(
-      (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: e.networks.map((n) => n.id === networkId ? { ...n, hubs: n.hubs.filter((h) => h.id !== hubId) } : n) } : e)
-    ),
-    updateHub: (edgeId, networkId, hub) => update(
-      (edges2) => edges2.map((e) => e.id === edgeId ? { ...e, networks: e.networks.map((n) => n.id === networkId ? { ...n, hubs: n.hubs.map((h) => h.id === hub.id ? hub : h) } : n) } : e)
-    ),
-    reset: () => set(initialEdges)
-  };
-}
-const edges = createEdgesStore();
+const edges = writable([]);
+const edgesLoading = writable(false);
 function Edge_page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     var $$store_subs;
     let showCreateEdgeModal = false;
     let showViewEdgeModal = false;
-    let newEdgeName = "";
-    let newEdgeLocation = "";
+    let showDeleteEdgeModal = false;
+    let isSubmitting = false;
+    let newEdge = {
+      edgeId: "",
+      name: "",
+      ubication: "",
+      hostServer: "127.0.0.1",
+      port: "8080",
+      cn: "localhost",
+      hostLocal: "127.0.0.1",
+      dbPath: "/var/lib/edge.db",
+      bufferSize: 20,
+      rustLog: "Info",
+      maxAttempts: 3,
+      frequencyPhase: 5,
+      frequencySafeMode: 20,
+      timeoutHandshake: 30,
+      timeoutPhase: 60,
+      timeoutSafeMode: 150,
+      timeBetweenHeartbeatsBalanceMode: 20,
+      timeBetweenHeartbeatsNormal: 45,
+      timeBetweenHeartbeatsSafeMode: 60
+    };
     $$renderer2.push(`<div class="space-y-6">`);
     Page_header($$renderer2, {
-      title: "Edge Devices",
-      description: "Administra y configura tus dispositivos Edge"
+      title: "Dispositivos Edge",
+      description: "Administra y supervisa tus dispositivos Edge"
     });
-    $$renderer2.push(`<!----> <div class="flex items-center justify-between animate-slide-in"><div class="flex items-center gap-3"><div class="flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2.5 transition-all duration-200 hover:border-primary/30"><span class="text-sm text-muted-foreground">Total:</span> <span class="font-bold text-card-foreground">${escape_html(store_get($$store_subs ??= {}, "$edges", edges).length)} edges</span></div> <div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5"><span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span> <span class="relative inline-flex h-2 w-2 rounded-full bg-success"></span></span> <span class="text-sm font-semibold text-success">${escape_html(store_get($$store_subs ??= {}, "$edges", edges).filter((e) => e.status === "online").length)} en línea</span></div></div> <button class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm">`);
+    $$renderer2.push(`<!----> <div class="flex items-center justify-between animate-slide-in"><div class="flex items-center gap-3"><div class="flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2.5 transition-all duration-200 hover:border-primary/30"><span class="text-sm text-muted-foreground">Total:</span> <span class="font-bold text-card-foreground">${escape_html(store_get($$store_subs ??= {}, "$edges", edges).length)} edges</span></div> `);
+    if (store_get($$store_subs ??= {}, "$edges", edges).some((e) => e.status === "online")) {
+      $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5"><span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span> <span class="relative inline-flex h-2 w-2 rounded-full bg-success"></span></span> <span class="text-sm font-semibold text-success">${escape_html(store_get($$store_subs ??= {}, "$edges", edges).filter((e) => e.status === "online").length)} en línea</span></div>`);
+    } else {
+      $$renderer2.push("<!--[-1-->");
+    }
+    $$renderer2.push(`<!--]--></div> <button class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm">`);
     Plus($$renderer2, { class: "h-4 w-4" });
     $$renderer2.push(`<!----> Nuevo Edge</button></div> `);
-    if (store_get($$store_subs ??= {}, "$edges", edges).length === 0) {
+    if (store_get($$store_subs ??= {}, "$edgesLoading", edgesLoading) && store_get($$store_subs ??= {}, "$edges", edges).length === 0) {
       $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<div class="flex items-center justify-center py-20 text-muted-foreground gap-3">`);
+      Loader($$renderer2, { class: "h-6 w-6 animate-spin" });
+      $$renderer2.push(`<!----> <span class="text-sm">Cargando dispositivos...</span></div>`);
+    } else if (store_get($$store_subs ??= {}, "$edges", edges).length === 0) {
+      $$renderer2.push("<!--[1-->");
       Empty_state($$renderer2, {
         icon: Server,
         title: "Sin Edge Devices",
@@ -1771,16 +1757,28 @@ function Edge_page($$renderer, $$props) {
         $$renderer2.push(`<div role="button" tabindex="0" class="stagger-item card-interactive group p-5 text-left w-full cursor-pointer"${attr_style(`animation-delay: ${stringify(i * 0.05)}s`)}><div class="flex items-start justify-between"><div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:from-primary/30">`);
         Server($$renderer2, { class: "h-7 w-7 text-primary" });
         $$renderer2.push(`<!----></div> `);
-        Status_badge($$renderer2, { status: edge.status });
-        $$renderer2.push(`<!----></div> <h3 class="mt-4 text-lg font-semibold text-card-foreground transition-colors group-hover:text-primary">${escape_html(edge.name)}</h3> <div class="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">`);
-        Map_pin($$renderer2, { class: "h-4 w-4" });
-        $$renderer2.push(`<!----> ${escape_html(edge.location)}</div> <div class="mt-4 flex items-center justify-between border-t border-border pt-4"><div class="flex items-center gap-1.5 text-sm text-muted-foreground">`);
+        if (edge.status) {
+          $$renderer2.push("<!--[0-->");
+          Status_badge($$renderer2, { status: edge.status });
+        } else {
+          $$renderer2.push("<!--[-1-->");
+        }
+        $$renderer2.push(`<!--]--></div> <h3 class="mt-4 text-lg font-semibold text-card-foreground transition-colors group-hover:text-primary">${escape_html(edge.name)}</h3> `);
+        if (edge.ubication) {
+          $$renderer2.push("<!--[0-->");
+          $$renderer2.push(`<div class="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">`);
+          Map_pin($$renderer2, { class: "h-4 w-4" });
+          $$renderer2.push(`<!----> ${escape_html(edge.ubication)}</div>`);
+        } else {
+          $$renderer2.push("<!--[-1-->");
+        }
+        $$renderer2.push(`<!--]--> <div class="mt-4 flex items-center justify-between border-t border-border pt-4"><div class="flex items-center gap-1.5 text-sm text-muted-foreground">`);
         Network($$renderer2, { class: "h-4 w-4" });
-        $$renderer2.push(`<!----> <span>${escape_html(edge.networks.length)} redes</span></div></div> <div class="mt-4 flex justify-end gap-2"><button title="Eliminar" class="flex items-center justify-center rounded-lg border border-border bg-card px-3 py-2 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20">`);
+        $$renderer2.push(`<!----> <span>Ver redes</span></div> <div class="text-xs text-muted-foreground font-mono">ID: ${escape_html(edge.edgeId)}</div></div> <div class="mt-4 flex justify-end gap-2"><button title="Eliminar" class="flex items-center justify-center rounded-lg border border-border bg-card px-3 py-2 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20">`);
         Trash_2($$renderer2, { class: "h-4 w-4" });
         $$renderer2.push(`<!----></button> <button title="Ver configuración" class="flex items-center justify-center rounded-lg border border-border bg-card px-3 py-2 text-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:border-primary/50">`);
         Eye($$renderer2, { class: "h-4 w-4" });
-        $$renderer2.push(`<!----></button> <button title="Exportar configuración" class="flex items-center justify-center rounded-lg border border-border bg-card px-3 py-2 text-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:border-primary/50">`);
+        $$renderer2.push(`<!----></button> <button title="Descargar configuración ZIP" class="flex items-center justify-center rounded-lg border border-border bg-card px-3 py-2 text-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:border-primary/50">`);
         Download($$renderer2, { class: "h-4 w-4" });
         $$renderer2.push(`<!----></button></div></div>`);
       }
@@ -1792,7 +1790,34 @@ function Edge_page($$renderer, $$props) {
       title: "Nuevo Edge Device",
       onClose: () => showCreateEdgeModal = false,
       children: ($$renderer3) => {
-        $$renderer3.push(`<form class="space-y-5"><div class="space-y-2"><label for="edge-name" class="block text-sm font-medium text-card-foreground">Nombre</label> <input id="edge-name" type="text"${attr("value", newEdgeName)} placeholder="Edge Gateway..." class="input-field" required=""/></div> <div class="space-y-2"><label for="edge-location" class="block text-sm font-medium text-card-foreground">Ubicación</label> <input id="edge-location" type="text"${attr("value", newEdgeLocation)} placeholder="Datacenter, Planta..." class="input-field"/></div> <div class="flex gap-3 pt-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm">Cancelar</button> <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm">Crear Edge</button></div></form>`);
+        $$renderer3.push(`<form class="px-1 text-left"><div class="space-y-6"><div><h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Sistema</h3> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="create-edgeId" class="block text-xs font-semibold text-muted-foreground">ID del Edge</label> <input id="create-edgeId" type="text"${attr("value", newEdge.edgeId)} class="input-field py-1.5 font-mono" required="" placeholder="edge-001"/></div> <div class="space-y-1.5"><label for="create-name" class="block text-xs font-semibold text-muted-foreground">Nombre</label> <input id="create-name" type="text"${attr("value", newEdge.name)} class="input-field py-1.5" required="" placeholder="Edge Gateway Sur"/></div> <div class="col-span-2 space-y-1.5"><label for="create-ubic" class="block text-xs font-semibold text-muted-foreground">Ubicación</label> <input id="create-ubic" type="text"${attr("value", newEdge.ubication)} class="input-field py-1.5" placeholder="Datacenter Principal"/></div> <div class="space-y-1.5"><label for="create-cn" class="block text-xs font-semibold text-muted-foreground">CN</label> <input id="create-cn" type="text"${attr("value", newEdge.cn)} class="input-field py-1.5 font-mono" placeholder="device.local"/></div> <div class="col-span-2 grid grid-cols-3 gap-2"><div class="space-y-1.5 flex-1"><label for="create-hostServer" class="block text-xs font-semibold text-muted-foreground">Host Server</label> <input id="create-hostServer" type="text"${attr("value", newEdge.hostServer)} class="input-field py-1.5 font-mono"/></div> <div class="space-y-1.5 flex-[0.5]"><label for="create-port" class="block text-xs font-semibold text-muted-foreground">Puerto</label> <input id="create-port" type="text"${attr("value", newEdge.port)} class="input-field py-1.5 font-mono"/></div> <div class="space-y-1.5 flex-1"><label for="create-hostLocal" class="block text-xs font-semibold text-muted-foreground">Host Local</label> <input id="create-hostLocal" type="text"${attr("value", newEdge.hostLocal)} class="input-field py-1.5 font-mono"/></div></div> <div class="col-span-2 space-y-1.5"><label for="create-db" class="block text-xs font-semibold text-muted-foreground">Ruta Base de Datos</label> <input id="create-db" type="text"${attr("value", newEdge.dbPath)} class="input-field py-1.5 font-mono text-xs"/></div> <div class="space-y-1.5"><label for="create-buffer" class="block text-xs font-semibold text-muted-foreground">Tamaño Buffer (5-50)</label> <input id="create-buffer" type="number" min="5" max="50"${attr("value", newEdge.bufferSize)} class="input-field py-1.5"/></div> <div class="space-y-1.5"><label for="create-log" class="block text-xs font-semibold text-muted-foreground">Log</label> `);
+        $$renderer3.select(
+          {
+            id: "create-log",
+            value: newEdge.rustLog,
+            class: "input-field py-1.5 bg-background"
+          },
+          ($$renderer4) => {
+            $$renderer4.option({ value: "Debug" }, ($$renderer5) => {
+              $$renderer5.push(`Debug`);
+            });
+            $$renderer4.option({ value: "Info" }, ($$renderer5) => {
+              $$renderer5.push(`Info`);
+            });
+            $$renderer4.option({ value: "Error" }, ($$renderer5) => {
+              $$renderer5.push(`Error`);
+            });
+          }
+        );
+        $$renderer3.push(`</div></div></div> <div class="border-t border-border"></div> <div><h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Protocolo</h3> <div class="grid grid-cols-2 gap-3 text-xs"><div class="space-y-1"><label for="p-max-a" class="block font-semibold text-muted-foreground">Nº máximo intentos (1-10)</label> <input id="p-max-a" type="number" min="1" max="10"${attr("value", newEdge.maxAttempts)} class="input-field py-1"/></div> <div class="space-y-1"><label for="p-fp" class="block font-semibold text-muted-foreground">Frec. msjs en fase (1-10m)</label> <input id="p-fp" type="number" min="1" max="10"${attr("value", newEdge.frequencyPhase)} class="input-field py-1"/></div> <div class="space-y-1"><label for="p-fs" class="block font-semibold text-muted-foreground">Frec. safe mode (10-40s)</label> <input id="p-fs" type="number" min="10" max="40"${attr("value", newEdge.frequencySafeMode)} class="input-field py-1"/></div> <div class="space-y-1"><label for="p-th" class="block font-semibold text-muted-foreground">T Límite handshake (15-60s)</label> <input id="p-th" type="number" min="15" max="60"${attr("value", newEdge.timeoutHandshake)} class="input-field py-1"/></div> <div class="space-y-1"><label for="p-tp" class="block font-semibold text-muted-foreground">T Límite fases (30-120s)</label> <input id="p-tp" type="number" min="30" max="120"${attr("value", newEdge.timeoutPhase)} class="input-field py-1"/></div> <div class="space-y-1"><label for="p-ts" class="block font-semibold text-muted-foreground">T Límite safe mode (120-300s)</label> <input id="p-ts" type="number" min="120" max="300"${attr("value", newEdge.timeoutSafeMode)} class="input-field py-1"/></div> <div class="space-y-1"><label for="p-hbb" class="block font-semibold text-muted-foreground">Heartbeat b-mode (10-40s)</label> <input id="p-hbb" type="number" min="10" max="40"${attr("value", newEdge.timeBetweenHeartbeatsBalanceMode)} class="input-field py-1"/></div> <div class="space-y-1"><label for="p-hbn" class="block font-semibold text-muted-foreground">Heartbeat normal (30-60s)</label> <input id="p-hbn" type="number" min="30" max="60"${attr("value", newEdge.timeBetweenHeartbeatsNormal)} class="input-field py-1"/></div> <div class="space-y-1 col-span-2"><label for="p-hbs" class="block font-semibold text-muted-foreground">Heartbeat safe mode (40-80s)</label> <input id="p-hbs" type="number" min="40" max="80"${attr("value", newEdge.timeBetweenHeartbeatsSafeMode)} class="input-field py-1"/></div></div></div> `);
+        {
+          $$renderer3.push("<!--[-1-->");
+        }
+        $$renderer3.push(`<!--]--></div> <div class="flex gap-3 pt-6 pb-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm">Cancelar</button> <button type="submit"${attr("disabled", isSubmitting, true)} class="btn-primary flex-1 rounded-xl py-3 text-sm disabled:opacity-60 flex items-center justify-center gap-2">`);
+        {
+          $$renderer3.push("<!--[-1-->");
+        }
+        $$renderer3.push(`<!--]--> Crear Edge</button></div></form>`);
       }
     });
     $$renderer2.push(`<!----> `);
@@ -1807,202 +1832,197 @@ function Edge_page($$renderer, $$props) {
         $$renderer3.push(`<!--]-->`);
       }
     });
+    $$renderer2.push(`<!----> `);
+    Modal($$renderer2, {
+      open: showDeleteEdgeModal,
+      title: "Protección de Borrado",
+      onClose: () => showDeleteEdgeModal = false,
+      children: ($$renderer3) => {
+        {
+          $$renderer3.push("<!--[-1-->");
+        }
+        $$renderer3.push(`<!--]-->`);
+      }
+    });
     $$renderer2.push(`<!---->`);
     if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
+const certificates = writable([]);
+const certificatesLoading = writable(false);
+const certificatesGenerating = writable(false);
 function Certificates_page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
-    let certificates = [
-      {
-        id: "1",
-        name: "Root CA Certificate",
-        type: "ca",
-        status: "valid",
-        issuedAt: /* @__PURE__ */ new Date("2024-01-15"),
-        expiresAt: /* @__PURE__ */ new Date("2034-01-15"),
-        fingerprint: "SHA256:a1b2c3d4e5f6..."
-      },
-      {
-        id: "2",
-        name: "Server Gateway mTLS",
-        type: "server",
-        status: "valid",
-        issuedAt: /* @__PURE__ */ new Date("2024-06-01"),
-        expiresAt: /* @__PURE__ */ new Date("2025-06-01"),
-        fingerprint: "SHA256:f6e5d4c3b2a1..."
-      },
-      {
-        id: "3",
-        name: "Client Device Auth",
-        type: "client",
-        status: "expired",
-        issuedAt: /* @__PURE__ */ new Date("2023-01-01"),
-        expiresAt: /* @__PURE__ */ new Date("2024-01-01"),
-        fingerprint: "SHA256:1a2b3c4d5e6f..."
-      },
-      {
-        id: "4",
-        name: "Legacy System Cert",
-        type: "client",
-        status: "revoked",
-        issuedAt: /* @__PURE__ */ new Date("2023-06-15"),
-        expiresAt: /* @__PURE__ */ new Date("2025-06-15"),
-        fingerprint: "SHA256:6f5e4d3c2b1a..."
-      }
-    ];
+    var $$store_subs;
     let showCreateModal = false;
-    let copiedId = null;
-    let newCertName = "";
-    let newCertType = "client";
-    function formatDate(date) {
-      return new Intl.DateTimeFormat("es", { dateStyle: "medium" }).format(date);
+    let revokeConfirmId = null;
+    let actionError = null;
+    let form = {
+      displayName: "",
+      deviceType: "edge",
+      commonName: "",
+      organization: "",
+      country: "",
+      sanDomain: "",
+      validityDays: 365
+    };
+    function resetForm() {
+      form = {
+        displayName: "",
+        deviceType: "edge",
+        commonName: "",
+        organization: "",
+        country: "",
+        sanDomain: "",
+        validityDays: 365
+      };
+      actionError = null;
     }
-    function getDaysUntilExpiry(date) {
-      return Math.ceil((date.getTime() - Date.now()) / (1e3 * 60 * 60 * 24));
+    function formatDate(iso) {
+      return new Intl.DateTimeFormat("es", { dateStyle: "medium" }).format(new Date(iso));
     }
-    const typeConfig = {
-      ca: { icon: Building, label: "CA", color: "text-accent" },
-      server: { icon: Shield_check, label: "Servidor", color: "text-primary" },
-      client: { icon: Key, label: "Cliente", color: "text-success" }
+    function getDaysUntilExpiry(iso) {
+      return Math.ceil((new Date(iso).getTime() - Date.now()) / (1e3 * 60 * 60 * 24));
+    }
+    const statusConfig = {
+      valid: { color: "text-success", label: "Válido" },
+      expired: { color: "text-destructive", label: "Expirado" },
+      revoked: { color: "text-muted-foreground", label: "Revocado" }
     };
     $$renderer2.push(`<div class="space-y-6">`);
     Page_header($$renderer2, {
-      title: "Certificados mTLS",
+      title: "Certificados Digitales",
       description: "Gestiona los certificados de autenticación mutua del sistema"
     });
-    $$renderer2.push(`<!----> <div class="flex items-center justify-between animate-slide-in"><div class="flex items-center gap-3"><div class="flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2.5 transition-all duration-200 hover:border-primary/30"><span class="text-sm text-muted-foreground">Total:</span> <span class="font-bold text-card-foreground">${escape_html(certificates.length)}</span></div> <div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5"><span class="h-2 w-2 rounded-full bg-success"></span> <span class="text-sm font-semibold text-success">${escape_html(certificates.filter((c) => c.status === "valid").length)} válidos</span></div> <div class="flex items-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-2.5"><span class="h-2 w-2 rounded-full bg-destructive"></span> <span class="text-sm font-semibold text-destructive">${escape_html(certificates.filter((c) => c.status === "expired").length)} expirados</span></div></div> <button class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm">`);
+    $$renderer2.push(`<!----> <div class="flex items-center justify-between animate-slide-in"><div class="flex items-center gap-3"><div class="flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2.5 transition-all duration-200 hover:border-primary/30"><span class="text-sm text-muted-foreground">Total:</span> <span class="font-bold text-card-foreground">${escape_html(store_get($$store_subs ??= {}, "$certificates", certificates).length)}</span></div> <div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5"><span class="h-2 w-2 rounded-full bg-success"></span> <span class="text-sm font-semibold text-success">${escape_html(store_get($$store_subs ??= {}, "$certificates", certificates).filter((c) => c.status === "valid").length)} válidos</span></div> <div class="flex items-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-2.5"><span class="h-2 w-2 rounded-full bg-destructive"></span> <span class="text-sm font-semibold text-destructive">${escape_html(store_get($$store_subs ??= {}, "$certificates", certificates).filter((c) => c.status === "expired").length)} expirados</span></div></div> <button class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm">`);
     Plus($$renderer2, { class: "h-4 w-4" });
-    $$renderer2.push(`<!----> Nuevo Certificado</button></div> `);
-    if (certificates.length === 0) {
+    $$renderer2.push(`<!----> Generar Certificado</button></div> `);
+    if (store_get($$store_subs ??= {}, "$certificatesLoading", certificatesLoading)) {
       $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<div class="flex items-center justify-center py-20 text-muted-foreground gap-3">`);
+      Loader($$renderer2, { class: "h-6 w-6 animate-spin" });
+      $$renderer2.push(`<!----> <span class="text-sm">Cargando certificados...</span></div>`);
+    } else if (store_get($$store_subs ??= {}, "$certificates", certificates).length === 0) {
+      $$renderer2.push("<!--[1-->");
       Empty_state($$renderer2, {
         icon: Shield_check,
         title: "Sin certificados",
-        description: "No hay certificados mTLS configurados. Crea uno para asegurar las comunicaciones de tu sistema.",
-        actionLabel: "Crear Certificado",
-        onAction: () => showCreateModal = true
+        description: "No hay certificados mTLS configurados. Genera uno para asegurar las comunicaciones de tu sistema.",
+        actionLabel: "Generar Certificado",
+        onAction: () => {
+          resetForm();
+          showCreateModal = true;
+        }
       });
     } else {
       $$renderer2.push("<!--[-1-->");
-      $$renderer2.push(`<div class="rounded-2xl border border-border bg-card overflow-hidden shadow-sm animate-fade-in"><table class="w-full"><thead><tr class="border-b border-border bg-muted/30"><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Certificado</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tipo</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Estado</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Emisión</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Expiración</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Fingerprint</th><th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Acciones</th></tr></thead><tbody class="divide-y divide-border"><!--[-->`);
-      const each_array = ensure_array_like(certificates);
+      $$renderer2.push(`<div class="rounded-2xl border border-border bg-card overflow-hidden shadow-sm animate-fade-in"><table class="w-full"><thead><tr class="border-b border-border bg-muted/30"><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Certificado</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tipo</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Estado</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Emisión</th><th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Expiración</th><th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Acciones</th></tr></thead><tbody class="divide-y divide-border"><!--[-->`);
+      const each_array = ensure_array_like(store_get($$store_subs ??= {}, "$certificates", certificates));
       for (let i = 0, $$length = each_array.length; i < $$length; i++) {
         let cert = each_array[i];
-        const config = typeConfig[cert.type];
+        const sc = statusConfig[cert.status] ?? statusConfig.revoked;
         const daysUntil = getDaysUntilExpiry(cert.expiresAt);
         $$renderer2.push(`<tr class="stagger-item group transition-colors hover:bg-muted/20"${attr_style(`animation-delay: ${stringify(i * 0.03)}s`)}><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/50 transition-all duration-200 group-hover:bg-primary/10">`);
         File_key($$renderer2, {
           class: "h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors"
         });
-        $$renderer2.push(`<!----></div> <span class="font-medium text-card-foreground">${escape_html(cert.name)}</span></div></td><td class="px-6 py-4"><div class="flex items-center gap-2">`);
-        if (config.icon) {
-          $$renderer2.push("<!--[-->");
-          config.icon($$renderer2, { class: `h-4 w-4 ${stringify(config.color)}` });
-          $$renderer2.push("<!--]-->");
+        $$renderer2.push(`<!----></div> <div><span class="font-medium text-card-foreground block">${escape_html(cert.displayName)}</span> `);
+        if (cert.commonName) {
+          $$renderer2.push("<!--[0-->");
+          $$renderer2.push(`<span class="text-xs text-muted-foreground font-mono">${escape_html(cert.commonName)}</span>`);
         } else {
-          $$renderer2.push("<!--[!-->");
-          $$renderer2.push("<!--]-->");
+          $$renderer2.push("<!--[-1-->");
         }
-        $$renderer2.push(` <span class="text-sm text-card-foreground">${escape_html(config.label)}</span></div></td><td class="px-6 py-4">`);
-        Status_badge($$renderer2, { status: cert.status });
-        $$renderer2.push(`<!----></td><td class="px-6 py-4 text-sm text-muted-foreground">${escape_html(formatDate(cert.issuedAt))}</td><td class="px-6 py-4"><div class="text-sm"><span class="text-card-foreground">${escape_html(formatDate(cert.expiresAt))}</span> `);
+        $$renderer2.push(`<!--]--></div></div></td><td class="px-6 py-4"><span class="inline-flex items-center rounded-md bg-muted/50 px-2.5 py-1 text-xs font-medium text-card-foreground capitalize">${escape_html(cert.deviceType)}</span></td><td class="px-6 py-4"><span${attr_class(`text-sm font-semibold ${stringify(sc.color)}`)}>${escape_html(sc.label)}</span></td><td class="px-6 py-4 text-sm text-muted-foreground">${escape_html(formatDate(cert.issuedAt))}</td><td class="px-6 py-4"><div class="text-sm"><span class="text-card-foreground">${escape_html(formatDate(cert.expiresAt))}</span> `);
         if (cert.status === "valid" && daysUntil <= 30) {
           $$renderer2.push("<!--[0-->");
-          $$renderer2.push(`<span class="ml-2 rounded-md bg-warning/10 px-1.5 py-0.5 text-xs font-medium text-warning">${escape_html(daysUntil)} días</span>`);
+          $$renderer2.push(`<span class="ml-2 rounded-md bg-warning/10 px-1.5 py-0.5 text-xs font-medium text-warning">${escape_html(daysUntil)}d</span>`);
         } else {
           $$renderer2.push("<!--[-1-->");
         }
-        $$renderer2.push(`<!--]--></div></td><td class="px-6 py-4"><button class="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-1.5 font-mono text-xs text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary"><span class="max-w-[100px] truncate">${escape_html(cert.fingerprint)}</span> `);
-        if (copiedId === cert.id) {
+        $$renderer2.push(`<!--]--></div></td><td class="px-6 py-4"><div class="flex items-center justify-end gap-1">`);
+        if (cert.status === "valid") {
           $$renderer2.push("<!--[0-->");
-          Check($$renderer2, { class: "h-3.5 w-3.5 text-success" });
+          if (revokeConfirmId === cert.id) {
+            $$renderer2.push("<!--[0-->");
+            $$renderer2.push(`<div class="flex items-center gap-2"><span class="text-xs text-muted-foreground">¿Confirmar?</span> <button class="rounded-lg px-2.5 py-1 text-xs font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-all">Sí</button> <button class="rounded-lg px-2.5 py-1 text-xs font-semibold btn-secondary">No</button></div>`);
+          } else {
+            $$renderer2.push("<!--[-1-->");
+            $$renderer2.push(`<button title="Revocar certificado" class="rounded-lg p-2 text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive hover:scale-110">`);
+            Shield_off($$renderer2, { class: "h-4 w-4" });
+            $$renderer2.push(`<!----></button>`);
+          }
+          $$renderer2.push(`<!--]-->`);
         } else {
           $$renderer2.push("<!--[-1-->");
-          Copy($$renderer2, { class: "h-3.5 w-3.5" });
+          $$renderer2.push(`<span class="text-xs text-muted-foreground italic px-2">—</span>`);
         }
-        $$renderer2.push(`<!--]--></button></td><td class="px-6 py-4"><div class="flex items-center justify-end gap-1"><button class="rounded-lg p-2 text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:scale-110">`);
-        Download($$renderer2, { class: "h-4 w-4" });
-        $$renderer2.push(`<!----></button> <button class="rounded-lg p-2 text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive hover:scale-110">`);
-        Trash_2($$renderer2, { class: "h-4 w-4" });
-        $$renderer2.push(`<!----></button></div></td></tr>`);
+        $$renderer2.push(`<!--]--></div></td></tr>`);
       }
       $$renderer2.push(`<!--]--></tbody></table></div>`);
     }
     $$renderer2.push(`<!--]--></div> `);
     Modal($$renderer2, {
       open: showCreateModal,
-      title: "Nuevo Certificado mTLS",
+      title: "Generar Nuevo Certificado mTLS",
       onClose: () => showCreateModal = false,
       children: ($$renderer3) => {
-        $$renderer3.push(`<form class="space-y-5"><div class="space-y-2"><label for="cert-name" class="block text-sm font-medium text-card-foreground">Nombre del Certificado</label> <input id="cert-name" type="text"${attr("value", newCertName)} placeholder="Mi Certificado..." class="input-field" required=""/></div> <fieldset class="space-y-2"><legend class="block text-sm font-medium text-card-foreground">Tipo de Certificado</legend> <div class="grid grid-cols-3 gap-3" role="radiogroup" aria-label="Tipo de certificado"><!--[-->`);
-        const each_array_1 = ensure_array_like(Object.entries(typeConfig));
-        for (let $$index_1 = 0, $$length = each_array_1.length; $$index_1 < $$length; $$index_1++) {
-          let [type, config] = each_array_1[$$index_1];
-          $$renderer3.push(`<button type="button" role="radio"${attr("aria-checked", newCertType === type)}${attr_class(`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all duration-200 ${stringify(newCertType === type ? "border-primary bg-primary/5 shadow-md shadow-primary/10" : "border-border hover:border-primary/50 hover:bg-muted/50")}`)}>`);
-          if (config.icon) {
-            $$renderer3.push("<!--[-->");
-            config.icon($$renderer3, {
-              class: `h-6 w-6 ${stringify(config.color)} transition-transform duration-200
-                                ${stringify(newCertType === type ? "scale-110" : "")}`
+        $$renderer3.push(`<form class="space-y-4 px-1"><div class="grid grid-cols-2 gap-3"><div class="col-span-2 space-y-1.5"><label for="cert-displayName" class="block text-sm font-medium text-card-foreground">Nombre para mostrar</label> <input id="cert-displayName" type="text"${attr("value", form.displayName)} class="input-field" required="" placeholder="Edge Gateway Alpha — mTLS"/></div> <div class="space-y-1.5"><label for="cert-deviceType" class="block text-sm font-medium text-card-foreground">Tipo de dispositivo</label> `);
+        $$renderer3.select(
+          {
+            id: "cert-deviceType",
+            value: form.deviceType,
+            class: "input-field bg-background"
+          },
+          ($$renderer4) => {
+            $$renderer4.option({ value: "edge" }, ($$renderer5) => {
+              $$renderer5.push(`Edge`);
             });
-            $$renderer3.push("<!--]-->");
-          } else {
-            $$renderer3.push("<!--[!-->");
-            $$renderer3.push("<!--]-->");
+            $$renderer4.option({ value: "hub" }, ($$renderer5) => {
+              $$renderer5.push(`Hub`);
+            });
+            $$renderer4.option({ value: "server" }, ($$renderer5) => {
+              $$renderer5.push(`Server`);
+            });
+            $$renderer4.option({ value: "ca" }, ($$renderer5) => {
+              $$renderer5.push(`CA`);
+            });
+            $$renderer4.option({ value: "client" }, ($$renderer5) => {
+              $$renderer5.push(`Client`);
+            });
           }
-          $$renderer3.push(` <span class="text-sm font-medium text-card-foreground">${escape_html(config.label)}</span></button>`);
+        );
+        $$renderer3.push(`</div> <div class="space-y-1.5"><label for="cert-validityDays" class="block text-sm font-medium text-card-foreground">Validez (días)</label> <input id="cert-validityDays" type="number" min="1" max="3650"${attr("value", form.validityDays)} class="input-field" required=""/></div> <div class="col-span-2 space-y-1.5"><label for="cert-cn" class="block text-sm font-medium text-card-foreground">Common Name (CN)</label> <input id="cert-cn" type="text"${attr("value", form.commonName)} class="input-field font-mono" required="" placeholder="edge-alpha.local"/></div> <div class="space-y-1.5"><label for="cert-org" class="block text-sm font-medium text-card-foreground">Organización</label> <input id="cert-org" type="text"${attr("value", form.organization)} class="input-field" required="" placeholder="Mi Empresa S.A."/></div> <div class="space-y-1.5"><label for="cert-country" class="block text-sm font-medium text-card-foreground">País (código ISO 2)</label> <input id="cert-country" type="text"${attr("value", form.country)} class="input-field font-mono uppercase" maxlength="2" required="" placeholder="AR"/></div> <div class="col-span-2 space-y-1.5"><label for="cert-san" class="block text-sm font-medium text-card-foreground">SAN Domain</label> <input id="cert-san" type="text"${attr("value", form.sanDomain)} class="input-field font-mono" required="" placeholder="edge-alpha.local"/> <p class="text-xs text-muted-foreground">Subject Alternative Name — normalmente igual al CN para dispositivos IoT.</p></div></div> <p class="text-xs text-muted-foreground bg-muted/40 border border-border rounded-lg px-3 py-2">Al confirmar, el certificado se generará y descargará automáticamente como un archivo ZIP.</p> `);
+        if (actionError) {
+          $$renderer3.push("<!--[0-->");
+          $$renderer3.push(`<div class="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">`);
+          Circle_alert($$renderer3, { class: "h-3.5 w-3.5 shrink-0" });
+          $$renderer3.push(`<!----> ${escape_html(actionError)}</div>`);
+        } else {
+          $$renderer3.push("<!--[-1-->");
         }
-        $$renderer3.push(`<!--]--></div></fieldset> <div class="flex gap-3 pt-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm">Cancelar</button> <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm">Generar Certificado</button></div></form>`);
+        $$renderer3.push(`<!--]--> <div class="flex gap-3 pt-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm">Cancelar</button> <button type="submit"${attr("disabled", store_get($$store_subs ??= {}, "$certificatesGenerating", certificatesGenerating), true)} class="btn-primary flex-1 rounded-xl py-3 text-sm flex items-center justify-center gap-2 disabled:opacity-60">`);
+        if (store_get($$store_subs ??= {}, "$certificatesGenerating", certificatesGenerating)) {
+          $$renderer3.push("<!--[0-->");
+          Loader($$renderer3, { class: "h-4 w-4 animate-spin" });
+          $$renderer3.push(`<!----> Generando…`);
+        } else {
+          $$renderer3.push("<!--[-1-->");
+          Circle_check_big($$renderer3, { class: "h-4 w-4" });
+          $$renderer3.push(`<!----> Generar y Descargar`);
+        }
+        $$renderer3.push(`<!--]--></button></div></form>`);
       }
     });
     $$renderer2.push(`<!---->`);
+    if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
+const notifications = writable([]);
+const notificationsLoading = writable(false);
 function Notifications_page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
-    let notifications = [
-      {
-        id: "1",
-        type: "error",
-        title: "Edge Gateway Gamma desconectado",
-        message: "El dispositivo Edge Gateway Gamma ha perdido conexión. Última conexión hace 24 horas.",
-        timestamp: new Date(Date.now() - 36e5),
-        read: false
-      },
-      {
-        id: "2",
-        type: "warning",
-        title: "Certificado próximo a expirar",
-        message: 'El certificado "Server Gateway mTLS" expirará en 30 días. Considera renovarlo.',
-        timestamp: new Date(Date.now() - 72e5),
-        read: false
-      },
-      {
-        id: "3",
-        type: "success",
-        title: "Firmware desplegado exitosamente",
-        message: "La versión 2.4.1 del firmware ha sido desplegada en 156 dispositivos.",
-        timestamp: new Date(Date.now() - 864e5),
-        read: true
-      },
-      {
-        id: "4",
-        type: "info",
-        title: "Nueva actualización disponible",
-        message: "Hay una nueva versión del firmware (v2.5.0) disponible para descargar.",
-        timestamp: new Date(Date.now() - 1728e5),
-        read: true
-      },
-      {
-        id: "5",
-        type: "warning",
-        title: "Alta latencia detectada",
-        message: 'Se ha detectado alta latencia en la red "Red Industrial" del Edge Gateway Alpha.',
-        timestamp: new Date(Date.now() - 2592e5),
-        read: true
-      }
-    ];
+    var $$store_subs;
     const typeConfig = {
       info: {
         icon: Info,
@@ -2029,7 +2049,8 @@ function Notifications_page($$renderer, $$props) {
         borderColor: "border-l-success"
       }
     };
-    function formatTimestamp(date) {
+    function formatTimestamp(iso) {
+      const date = new Date(iso);
       const now = /* @__PURE__ */ new Date();
       const diff = now.getTime() - date.getTime();
       const minutes = Math.floor(diff / 6e4);
@@ -2040,40 +2061,35 @@ function Notifications_page($$renderer, $$props) {
       if (days < 7) return `Hace ${days} días`;
       return new Intl.DateTimeFormat("es", { dateStyle: "short" }).format(date);
     }
-    const unreadCount = derived(() => notifications.filter((n) => !n.read).length);
     $$renderer2.push(`<div class="space-y-6">`);
     Page_header($$renderer2, {
       title: "Notificaciones",
       description: "Alertas y eventos del sistema IoT"
     });
     $$renderer2.push(`<!----> <div class="flex items-center justify-between animate-slide-in"><div class="flex items-center gap-3">`);
-    if (unreadCount() > 0) {
+    if (store_get($$store_subs ??= {}, "$notifications", notifications).length > 0) {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<div class="flex items-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground animate-pulse">${escape_html(unreadCount())}</span> <span class="text-sm font-semibold text-primary">sin leer</span></div>`);
+      $$renderer2.push(`<div class="flex items-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground animate-pulse">${escape_html(store_get($$store_subs ??= {}, "$notifications", notifications).length)}</span> <span class="text-sm font-semibold text-primary">pendientes</span></div>`);
     } else {
       $$renderer2.push("<!--[-1-->");
     }
     $$renderer2.push(`<!--]--></div> <div class="flex items-center gap-2">`);
-    if (unreadCount() > 0) {
+    if (store_get($$store_subs ??= {}, "$notifications", notifications).length > 0) {
       $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<button class="btn-secondary flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm">`);
+      $$renderer2.push(`<button${attr("disabled", store_get($$store_subs ??= {}, "$notificationsLoading", notificationsLoading), true)} class="btn-secondary flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm disabled:opacity-60">`);
       Check_check($$renderer2, { class: "h-4 w-4" });
       $$renderer2.push(`<!----> Marcar todo leído</button>`);
     } else {
       $$renderer2.push("<!--[-1-->");
     }
-    $$renderer2.push(`<!--]--> `);
-    if (notifications.length > 0) {
-      $$renderer2.push("<!--[0-->");
-      $$renderer2.push(`<button class="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-medium text-destructive transition-all duration-200 hover:bg-destructive/10 hover:border-destructive/30">`);
-      Trash_2($$renderer2, { class: "h-4 w-4" });
-      $$renderer2.push(`<!----> Limpiar todo</button>`);
-    } else {
-      $$renderer2.push("<!--[-1-->");
-    }
     $$renderer2.push(`<!--]--></div></div> `);
-    if (notifications.length === 0) {
+    if (store_get($$store_subs ??= {}, "$notificationsLoading", notificationsLoading)) {
       $$renderer2.push("<!--[0-->");
+      $$renderer2.push(`<div class="flex items-center justify-center py-20 text-muted-foreground gap-3">`);
+      Loader($$renderer2, { class: "h-6 w-6 animate-spin" });
+      $$renderer2.push(`<!----> <span class="text-sm">Cargando notificaciones...</span></div>`);
+    } else if (store_get($$store_subs ??= {}, "$notifications", notifications).length === 0) {
+      $$renderer2.push("<!--[1-->");
       Empty_state($$renderer2, {
         icon: Bell,
         title: "Sin notificaciones",
@@ -2082,42 +2098,27 @@ function Notifications_page($$renderer, $$props) {
     } else {
       $$renderer2.push("<!--[-1-->");
       $$renderer2.push(`<div class="space-y-3"><!--[-->`);
-      const each_array = ensure_array_like(notifications);
+      const each_array = ensure_array_like(store_get($$store_subs ??= {}, "$notifications", notifications));
       for (let i = 0, $$length = each_array.length; i < $$length; i++) {
         let notification = each_array[i];
-        const config = typeConfig[notification.type];
-        $$renderer2.push(`<div${attr_class(`stagger-item group relative rounded-2xl border bg-card p-5 transition-all duration-300 hover:shadow-lg ${stringify(notification.read ? "border-border opacity-70 hover:opacity-100" : `border-l-4 ${config.borderColor} border-border shadow-md`)}`)}${attr_style(`animation-delay: ${stringify(i * 0.05)}s`)}><div class="flex gap-4"><div${attr_class(`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${stringify(config.bgColor)} transition-transform duration-200 group-hover:scale-110`)}>`);
-        if (config.icon) {
-          $$renderer2.push("<!--[-->");
-          config.icon($$renderer2, { class: `h-6 w-6 ${stringify(config.iconColor)}` });
-          $$renderer2.push("<!--]-->");
-        } else {
-          $$renderer2.push("<!--[!-->");
-          $$renderer2.push("<!--]-->");
-        }
-        $$renderer2.push(`</div> <div class="flex-1 min-w-0"><div class="flex items-start justify-between gap-2"><div><h4${attr_class(`font-semibold ${stringify(notification.read ? "text-muted-foreground" : "text-card-foreground")}`)}>${escape_html(notification.title)}</h4> <p class="mt-1 text-sm text-muted-foreground leading-relaxed">${escape_html(notification.message)}</p></div> <div class="flex shrink-0 items-center gap-1 opacity-0 transition-all duration-200 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">`);
-        if (!notification.read) {
+        const config = typeConfig[notification.type] ?? typeConfig.info;
+        $$renderer2.push(`<div${attr_class(`stagger-item group relative rounded-2xl border bg-card p-5 transition-all duration-300 hover:shadow-lg border-l-4 ${stringify(config.borderColor)} border-border shadow-md`)}${attr_style(`animation-delay: ${stringify(i * 0.05)}s`)}><div class="flex gap-4"><div${attr_class(`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${stringify(config.bgColor)} transition-transform duration-200 group-hover:scale-110`)}>`);
+        config.icon($$renderer2, { class: `h-6 w-6 ${stringify(config.iconColor)}` });
+        $$renderer2.push(`<!----></div> <div class="flex-1 min-w-0"><div class="flex items-start justify-between gap-2"><div class="flex-1 min-w-0"><p class="font-medium text-card-foreground leading-relaxed">${escape_html(notification.description)}</p> `);
+        if (notification.edgeId) {
           $$renderer2.push("<!--[0-->");
-          $$renderer2.push(`<button class="rounded-lg p-2 text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:scale-110" title="Marcar como leído">`);
-          Check_check($$renderer2, { class: "h-4 w-4" });
-          $$renderer2.push(`<!----></button>`);
+          $$renderer2.push(`<p class="mt-1 text-xs text-muted-foreground font-mono">Edge: ${escape_html(notification.edgeId)}</p>`);
         } else {
           $$renderer2.push("<!--[-1-->");
         }
-        $$renderer2.push(`<!--]--> <button class="rounded-lg p-2 text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive hover:scale-110" title="Eliminar">`);
-        X($$renderer2, { class: "h-4 w-4" });
-        $$renderer2.push(`<!----></button></div></div> <p class="mt-3 text-xs text-muted-foreground">${escape_html(formatTimestamp(notification.timestamp))}</p></div></div> `);
-        if (!notification.read) {
-          $$renderer2.push("<!--[0-->");
-          $$renderer2.push(`<div class="absolute right-5 top-5 h-2.5 w-2.5 rounded-full bg-primary animate-pulse"></div>`);
-        } else {
-          $$renderer2.push("<!--[-1-->");
-        }
-        $$renderer2.push(`<!--]--></div>`);
+        $$renderer2.push(`<!--]--></div> <div class="flex shrink-0 items-center gap-1 opacity-0 transition-all duration-200 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"><button class="rounded-lg p-2 text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:scale-110" title="Marcar como leído">`);
+        Check_check($$renderer2, { class: "h-4 w-4" });
+        $$renderer2.push(`<!----></button></div></div> <p class="mt-3 text-xs text-muted-foreground">${escape_html(formatTimestamp(notification.createdAt))}</p></div></div> <div class="absolute right-5 top-5 h-2.5 w-2.5 rounded-full bg-primary animate-pulse"></div></div>`);
       }
       $$renderer2.push(`<!--]--></div>`);
     }
     $$renderer2.push(`<!--]--></div>`);
+    if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
 function Firmware_page($$renderer, $$props) {
@@ -2250,20 +2251,20 @@ function Firmware_page($$renderer, $$props) {
     $$renderer2.push(`<!---->`);
   });
 }
+const networks = writable([]);
+const networksLoading = writable(false);
 function Edge_networks_page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     var $$store_subs;
     let edgeId = derived(() => store_get($$store_subs ??= {}, "$pageParams", pageParams).edgeId);
-    let currentEdge = derived(() => store_get($$store_subs ??= {}, "$edges", edges).find((e) => e.id === edgeId()));
+    let currentEdge = derived(() => store_get($$store_subs ??= {}, "$edges", edges).find((e) => e.edgeId === edgeId()));
     let showCreateNetworkModal = false;
     let newNetworkId = "";
-    let newNetworkDesc = "";
-    let newNetworkLoc = "";
-    let showEditNetworkModal = false;
-    let editForm = {};
+    let newNetworkName = "";
+    let showDeleteNetworkModal = false;
     let showFirmwareModal = false;
     $$renderer2.push(`<div class="space-y-6">`);
-    if (currentEdge()) {
+    if (edgeId()) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<div class="flex items-center gap-4"><button class="flex items-center gap-2 text-sm text-muted-foreground transition-all duration-200 hover:text-foreground hover:gap-3 group">`);
       Arrow_left($$renderer2, {
@@ -2271,14 +2272,19 @@ function Edge_networks_page($$renderer, $$props) {
       });
       $$renderer2.push(`<!----> Volver a Edge Devices</button></div> `);
       Page_header($$renderer2, {
-        title: `Redes de Edge`,
-        description: `Gestiona las redes asociadas al dispositivo ${currentEdge().name}`
+        title: "Redes",
+        description: `Gestiona las redes asociadas al dispositivo ${currentEdge()?.name ?? edgeId()}`
       });
-      $$renderer2.push(`<!----> <div class="card-interactive p-6 animate-fade-in"><div class="flex items-center justify-between"><div><h3 class="text-xl font-bold text-card-foreground">Redes Activas</h3> <p class="text-sm text-muted-foreground mt-1">${escape_html(currentEdge().networks.length)} redes configuradas</p></div> <button class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm">`);
+      $$renderer2.push(`<!----> <div class="card-interactive p-6 animate-fade-in"><div class="flex items-center justify-between"><div><h3 class="text-xl font-bold text-card-foreground">Redes Activas</h3> <p class="text-sm text-muted-foreground mt-1">${escape_html(store_get($$store_subs ??= {}, "$networks", networks).length)} redes configuradas</p></div> <button class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm">`);
       Plus($$renderer2, { class: "h-4 w-4" });
       $$renderer2.push(`<!----> Nueva Red</button></div></div> `);
-      if (currentEdge().networks.length === 0) {
+      if (store_get($$store_subs ??= {}, "$networksLoading", networksLoading)) {
         $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<div class="flex items-center justify-center py-20 text-muted-foreground gap-3">`);
+        Loader($$renderer2, { class: "h-6 w-6 animate-spin" });
+        $$renderer2.push(`<!----> <span class="text-sm">Cargando redes...</span></div>`);
+      } else if (store_get($$store_subs ??= {}, "$networks", networks).length === 0) {
+        $$renderer2.push("<!--[1-->");
         Empty_state($$renderer2, {
           icon: Wifi,
           title: "Sin redes configuradas",
@@ -2289,20 +2295,26 @@ function Edge_networks_page($$renderer, $$props) {
       } else {
         $$renderer2.push("<!--[-1-->");
         $$renderer2.push(`<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"><!--[-->`);
-        const each_array = ensure_array_like(currentEdge().networks);
+        const each_array = ensure_array_like(store_get($$store_subs ??= {}, "$networks", networks));
         for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
           let network = each_array[$$index];
           $$renderer2.push(`<div class="card-interactive group p-5 flex flex-col h-full"><div class="flex items-start justify-between"><div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent/20 to-accent/10">`);
           Wifi($$renderer2, { class: "h-5 w-5 text-accent" });
-          $$renderer2.push(`<!----></div> `);
-          Status_badge($$renderer2, { status: network.status });
-          $$renderer2.push(`<!----></div> <div class="flex-1"><h4 class="mt-4 font-semibold text-lg text-card-foreground">${escape_html(network.id)}</h4> <p class="text-xs text-muted-foreground mt-1 line-clamp-2">${escape_html(network.description)}</p> <div class="mt-4 space-y-2 text-sm bg-muted/40 p-3 rounded-lg"><div class="flex justify-between items-center border-b border-border/50 pb-1.5"><span class="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Ubicación</span> <span class="font-medium text-card-foreground">${escape_html(network.ubication)}</span></div> <div class="flex justify-between items-center pt-1"><span class="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Dispositivos</span> <div class="flex items-center justify-center bg-primary/10 text-primary font-bold px-2.5 py-0.5 rounded-full">${escape_html(network.hubs?.length || 0)}</div></div></div></div> <div class="mt-5 border-t border-border pt-4"><button class="w-full btn-primary flex flex-1 items-center justify-between gap-1.5 rounded-lg py-2.5 px-4 text-xs font-semibold mb-2"><span>Ver Hubs</span> `);
+          $$renderer2.push(`<!----></div> <span${attr_class(`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${stringify(network.active ? "bg-success/10 text-success border border-success/20" : "bg-muted text-muted-foreground border border-border")}`)}><span${attr_class(`h-1.5 w-1.5 rounded-full ${stringify(network.active ? "bg-success" : "bg-muted-foreground")}`)}></span> ${escape_html(network.active ? "Activa" : "Inactiva")}</span></div> <div class="flex-1"><h4 class="mt-4 font-semibold text-lg text-card-foreground">${escape_html(network.name)}</h4> <p class="text-xs text-muted-foreground font-mono mt-0.5">ID: ${escape_html(network.networkId)}</p> <div class="mt-4 space-y-2 text-sm bg-muted/40 p-3 rounded-lg"><div class="flex justify-between items-center"><span class="text-muted-foreground text-xs uppercase tracking-wider font-semibold">Hubs</span> <div class="flex items-center justify-center bg-primary/10 text-primary font-bold px-2.5 py-0.5 rounded-full">${escape_html(network.hubCount)}</div></div></div></div> <div class="mt-5 border-t border-border pt-4"><button class="w-full btn-primary flex flex-1 items-center justify-between gap-1.5 rounded-lg py-2.5 px-4 text-xs font-semibold mb-2"><span>Ver Hubs</span> `);
           Arrow_right($$renderer2, { class: "h-4 w-4" });
-          $$renderer2.push(`<!----></button> <button class="w-full relative overflow-hidden bg-white dark:bg-zinc-800 text-info font-medium border border-info/30 transition-all duration-300 ease-out hover:bg-info/10 active:scale-[0.98] flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs mb-2">`);
+          $$renderer2.push(`<!----></button> <button class="w-full flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs mb-2 transition-all duration-200 ease-out active:scale-[0.98] font-medium border bg-blue-950/30 hover:bg-blue-900/50 text-white dark:text-blue-400 border-blue-800 shadow-sm hover:shadow-md">`);
           Cloud_upload($$renderer2, { class: "h-4 w-4" });
-          $$renderer2.push(`<!----> Actualizar Firmware</button> <div class="flex gap-2"><button class="btn-secondary flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs">`);
-          Settings($$renderer2, { class: "h-4 w-4" });
-          $$renderer2.push(`<!----> Configurar</button> <button class="flex flex-none items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20">`);
+          $$renderer2.push(`<!----> Actualizar Firmware</button> <div class="flex gap-2"><button${attr("title", network.active ? "Desactivar red" : "Activar red")} class="btn-secondary flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs">`);
+          if (network.active) {
+            $$renderer2.push("<!--[0-->");
+            Toggle_right($$renderer2, { class: "h-4 w-4 text-success" });
+            $$renderer2.push(`<!----> Desactivar`);
+          } else {
+            $$renderer2.push("<!--[-1-->");
+            Toggle_left($$renderer2, { class: "h-4 w-4" });
+            $$renderer2.push(`<!----> Activar`);
+          }
+          $$renderer2.push(`<!--]--></button> <button class="flex flex-none items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20">`);
           Trash_2($$renderer2, { class: "h-4 w-4" });
           $$renderer2.push(`<!----></button></div></div></div>`);
         }
@@ -2319,26 +2331,18 @@ function Edge_networks_page($$renderer, $$props) {
       title: "Añadir Nueva Red",
       onClose: () => showCreateNetworkModal = false,
       children: ($$renderer3) => {
-        $$renderer3.push(`<form class="space-y-4 px-1"><div class="space-y-1.5"><label for="new-network-id" class="block text-sm font-medium text-card-foreground">ID de la Red</label> <input id="new-network-id" type="text"${attr("value", newNetworkId)} class="input-field font-mono" required="" placeholder="RED-001"/></div> <div class="space-y-1.5"><label for="new-network-desc" class="block text-sm font-medium text-card-foreground">Descripción</label> <textarea id="new-network-desc" class="input-field min-h-[80px]" required="" placeholder="Red de sensores de planta...">`);
-        const $$body = escape_html(newNetworkDesc);
-        if ($$body) {
-          $$renderer3.push(`${$$body}`);
+        $$renderer3.push(`<form class="space-y-4 px-1"><div class="space-y-1.5"><label for="new-network-id" class="block text-sm font-medium text-card-foreground">ID de la Red</label> <input id="new-network-id" type="text"${attr("value", newNetworkId)} class="input-field font-mono" required="" placeholder="RED-001"/></div> <div class="space-y-1.5"><label for="new-network-name" class="block text-sm font-medium text-card-foreground">Nombre</label> <input id="new-network-name" type="text"${attr("value", newNetworkName)} class="input-field" required="" placeholder="Red de Sensores Planta A"/></div> `);
+        {
+          $$renderer3.push("<!--[-1-->");
         }
-        $$renderer3.push(`</textarea></div> <div class="space-y-1.5"><label for="new-network-loc" class="block text-sm font-medium text-card-foreground">Ubicación</label> <input id="new-network-loc" type="text"${attr("value", newNetworkLoc)} class="input-field" required="" placeholder="Planta Baja"/></div> <div class="flex gap-3 pt-6 pb-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">Cancelar</button> <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium">Crear Red</button></div></form>`);
-      }
-    });
-    $$renderer2.push(`<!----> `);
-    Modal($$renderer2, {
-      open: showEditNetworkModal,
-      title: "Configurar Red",
-      onClose: () => showEditNetworkModal = false,
-      children: ($$renderer3) => {
-        $$renderer3.push(`<form class="space-y-4 px-1"><div class="space-y-1.5"><label for="edit-network-id" class="block text-sm font-medium text-card-foreground">ID de la Red</label> <input id="edit-network-id" type="text"${attr("value", editForm.id)} class="input-field font-mono" required="" placeholder="RED-001"/></div> <div class="space-y-1.5"><label for="edit-network-desc" class="block text-sm font-medium text-card-foreground">Descripción</label> <textarea id="edit-network-desc" class="input-field min-h-[80px]" required="" placeholder="Red de sensores de planta...">`);
-        const $$body_1 = escape_html(editForm.description);
-        if ($$body_1) {
-          $$renderer3.push(`${$$body_1}`);
+        $$renderer3.push(`<!--]--> <div class="flex gap-3 pt-6 pb-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">Cancelar</button> <button type="submit"${attr("disabled", store_get($$store_subs ??= {}, "$networksLoading", networksLoading), true)} class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-60">`);
+        if (store_get($$store_subs ??= {}, "$networksLoading", networksLoading)) {
+          $$renderer3.push("<!--[0-->");
+          Loader($$renderer3, { class: "h-4 w-4 animate-spin" });
+        } else {
+          $$renderer3.push("<!--[-1-->");
         }
-        $$renderer3.push(`</textarea></div> <div class="space-y-1.5"><label for="edit-network-loc" class="block text-sm font-medium text-card-foreground">Ubicación</label> <input id="edit-network-loc" type="text"${attr("value", editForm.ubication)} class="input-field" required="" placeholder="Planta Baja"/></div> <div class="flex gap-3 pt-6 pb-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">Cancelar</button> <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium">Guardar</button></div></form>`);
+        $$renderer3.push(`<!--]--> Crear Red</button></div></form>`);
       }
     });
     $$renderer2.push(`<!----> `);
@@ -2353,47 +2357,67 @@ function Edge_networks_page($$renderer, $$props) {
         $$renderer3.push(`<!--]-->`);
       }
     });
+    $$renderer2.push(`<!----> `);
+    Modal($$renderer2, {
+      open: showDeleteNetworkModal,
+      title: "Protección de Borrado",
+      onClose: () => showDeleteNetworkModal = false,
+      children: ($$renderer3) => {
+        {
+          $$renderer3.push("<!--[-1-->");
+        }
+        $$renderer3.push(`<!--]-->`);
+      }
+    });
     $$renderer2.push(`<!---->`);
     if ($$store_subs) unsubscribe_stores($$store_subs);
   });
 }
+const hubs = writable([]);
+const hubsLoading = writable(false);
+const hubsError = writable(null);
+const hubsSaving = writable(null);
 function Network_hubs_page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     var $$store_subs;
     let edgeId = derived(() => store_get($$store_subs ??= {}, "$pageParams", pageParams).edgeId);
     let networkId = derived(() => store_get($$store_subs ??= {}, "$pageParams", pageParams).networkId);
-    let currentEdge = derived(() => store_get($$store_subs ??= {}, "$edges", edges).find((e) => e.id === edgeId()));
-    let currentNetwork = derived(() => currentEdge()?.networks.find((n) => n.id === networkId()));
+    let currentEdge = derived(() => store_get($$store_subs ??= {}, "$edges", edges).find((e) => e.edgeId === edgeId()));
+    let currentNetwork = derived(() => store_get($$store_subs ??= {}, "$networks", networks).find((n) => n.networkId === networkId()));
     function goBack() {
       navigateTo("edge-networks", { edgeId: edgeId() });
     }
     let showInfoModal = false;
     let showEditModal = false;
     let formHub = {
-      id: "",
-      network: "",
-      wifi_ssid: "",
-      wifi_password: "",
-      mqtt_uri: "",
-      device_name: "",
+      hubId: "",
+      deviceName: "",
+      wifiSsid: "",
+      wifiPassword: "",
+      mqttUri: "",
       sample: "",
-      energy_mode: "Normal"
+      energyMode: "Normal"
     };
     $$renderer2.push(`<div class="space-y-6">`);
-    if (currentEdge() && currentNetwork()) {
+    if (networkId()) {
       $$renderer2.push("<!--[0-->");
       $$renderer2.push(`<div class="flex items-center gap-4"><button class="flex items-center gap-2 text-sm text-muted-foreground transition-all duration-200 hover:text-foreground hover:gap-3 group">`);
       Arrow_left($$renderer2, {
         class: "h-4 w-4 transition-transform group-hover:-translate-x-1"
       });
-      $$renderer2.push(`<!----> Volver a Redes (${escape_html(currentEdge().name)})</button></div> `);
+      $$renderer2.push(`<!----> Volver a Redes (${escape_html(currentEdge()?.name ?? edgeId())})</button></div> `);
       Page_header($$renderer2, {
-        title: `Hubs de la red: ${currentNetwork().id}`,
-        description: `Gestiona los hubs de esta familia de sensores`
+        title: `Hubs de la red: ${currentNetwork()?.name ?? networkId()}`,
+        description: "Gestiona y configura los hubs de esta familia de sensores"
       });
-      $$renderer2.push(`<!----> <div class="card-interactive p-6 animate-fade-in"><div class="flex items-center justify-between"><div><h3 class="text-xl font-bold text-card-foreground">Hubs Activos</h3> <p class="text-sm text-muted-foreground mt-1">${escape_html(currentNetwork().hubs?.length || 0)} dispositivos encontrados</p></div></div></div> `);
-      if (!currentNetwork().hubs || currentNetwork().hubs.length === 0) {
+      $$renderer2.push(`<!----> <div class="card-interactive p-6 animate-fade-in"><div class="flex items-center justify-between"><div><h3 class="text-xl font-bold text-card-foreground">Hubs Activos</h3> <p class="text-sm text-muted-foreground mt-1">${escape_html(store_get($$store_subs ??= {}, "$hubs", hubs).length)} dispositivos encontrados</p></div></div></div> `);
+      if (store_get($$store_subs ??= {}, "$hubsLoading", hubsLoading)) {
         $$renderer2.push("<!--[0-->");
+        $$renderer2.push(`<div class="flex items-center justify-center py-20 text-muted-foreground gap-3">`);
+        Loader($$renderer2, { class: "h-6 w-6 animate-spin" });
+        $$renderer2.push(`<!----> <span class="text-sm">Cargando hubs...</span></div>`);
+      } else if (store_get($$store_subs ??= {}, "$hubs", hubs).length === 0) {
+        $$renderer2.push("<!--[1-->");
         Empty_state($$renderer2, {
           icon: Cpu,
           title: "Sin dispositivos Hub",
@@ -2404,19 +2428,25 @@ function Network_hubs_page($$renderer, $$props) {
       } else {
         $$renderer2.push("<!--[-1-->");
         $$renderer2.push(`<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"><!--[-->`);
-        const each_array = ensure_array_like(currentNetwork().hubs);
+        const each_array = ensure_array_like(store_get($$store_subs ??= {}, "$hubs", hubs));
         for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
           let hub = each_array[$$index];
           $$renderer2.push(`<div class="card-interactive group p-5 flex flex-col h-full"><div class="flex items-start justify-between"><div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">`);
           Cpu($$renderer2, { class: "h-6 w-6 text-primary" });
           $$renderer2.push(`<!----></div> `);
-          Status_badge($$renderer2, { status: "active" });
-          $$renderer2.push(`<!----></div> <div class="mt-4 flex-1"><h4 class="text-2xl font-bold tracking-tight text-card-foreground">${escape_html(hub.id)}</h4> <div class="mt-2 space-y-1"><p class="text-xs font-semibold uppercase text-muted-foreground tracking-wider">${escape_html(hub.network)}</p> <p class="text-sm text-card-foreground/80">${escape_html(hub.device_name)}</p> <div${attr_class(`inline-block mt-2 px-2.5 py-0.5 rounded-full border ${hub.energy_mode === "Bajo consumo" ? "bg-success/10 border-success/20 text-success" : hub.energy_mode === "Balanceado" ? "bg-blue-500/10 border-blue-500/20 text-blue-500" : hub.energy_mode === "Performance" ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-accent/10 border-accent/20 text-accent"}`)}><span class="text-[10px] font-medium currentColor">Modo Energía: ${escape_html(hub.energy_mode)}</span></div></div></div> <div class="mt-6 flex gap-2 border-t border-border pt-4"><button class="btn-secondary flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs font-medium" aria-label="Ver información del Hub">`);
+          if (store_get($$store_subs ??= {}, "$hubsSaving", hubsSaving) === hub.hubId) {
+            $$renderer2.push("<!--[0-->");
+            $$renderer2.push(`<span class="inline-flex items-center gap-1.5 rounded-full bg-warning/10 border border-warning/20 px-2.5 py-1 text-xs font-semibold text-warning">`);
+            Loader($$renderer2, { class: "h-3 w-3 animate-spin" });
+            $$renderer2.push(`<!----> Enviando…</span>`);
+          } else {
+            $$renderer2.push("<!--[-1-->");
+            $$renderer2.push(`<span class="inline-flex items-center gap-1.5 rounded-full bg-success/10 border border-success/20 px-2.5 py-1 text-xs font-semibold text-success"><span class="h-1.5 w-1.5 rounded-full bg-success"></span> Activo</span>`);
+          }
+          $$renderer2.push(`<!--]--></div> <div class="mt-4 flex-1"><h4 class="text-2xl font-bold tracking-tight text-card-foreground">${escape_html(hub.hubId)}</h4> <div class="mt-2 space-y-1"><p class="text-sm text-card-foreground/80">${escape_html(hub.deviceName)}</p> <div${attr_class(`inline-block mt-2 px-2.5 py-0.5 rounded-full border ${hub.energyMode === "Bajo consumo" ? "bg-success/10 border-success/20 text-success" : hub.energyMode === "Balanceado" ? "bg-blue-500/10 border-blue-500/20 text-blue-500" : hub.energyMode === "Performance" ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-accent/10 border-accent/20 text-accent"}`)}><span class="text-[10px] font-medium">Modo Energía: ${escape_html(hub.energyMode)}</span></div></div></div> <div class="mt-6 flex gap-2 border-t border-border pt-4"><button class="btn-secondary flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs font-medium" aria-label="Ver información del Hub">`);
           Eye($$renderer2, { class: "h-4 w-4" });
           $$renderer2.push(`<!----> Ver Info</button> <button class="btn-secondary flex items-center justify-center rounded-lg p-2.5 border border-border" aria-label="Configurar Hub">`);
           Settings($$renderer2, { class: "h-4 w-4" });
-          $$renderer2.push(`<!----></button> <button class="flex items-center justify-center rounded-lg border border-border bg-card p-2.5 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20" aria-label="Eliminar Hub">`);
-          Trash_2($$renderer2, { class: "h-4 w-4" });
           $$renderer2.push(`<!----></button></div></div>`);
         }
         $$renderer2.push(`<!--]--></div>`);
@@ -2441,14 +2471,27 @@ function Network_hubs_page($$renderer, $$props) {
     $$renderer2.push(`<!----> `);
     Modal($$renderer2, {
       open: showEditModal,
-      title: `Configurando Hub ID: ${formHub.id}`,
+      title: `Configurando Hub: ${formHub.hubId}`,
       onClose: () => showEditModal = false,
       children: ($$renderer3) => {
-        $$renderer3.push(`<form class="space-y-4 px-1"><div class="space-y-1.5"><label for="hub-network" class="block text-sm font-medium text-card-foreground">Red</label> <input id="hub-network" type="text"${attr("value", formHub.network)} class="input-field" required="" placeholder="Red Industrial Beta..."/></div> <div class="space-y-1.5"><label for="hub-name" class="block text-sm font-medium text-card-foreground">Nombre</label> <input id="hub-name" type="text"${attr("value", formHub.device_name)} class="input-field" required="" placeholder="Sensor Temperatura Planta 1"/></div> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="hub-ssid" class="block text-sm font-medium text-card-foreground">WIFI SSID</label> <input id="hub-ssid" type="text"${attr("value", formHub.wifi_ssid)} class="input-field" required="" placeholder="IoT_Network_5G"/></div> <div class="space-y-1.5"><label for="hub-password" class="block text-sm font-medium text-card-foreground">WIFI Contraseña</label> <input id="hub-password" type="text"${attr("value", formHub.wifi_password)} class="input-field" required="" placeholder="***********"/></div></div> <div class="space-y-1.5"><label for="hub-mqtt" class="block text-sm font-medium text-card-foreground">MQTT URI</label> <input id="hub-mqtt" type="text"${attr("value", formHub.mqtt_uri)} class="input-field font-mono" required="" placeholder="mqtt://broker.hivemq.com"/></div> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="hub-sample" class="block text-sm font-medium text-card-foreground">Sample (min)</label> <input id="hub-sample" type="number"${attr("value", formHub.sample)} class="input-field" required="" placeholder="5"/></div> <div class="space-y-1.5"><label for="hub-energy" class="block text-sm font-medium text-card-foreground">Modo Energía</label> `);
+        $$renderer3.push(`<form class="space-y-4 px-1">`);
+        if (store_get($$store_subs ??= {}, "$hubsError", hubsError)) {
+          $$renderer3.push("<!--[0-->");
+          $$renderer3.push(`<div class="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">`);
+          Circle_alert($$renderer3, { class: "h-3.5 w-3.5 shrink-0" });
+          $$renderer3.push(`<!----> ${escape_html(store_get($$store_subs ??= {}, "$hubsError", hubsError))}</div>`);
+        } else {
+          $$renderer3.push("<!--[-1-->");
+        }
+        $$renderer3.push(`<!--]--> `);
+        {
+          $$renderer3.push("<!--[-1-->");
+        }
+        $$renderer3.push(`<!--]--> <div class="space-y-1.5"><label for="hub-name" class="block text-sm font-medium text-card-foreground">Nombre del dispositivo</label> <input id="hub-name" type="text"${attr("value", formHub.deviceName)} class="input-field" required="" placeholder="Sensor Temperatura Planta 1"/></div> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="hub-ssid" class="block text-sm font-medium text-card-foreground">WIFI SSID</label> <input id="hub-ssid" type="text"${attr("value", formHub.wifiSsid)} class="input-field" required="" placeholder="IoT_Network_5G"/></div> <div class="space-y-1.5"><label for="hub-password" class="block text-sm font-medium text-card-foreground">WIFI Contraseña</label> <input id="hub-password" type="text"${attr("value", formHub.wifiPassword)} class="input-field" required="" placeholder="***********"/></div></div> <div class="space-y-1.5"><label for="hub-mqtt" class="block text-sm font-medium text-card-foreground">MQTT URI</label> <input id="hub-mqtt" type="text"${attr("value", formHub.mqttUri)} class="input-field font-mono" required="" placeholder="mqtt://broker.hivemq.com:1883"/></div> <div class="grid grid-cols-2 gap-3"><div class="space-y-1.5"><label for="hub-sample" class="block text-sm font-medium text-card-foreground">Sample (min)</label> <input id="hub-sample" type="number"${attr("value", formHub.sample)} class="input-field" required="" placeholder="5"/></div> <div class="space-y-1.5"><label for="hub-energy" class="block text-sm font-medium text-card-foreground">Modo Energía</label> `);
         $$renderer3.select(
           {
             id: "hub-energy",
-            value: formHub.energy_mode,
+            value: formHub.energyMode,
             class: "input-field"
           },
           ($$renderer4) => {
@@ -2463,7 +2506,16 @@ function Network_hubs_page($$renderer, $$props) {
             });
           }
         );
-        $$renderer3.push(`</div></div> <div class="flex gap-3 pt-6 pb-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">Cancelar</button> <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium">Guardar</button></div></form>`);
+        $$renderer3.push(`</div></div> <p class="text-xs text-muted-foreground bg-muted/40 border border-border rounded-lg px-3 py-2"><strong>Nota:</strong> La respuesta 202 indica que la solicitud fue aceptada. El servidor esperará hasta 5 minutos la confirmación del hardware.</p> <div class="flex gap-3 pt-6 pb-2"><button type="button" class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">Cancelar</button> <button type="submit"${attr("disabled", store_get($$store_subs ??= {}, "$hubsSaving", hubsSaving) === formHub.hubId, true)} class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-60">`);
+        if (store_get($$store_subs ??= {}, "$hubsSaving", hubsSaving) === formHub.hubId) {
+          $$renderer3.push("<!--[0-->");
+          Loader($$renderer3, { class: "h-4 w-4 animate-spin" });
+          $$renderer3.push(`<!----> Enviando…`);
+        } else {
+          $$renderer3.push("<!--[-1-->");
+          $$renderer3.push(`Enviar al Hardware`);
+        }
+        $$renderer3.push(`<!--]--></button></div></form>`);
       }
     });
     $$renderer2.push(`<!---->`);
@@ -2507,8 +2559,8 @@ function Login_page($$renderer, $$props) {
     $$renderer2.push(`<div class="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden"><div class="pointer-events-none absolute inset-0"><div class="absolute -left-1/4 -top-1/4 h-96 w-96 rounded-full bg-primary/10 blur-3xl animate-pulse"></div> <div class="absolute -bottom-1/4 -right-1/4 h-96 w-96 rounded-full bg-accent/10 blur-3xl animate-pulse" style="animation-delay: 1s"></div> <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-primary/5 blur-3xl"></div></div> <div class="pointer-events-none absolute inset-0 opacity-[0.02]" style="background-image: radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0); background-size: 40px 40px;"></div> <div class="relative w-full max-w-md animate-scale-in"><div class="absolute -top-16 right-0">`);
     Theme_toggle($$renderer2);
     $$renderer2.push(`<!----></div> <div class="rounded-3xl border border-border bg-card/80 backdrop-blur-xl p-8 shadow-2xl shadow-black/10"><div class="flex flex-col items-center text-center"><div class="relative"><div class="absolute inset-0 rounded-2xl bg-primary/30 blur-xl"></div> <div class="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30">`);
-    Cpu($$renderer2, { class: "h-8 w-8 text-primary-foreground" });
-    $$renderer2.push(`<!----></div></div> <h1 class="mt-6 text-2xl font-bold text-card-foreground">IoT Server</h1> <p class="mt-2 text-sm text-muted-foreground">Inicia sesión para acceder al panel de control</p></div> <form class="mt-8 space-y-5">`);
+    Layout_dashboard($$renderer2, { class: "h-8 w-8 text-primary-foreground" });
+    $$renderer2.push(`<!----></div></div> <h1 class="mt-6 text-2xl font-bold text-card-foreground">Manager</h1> <p class="mt-2 text-sm text-muted-foreground">Inicia sesión para acceder al panel de control</p></div> <form class="mt-8 space-y-5">`);
     {
       $$renderer2.push("<!--[-1-->");
     }
@@ -2525,7 +2577,7 @@ function Login_page($$renderer, $$props) {
       $$renderer2.push("<!--[-1-->");
       Eye($$renderer2, { class: "h-4 w-4" });
     }
-    $$renderer2.push(`<!--]--></button></div></div> <div class="flex items-center justify-between"><label class="flex items-center gap-2 cursor-pointer group"><input type="checkbox" class="h-4 w-4 rounded border-input accent-primary transition-transform group-hover:scale-110"/> <span class="text-sm text-muted-foreground group-hover:text-foreground transition-colors">Recordarme</span></label> <button type="button" class="text-sm font-medium text-primary transition-all hover:text-primary/80 hover:underline underline-offset-4">¿Olvidaste tu contraseña?</button></div> <button type="submit"${attr("disabled", isLoading, true)} class="btn-primary w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50">`);
+    $$renderer2.push(`<!--]--></button></div></div> <button type="submit"${attr("disabled", isLoading, true)} class="btn-primary w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50">`);
     {
       $$renderer2.push("<!--[-1-->");
       $$renderer2.push(`Iniciar sesión `);
@@ -2534,7 +2586,7 @@ function Login_page($$renderer, $$props) {
       });
       $$renderer2.push(`<!---->`);
     }
-    $$renderer2.push(`<!--]--></button></form> <div class="mt-8 border-t border-border pt-6 text-center"><p class="text-sm text-muted-foreground">¿No tienes una cuenta?  <button class="font-medium text-primary transition-colors hover:text-primary/80">Contactar administrador</button></p></div></div> <p class="mt-8 text-center text-xs text-muted-foreground">IoT Server © 2026</p></div></div>`);
+    $$renderer2.push(`<!--]--></button></form></div></div></div>`);
   });
 }
 function _page($$renderer, $$props) {

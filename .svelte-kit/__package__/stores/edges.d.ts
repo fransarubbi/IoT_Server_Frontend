@@ -1,14 +1,16 @@
-import type { Edge } from "../types";
-export declare const edges: {
-    subscribe: (this: void, run: import("svelte/store").Subscriber<Edge[]>, invalidate?: () => void) => import("svelte/store").Unsubscriber;
-    add: (edge: Edge) => void;
-    remove: (id: string) => void;
-    update: (edge: Edge) => void;
-    addNetwork: (edgeId: string, network: any) => void;
-    updateNetwork: (edgeId: string, oldNetworkId: string, newNetwork: any) => void;
-    removeNetwork: (edgeId: string, networkId: string) => void;
-    addHub: (edgeId: string, networkId: string, hub: any) => void;
-    removeHub: (edgeId: string, networkId: string, hubId: string) => void;
-    updateHub: (edgeId: string, networkId: string, hub: any) => void;
-    reset: () => void;
+import type { Edge } from '../types';
+export declare const edges: import("svelte/store").Writable<Edge[]>;
+export declare const edgesLoading: import("svelte/store").Writable<boolean>;
+export declare const edgesError: import("svelte/store").Writable<string | null>;
+export declare const edgesActions: {
+    /** Load all edges from the API and populate the store. */
+    load(): Promise<void>;
+    /** Create a new Edge via the API, then reload the list.
+     * Does NOT touch edgesLoading — the caller manages its own submitting state. */
+    add(edge: Omit<Edge, "status" | "lastSeen">): Promise<void>;
+    /** Delete an Edge via the API, then remove it from the local store.
+     * Does NOT touch edgesLoading — the caller manages its own submitting state. */
+    remove(edgeId: string): Promise<void>;
+    /** Download the Edge configuration ZIP from the API. */
+    downloadConfig(edgeId: string, name: string): Promise<void>;
 };

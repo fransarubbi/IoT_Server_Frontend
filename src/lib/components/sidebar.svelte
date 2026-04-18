@@ -1,6 +1,6 @@
 <script lang="ts">
   import { currentPage, type Page } from "$lib/stores/navigation";
-  import { auth } from "$lib/stores/auth";
+  import { profile, fullName, initials } from "$lib/stores/auth";
   import ThemeToggle from "./theme-toggle.svelte";
   import {
     Server,
@@ -104,14 +104,14 @@
                   bg-gradient-to-br from-primary to-accent text-primary-foreground font-semibold
                   shadow-md shadow-primary/20"
       >
-        {$auth?.name?.charAt(0).toUpperCase() || "U"}
+        {$profile ? initials($profile) : 'U'}
       </div>
       <div class="flex-1 min-w-0">
         <p class="truncate text-sm font-semibold text-sidebar-foreground">
-          {$auth?.name || "Usuario"}
+          {$profile ? fullName($profile) : 'Usuario'}
         </p>
         <p class="truncate text-xs text-muted-foreground">
-          {$auth?.email || "usuario@email.com"}
+          {$profile?.email || 'usuario@email.com'}
         </p>
       </div>
     </div>

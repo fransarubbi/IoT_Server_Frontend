@@ -1,10 +1,11 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import PageHeader from "$lib/components/page-header.svelte";
   import Modal from "$lib/components/modal.svelte";
   import StatusBadge from "$lib/components/status-badge.svelte";
   import EmptyState from "$lib/components/empty-state.svelte";
   import type { Edge } from "$lib/types";
-  import { edges } from "$lib/stores/edges";
+  import { edges, edgesLoading, edgesActions } from "$lib/stores/edges";
   import { navigateTo } from "$lib/stores/navigation";
   import Plus from "lucide-svelte/icons/plus";
   import Server from "lucide-svelte/icons/server";
@@ -13,84 +14,86 @@
   import MapPin from "lucide-svelte/icons/map-pin";
   import Eye from "lucide-svelte/icons/eye";
   import Download from "lucide-svelte/icons/download";
+  import Loader from "lucide-svelte/icons/loader";
+  import AlertCircle from "lucide-svelte/icons/alert-circle";
+  import RefreshCw from "lucide-svelte/icons/refresh-cw";
 
-  let showCreateEdgeModal = $state(false);
-  let showViewEdgeModal = $state(false);
-  let showDeleteEdgeModal = $state(false);
-
-  let viewingEdge = $state<Edge | null>(null);
-  let targetDeleteEdge = $state<Edge | null>(null);
-
-  // Partial edge form state with requested default values
-  let newEdge = $state<Partial<Edge>>({
-    name: "",
-    ubication: "",
-    host_server: "127.0.0.1",
-    host_port: "8080",
-    cn: "localhost",
-    host_local: "127.0.0.1",
-    db_path: "/var/lib/edge.db",
-    buffer_size: 20,
-    rust_log: "Info",
-    max_attempts: 3,
-    frequency_phase: 5,
-    frequency_safe_mode: 20,
-    timeout_handshake: 30,
-    timeout_phase: 60,
-    timeout_safe_mode: 150,
-    time_between_heartbeats_balance_mode: 20,
-    time_between_heartbeats_normal: 45,
-    time_between_heartbeats_safe_mode: 60
+  onMount(() => {
+    edgesActions.load();
   });
 
-  function createEdge() {
-    if (!newEdge.name?.trim()) return;
+  // Modal visibility
+  let showCreateEdgeModal = $state(false);
+  let showViewEdgeModal   = $state(false);
+  let showDeleteEdgeModal = $state(false);
 
-    const created: Edge = {
-      id_edge: crypto.randomUUID(),
-      name: newEdge.name,
-      ubication: newEdge.ubication || "Sin ubicación declarada",
-      host_server: newEdge.host_server as string,
-      host_port: newEdge.host_port as string,
-      cn: newEdge.cn as string,
-      host_local: newEdge.host_local as string,
-      db_path: newEdge.db_path as string,
-      buffer_size: Number(newEdge.buffer_size),
-      rust_log: newEdge.rust_log as any,
-      max_attempts: Number(newEdge.max_attempts),
-      frequency_phase: Number(newEdge.frequency_phase),
-      frequency_safe_mode: Number(newEdge.frequency_safe_mode),
-      timeout_handshake: Number(newEdge.timeout_handshake),
-      timeout_phase: Number(newEdge.timeout_phase),
-      timeout_safe_mode: Number(newEdge.timeout_safe_mode),
-      time_between_heartbeats_balance_mode: Number(newEdge.time_between_heartbeats_balance_mode),
-      time_between_heartbeats_normal: Number(newEdge.time_between_heartbeats_normal),
-      time_between_heartbeats_safe_mode: Number(newEdge.time_between_heartbeats_safe_mode),
-      status: "online",
-      lastSeen: new Date(),
-      networks: [],
-    };
+  // Selected items
+  let viewingEdge       = $state<Edge | null>(null);
+  let targetDeleteEdge  = $state<Edge | null>(null);
 
-    edges.add(created);
-    
-    // Reset defaults
-    newEdge.name = "";
-    newEdge.ubication = "";
+  // Local action states (independent from the global list-loading state)
+  let isSubmitting  = $state(false);
+  let actionError   = $state<string | null>(null);
 
-    showCreateEdgeModal = false;
+  // Form state with default values
+  let newEdge = $state<Omit<Edge, "status" | "lastSeen">>({
+    edgeId: "",
+    name: "",
+    ubication: "",
+    hostServer: "127.0.0.1",
+    port: "8080",
+    cn: "localhost",
+    hostLocal: "127.0.0.1",
+    dbPath: "/var/lib/edge.db",
+    bufferSize: 20,
+    rustLog: "Info",
+    maxAttempts: 3,
+    frequencyPhase: 5,
+    frequencySafeMode: 20,
+    timeoutHandshake: 30,
+    timeoutPhase: 60,
+    timeoutSafeMode: 150,
+    timeBetweenHeartbeatsBalanceMode: 20,
+    timeBetweenHeartbeatsNormal: 45,
+    timeBetweenHeartbeatsSafeMode: 60,
+  });
+
+  async function createEdge() {
+    if (!newEdge.name?.trim() || !newEdge.edgeId?.trim()) return;
+    actionError = null;
+    isSubmitting = true;
+    try {
+      await edgesActions.add({ ...newEdge });
+      newEdge.edgeId = "";
+      newEdge.name = "";
+      newEdge.ubication = "";
+      showCreateEdgeModal = false;
+    } catch (err) {
+      actionError = err instanceof Error ? err.message : String(err);
+    } finally {
+      isSubmitting = false;
+    }
   }
 
-  function confirmDeleteEdge() {
-    if (targetDeleteEdge) {
-      edges.remove(targetDeleteEdge.id_edge);
+  async function confirmDeleteEdge() {
+    if (!targetDeleteEdge) return;
+    actionError = null;
+    isSubmitting = true;
+    try {
+      await edgesActions.remove(targetDeleteEdge.edgeId);
       showDeleteEdgeModal = false;
       targetDeleteEdge = null;
+    } catch (err) {
+      actionError = err instanceof Error ? err.message : String(err);
+    } finally {
+      isSubmitting = false;
     }
   }
 
   function deleteEdgePrompt(edge: Edge, event: Event) {
     event.stopPropagation();
     targetDeleteEdge = edge;
+    actionError = null;
     showDeleteEdgeModal = true;
   }
 
@@ -100,31 +103,25 @@
     showViewEdgeModal = true;
   }
 
-  function exportEdgeConfig(edge: Edge, event: Event) {
+  async function downloadEdgeConfig(edge: Edge, event: Event) {
     event.stopPropagation();
-    const dataStr =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(edge, null, 2));
-    const downloadAnchorNode = document.createElement("a");
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute(
-      "download",
-      `edge_config_${edge.name}.json`,
-    );
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    try {
+      await edgesActions.downloadConfig(edge.edgeId, edge.name);
+    } catch (err) {
+      // non-critical, silent fail
+      console.error("Download failed:", err);
+    }
   }
 
   function goToNetworks(edgeId: string) {
     navigateTo("edge-networks", { edgeId });
   }
 
-  function formatDate(date: Date): string {
+  function formatDate(iso: string): string {
     return new Intl.DateTimeFormat("es", {
       dateStyle: "short",
       timeStyle: "short",
-    }).format(new Date(date));
+    }).format(new Date(iso));
   }
 </script>
 
@@ -140,13 +137,17 @@
         <span class="text-sm text-muted-foreground">Total:</span>
         <span class="font-bold text-card-foreground">{$edges.length} edges</span>
       </div>
-      <div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5">
-        <span class="relative flex h-2 w-2">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span>
-          <span class="relative inline-flex h-2 w-2 rounded-full bg-success"></span>
-        </span>
-        <span class="text-sm font-semibold text-success">{$edges.filter((e) => e.status === "online").length} en línea</span>
-      </div>
+      {#if $edges.some((e) => e.status === "online")}
+        <div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-success"></span>
+          </span>
+          <span class="text-sm font-semibold text-success">
+            {$edges.filter((e) => e.status === "online").length} en línea
+          </span>
+        </div>
+      {/if}
     </div>
 
     <button
@@ -158,22 +159,40 @@
     </button>
   </div>
 
-  {#if $edges.length === 0}
+  <!--
+    Only show the full-page spinner on the FIRST load (when the list is empty).
+    Never show it while a modal action is in progress.
+  -->
+  {#if $edgesLoading && $edges.length === 0}
+    <div class="flex items-center justify-center py-20 text-muted-foreground gap-3">
+      <Loader class="h-6 w-6 animate-spin" />
+      <span class="text-sm">Cargando dispositivos...</span>
+    </div>
+  {:else if $edges.length === 0}
     <EmptyState
       icon={Server}
       title="Sin Edge Devices"
       description="No tienes ningún dispositivo Edge configurado. Crea uno para comenzar a gestionar tu infraestructura IoT."
       actionLabel="Crear Edge Device"
       onAction={() => (showCreateEdgeModal = true)}
-    />
+    >
+      <!-- Retry button when load failed -->
+      <button
+        onclick={() => edgesActions.load()}
+        class="mt-3 flex items-center gap-2 mx-auto text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <RefreshCw class="h-3.5 w-3.5" />
+        Reintentar conexión
+      </button>
+    </EmptyState>
   {:else}
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {#each $edges as edge, i}
         <div
           role="button"
           tabindex="0"
-          onkeydown={(e) => (e.key === "Enter" || e.key === " ") && goToNetworks(edge.id_edge)}
-          onclick={() => goToNetworks(edge.id_edge)}
+          onkeydown={(e) => (e.key === "Enter" || e.key === " ") && goToNetworks(edge.edgeId)}
+          onclick={() => goToNetworks(edge.edgeId)}
           class="stagger-item card-interactive group p-5 text-left w-full cursor-pointer"
           style="animation-delay: {i * 0.05}s"
         >
@@ -181,25 +200,29 @@
             <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:from-primary/30">
               <Server class="h-7 w-7 text-primary" />
             </div>
-            <StatusBadge status={edge.status} />
+            {#if edge.status}
+              <StatusBadge status={edge.status} />
+            {/if}
           </div>
 
           <h3 class="mt-4 text-lg font-semibold text-card-foreground transition-colors group-hover:text-primary">
             {edge.name}
           </h3>
 
-          <div class="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MapPin class="h-4 w-4" />
-            {edge.ubication}
-          </div>
+          {#if edge.ubication}
+            <div class="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
+              <MapPin class="h-4 w-4" />
+              {edge.ubication}
+            </div>
+          {/if}
 
           <div class="mt-4 flex items-center justify-between border-t border-border pt-4">
             <div class="flex items-center gap-1.5 text-sm text-muted-foreground">
               <NetworkIcon class="h-4 w-4" />
-              <span>{edge.networks.length} redes</span>
+              <span>Ver redes</span>
             </div>
             <div class="text-xs text-muted-foreground font-mono">
-              ID: {edge.id_edge}
+              ID: {edge.edgeId}
             </div>
           </div>
 
@@ -219,8 +242,8 @@
               <Eye class="h-4 w-4" />
             </button>
             <button
-              onclick={(e) => exportEdgeConfig(edge, e)}
-              title="Exportar configuración"
+              onclick={(e) => downloadEdgeConfig(edge, e)}
+              title="Descargar configuración ZIP"
               class="flex items-center justify-center rounded-lg border border-border bg-card px-3 py-2 text-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:border-primary/50"
             >
               <Download class="h-4 w-4" />
@@ -235,21 +258,25 @@
 <!-- Create Edge Modal -->
 <Modal
   open={showCreateEdgeModal}
-  title="Configuración Completada Nuevo Edge"
+  title="Nuevo Edge Device"
   onClose={() => (showCreateEdgeModal = false)}
 >
   <form onsubmit={(e) => { e.preventDefault(); createEdge(); }} class="px-1 text-left">
     <div class="space-y-6">
-      
+
       <!-- System Specs -->
       <div>
         <h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Sistema</h3>
         <div class="grid grid-cols-2 gap-3">
-          <div class="col-span-2 space-y-1.5">
+          <div class="space-y-1.5">
+            <label for="create-edgeId" class="block text-xs font-semibold text-muted-foreground">ID del Edge</label>
+            <input id="create-edgeId" type="text" bind:value={newEdge.edgeId} class="input-field py-1.5 font-mono" required placeholder="edge-001" />
+          </div>
+          <div class="space-y-1.5">
             <label for="create-name" class="block text-xs font-semibold text-muted-foreground">Nombre</label>
             <input id="create-name" type="text" bind:value={newEdge.name} class="input-field py-1.5" required placeholder="Edge Gateway Sur" />
           </div>
-          <div class="space-y-1.5">
+          <div class="col-span-2 space-y-1.5">
             <label for="create-ubic" class="block text-xs font-semibold text-muted-foreground">Ubicación</label>
             <input id="create-ubic" type="text" bind:value={newEdge.ubication} class="input-field py-1.5" placeholder="Datacenter Principal" />
           </div>
@@ -259,32 +286,32 @@
           </div>
           <div class="col-span-2 grid grid-cols-3 gap-2">
             <div class="space-y-1.5 flex-1">
-                <label for="create-host_server" class="block text-xs font-semibold text-muted-foreground">Host Server</label>
-                <input id="create-host_server" type="text" bind:value={newEdge.host_server} class="input-field py-1.5 font-mono" />
+              <label for="create-hostServer" class="block text-xs font-semibold text-muted-foreground">Host Server</label>
+              <input id="create-hostServer" type="text" bind:value={newEdge.hostServer} class="input-field py-1.5 font-mono" />
             </div>
             <div class="space-y-1.5 flex-[0.5]">
-                <label for="create-host_port" class="block text-xs font-semibold text-muted-foreground">Host Port</label>
-                <input id="create-host_port" type="text" bind:value={newEdge.host_port} class="input-field py-1.5 font-mono" />
+              <label for="create-port" class="block text-xs font-semibold text-muted-foreground">Puerto</label>
+              <input id="create-port" type="text" bind:value={newEdge.port} class="input-field py-1.5 font-mono" />
             </div>
             <div class="space-y-1.5 flex-1">
-                <label for="create-host_local" class="block text-xs font-semibold text-muted-foreground">Host Local</label>
-                <input id="create-host_local" type="text" bind:value={newEdge.host_local} class="input-field py-1.5 font-mono" />
+              <label for="create-hostLocal" class="block text-xs font-semibold text-muted-foreground">Host Local</label>
+              <input id="create-hostLocal" type="text" bind:value={newEdge.hostLocal} class="input-field py-1.5 font-mono" />
             </div>
           </div>
           <div class="col-span-2 space-y-1.5">
             <label for="create-db" class="block text-xs font-semibold text-muted-foreground">Ruta Base de Datos</label>
-            <input id="create-db" type="text" bind:value={newEdge.db_path} class="input-field py-1.5 font-mono text-xs" />
+            <input id="create-db" type="text" bind:value={newEdge.dbPath} class="input-field py-1.5 font-mono text-xs" />
           </div>
           <div class="space-y-1.5">
             <label for="create-buffer" class="block text-xs font-semibold text-muted-foreground">Tamaño Buffer (5-50)</label>
-            <input id="create-buffer" type="number" min="5" max="50" bind:value={newEdge.buffer_size} class="input-field py-1.5" />
+            <input id="create-buffer" type="number" min="5" max="50" bind:value={newEdge.bufferSize} class="input-field py-1.5" />
           </div>
           <div class="space-y-1.5">
             <label for="create-log" class="block text-xs font-semibold text-muted-foreground">Log</label>
-            <select id="create-log" bind:value={newEdge.rust_log} class="input-field py-1.5 bg-background">
-                <option value="Debug">Debug</option>
-                <option value="Info">Info</option>
-                <option value="Error">Error</option>
+            <select id="create-log" bind:value={newEdge.rustLog} class="input-field py-1.5 bg-background">
+              <option value="Debug">Debug</option>
+              <option value="Info">Info</option>
+              <option value="Error">Error</option>
             </select>
           </div>
         </div>
@@ -297,43 +324,51 @@
         <h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Protocolo</h3>
         <div class="grid grid-cols-2 gap-3 text-xs">
           <div class="space-y-1">
-            <label for="p-max-a" class="block font-semibold text-muted-foreground">Nº máximo intentos (1-10s)</label>
-            <input id="p-max-a" type="number" min="1" max="10" bind:value={newEdge.max_attempts} class="input-field py-1" />
+            <label for="p-max-a" class="block font-semibold text-muted-foreground">Nº máximo intentos (1-10)</label>
+            <input id="p-max-a" type="number" min="1" max="10" bind:value={newEdge.maxAttempts} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-fp" class="block font-semibold text-muted-foreground">Frec. de msjs en fase (1-10m)</label>
-            <input id="p-fp" type="number" min="1" max="10" bind:value={newEdge.frequency_phase} class="input-field py-1" />
+            <label for="p-fp" class="block font-semibold text-muted-foreground">Frec. msjs en fase (1-10m)</label>
+            <input id="p-fp" type="number" min="1" max="10" bind:value={newEdge.frequencyPhase} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-fs" class="block font-semibold text-muted-foreground">Frec. en safe mode (10-40s)</label>
-            <input id="p-fs" type="number" min="10" max="40" bind:value={newEdge.frequency_safe_mode} class="input-field py-1" />
+            <label for="p-fs" class="block font-semibold text-muted-foreground">Frec. safe mode (10-40s)</label>
+            <input id="p-fs" type="number" min="10" max="40" bind:value={newEdge.frequencySafeMode} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-th" class="block font-semibold text-muted-foreground">T Límite handshake (15-60s)</label>
-            <input id="p-th" type="number" min="15" max="60" bind:value={newEdge.timeout_handshake} class="input-field py-1" />
+            <input id="p-th" type="number" min="15" max="60" bind:value={newEdge.timeoutHandshake} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-tp" class="block font-semibold text-muted-foreground">T Límite fases (30-120s)</label>
-            <input id="p-tp" type="number" min="30" max="120" bind:value={newEdge.timeout_phase} class="input-field py-1" />
+            <input id="p-tp" type="number" min="30" max="120" bind:value={newEdge.timeoutPhase} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-ts" class="block font-semibold text-muted-foreground">T Límite safe mode (120-300s)</label>
-            <input id="p-ts" type="number" min="120" max="300" bind:value={newEdge.timeout_safe_mode} class="input-field py-1" />
+            <input id="p-ts" type="number" min="120" max="300" bind:value={newEdge.timeoutSafeMode} class="input-field py-1" />
           </div>
-          <div class="space-y-1 col-span-2 sm:col-span-1">
+          <div class="space-y-1">
             <label for="p-hbb" class="block font-semibold text-muted-foreground">Heartbeat b-mode (10-40s)</label>
-            <input id="p-hbb" type="number" min="10" max="40" bind:value={newEdge.time_between_heartbeats_balance_mode} class="input-field py-1" />
+            <input id="p-hbb" type="number" min="10" max="40" bind:value={newEdge.timeBetweenHeartbeatsBalanceMode} class="input-field py-1" />
           </div>
-          <div class="space-y-1 sm:col-span-1">
+          <div class="space-y-1">
             <label for="p-hbn" class="block font-semibold text-muted-foreground">Heartbeat normal (30-60s)</label>
-            <input id="p-hbn" type="number" min="30" max="60" bind:value={newEdge.time_between_heartbeats_normal} class="input-field py-1" />
+            <input id="p-hbn" type="number" min="30" max="60" bind:value={newEdge.timeBetweenHeartbeatsNormal} class="input-field py-1" />
           </div>
           <div class="space-y-1 col-span-2">
             <label for="p-hbs" class="block font-semibold text-muted-foreground">Heartbeat safe mode (40-80s)</label>
-            <input id="p-hbs" type="number" min="40" max="80" bind:value={newEdge.time_between_heartbeats_safe_mode} class="input-field py-1" />
+            <input id="p-hbs" type="number" min="40" max="80" bind:value={newEdge.timeBetweenHeartbeatsSafeMode} class="input-field py-1" />
           </div>
         </div>
       </div>
+
+      <!-- Error only shows for user-triggered failures (inside the modal) -->
+      {#if actionError}
+        <div class="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
+          <AlertCircle class="h-3.5 w-3.5 shrink-0" />
+          {actionError}
+        </div>
+      {/if}
 
     </div>
 
@@ -341,7 +376,10 @@
       <button type="button" onclick={() => (showCreateEdgeModal = false)} class="btn-secondary flex-1 rounded-xl py-3 text-sm">
         Cancelar
       </button>
-      <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm">
+      <button type="submit" disabled={isSubmitting} class="btn-primary flex-1 rounded-xl py-3 text-sm disabled:opacity-60 flex items-center justify-center gap-2">
+        {#if isSubmitting}
+          <Loader class="h-4 w-4 animate-spin" />
+        {/if}
         Crear Edge
       </button>
     </div>
@@ -351,112 +389,110 @@
 <!-- View Edge Config Modal -->
 <Modal
   open={showViewEdgeModal}
-  title={`Configuración del Edge`}
+  title="Configuración del Edge"
   onClose={() => (showViewEdgeModal = false)}
 >
   {#if viewingEdge}
     <div class="space-y-6">
 
-      <!-- Status Header -->
-      <div class="flex items-center gap-3 bg-muted/30 p-3 rounded-lg border border-border">
+      {#if viewingEdge.status}
+        <div class="flex items-center gap-3 bg-muted/30 p-3 rounded-lg border border-border">
           <StatusBadge status={viewingEdge.status} />
-          <div class="text-xs text-muted-foreground ml-auto pr-1 text-right">
-              <div>Ult. vez visto:</div>
+          {#if viewingEdge.lastSeen}
+            <div class="text-xs text-muted-foreground ml-auto pr-1 text-right">
+              <div>Últ. vez visto:</div>
               <div class="font-medium text-card-foreground">{formatDate(viewingEdge.lastSeen)}</div>
-          </div>
-      </div>
+            </div>
+          {/if}
+        </div>
+      {/if}
 
-      <!-- System Specs Readonly -->
       <div>
         <h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Sistema</h3>
         <div class="grid grid-cols-2 gap-y-3 gap-x-4 text-sm bg-card border border-border p-4 rounded-xl">
-            <div class="col-span-2">
-                <span class="text-muted-foreground block text-xs mb-0.5">ID del Edge</span>
-                <span class="font-mono text-card-foreground font-medium">{viewingEdge.id_edge}</span>
-            </div>
-            <div>
-                <span class="text-muted-foreground block text-xs mb-0.5">Nombre</span>
-                <span class="font-medium text-card-foreground">{viewingEdge.name}</span>
-            </div>
-            <div>
-                <span class="text-muted-foreground block text-xs mb-0.5">Ubicación</span>
-                <span class="text-card-foreground">{viewingEdge.ubication}</span>
-            </div>
-            <div>
-                <span class="text-muted-foreground block text-xs mb-0.5">Host Server</span>
-                <span class="font-mono text-xs">{viewingEdge.host_server}:{viewingEdge.host_port}</span>
-            </div>
-            <div>
-                <span class="text-muted-foreground block text-xs mb-0.5">Host Local</span>
-                <span class="font-mono text-xs">{viewingEdge.host_local}</span>
-            </div>
-            <div class="col-span-2">
-                <span class="text-muted-foreground block text-xs mb-0.5">CN</span>
-                <span class="text-xs font-mono">{viewingEdge.cn}</span>
-            </div>
-            <div class="col-span-2">
-                <span class="text-muted-foreground block text-xs mb-0.5">Ruta Base de Datos</span>
-                <span class="text-xs font-mono break-all text-secondary-foreground">{viewingEdge.db_path}</span>
-            </div>
-            <div>
-                <span class="text-muted-foreground block text-xs mb-0.5">Tamaño del Buffer</span>
-                <span class="text-card-foreground">{viewingEdge.buffer_size}</span>
-            </div>
-            <div>
-                <span class="text-muted-foreground block text-xs mb-0.5">Nivel de Log</span>
-                <span class="text-card-foreground">{viewingEdge.rust_log}</span>
-            </div>
+          <div class="col-span-2">
+            <span class="text-muted-foreground block text-xs mb-0.5">ID del Edge</span>
+            <span class="font-mono text-card-foreground font-medium">{viewingEdge.edgeId}</span>
+          </div>
+          <div>
+            <span class="text-muted-foreground block text-xs mb-0.5">Nombre</span>
+            <span class="font-medium text-card-foreground">{viewingEdge.name}</span>
+          </div>
+          <div>
+            <span class="text-muted-foreground block text-xs mb-0.5">Ubicación</span>
+            <span class="text-card-foreground">{viewingEdge.ubication}</span>
+          </div>
+          <div>
+            <span class="text-muted-foreground block text-xs mb-0.5">Host Server</span>
+            <span class="font-mono text-xs">{viewingEdge.hostServer}:{viewingEdge.port}</span>
+          </div>
+          <div>
+            <span class="text-muted-foreground block text-xs mb-0.5">Host Local</span>
+            <span class="font-mono text-xs">{viewingEdge.hostLocal}</span>
+          </div>
+          <div class="col-span-2">
+            <span class="text-muted-foreground block text-xs mb-0.5">CN</span>
+            <span class="text-xs font-mono">{viewingEdge.cn}</span>
+          </div>
+          <div class="col-span-2">
+            <span class="text-muted-foreground block text-xs mb-0.5">Ruta Base de Datos</span>
+            <span class="text-xs font-mono break-all text-secondary-foreground">{viewingEdge.dbPath}</span>
+          </div>
+          <div>
+            <span class="text-muted-foreground block text-xs mb-0.5">Tamaño del Buffer</span>
+            <span class="text-card-foreground">{viewingEdge.bufferSize}</span>
+          </div>
+          <div>
+            <span class="text-muted-foreground block text-xs mb-0.5">Nivel de Log</span>
+            <span class="text-card-foreground">{viewingEdge.rustLog}</span>
+          </div>
         </div>
       </div>
 
-      <!-- Protocol Specs Readonly -->
       <div>
         <h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Protocolo</h3>
         <div class="space-y-2 bg-card border border-border p-4 rounded-xl text-sm">
-            <div class="flex justify-between border-b border-border/50 pb-2">
-                <span class="text-muted-foreground">Número máx. intentos</span>
-                <span class="font-mono">{viewingEdge.max_attempts} s</span>
-            </div>
-            <div class="flex justify-between border-b border-border/50 py-1">
-                <span class="text-muted-foreground">Frecuencia msj (fase)</span>
-                <span class="font-mono">{viewingEdge.frequency_phase} min</span>
-            </div>
-            <div class="flex justify-between border-b border-border/50 py-1">
-                <span class="text-muted-foreground">Frecuencia msj (safe mode)</span>
-                <span class="font-mono">{viewingEdge.frequency_safe_mode} s</span>
-            </div>
-            <div class="flex justify-between border-b border-border/50 py-1">
-                <span class="text-muted-foreground">T. Límite Handshake</span>
-                <span class="font-mono">{viewingEdge.timeout_handshake} s</span>
-            </div>
-            <div class="flex justify-between border-b border-border/50 py-1">
-                <span class="text-muted-foreground">T. Límite Fases</span>
-                <span class="font-mono">{viewingEdge.timeout_phase} s</span>
-            </div>
-            <div class="flex justify-between border-b border-border/50 py-1">
-                <span class="text-muted-foreground">T. Límite Safe mode</span>
-                <span class="font-mono">{viewingEdge.timeout_safe_mode} s</span>
-            </div>
-            <div class="flex justify-between border-b border-border/50 py-1">
-                <span class="text-muted-foreground">Heartbeat (Balance)</span>
-                <span class="font-mono">{viewingEdge.time_between_heartbeats_balance_mode} s</span>
-            </div>
-            <div class="flex justify-between border-b border-border/50 py-1">
-                <span class="text-muted-foreground">Heartbeat (Normal)</span>
-                <span class="font-mono">{viewingEdge.time_between_heartbeats_normal} s</span>
-            </div>
-            <div class="flex justify-between pt-1">
-                <span class="text-muted-foreground">Heartbeat (Safe)</span>
-                <span class="font-mono">{viewingEdge.time_between_heartbeats_safe_mode} s</span>
-            </div>
+          <div class="flex justify-between border-b border-border/50 pb-2">
+            <span class="text-muted-foreground">Número máx. intentos</span>
+            <span class="font-mono">{viewingEdge.maxAttempts} s</span>
+          </div>
+          <div class="flex justify-between border-b border-border/50 py-1">
+            <span class="text-muted-foreground">Frecuencia msj (fase)</span>
+            <span class="font-mono">{viewingEdge.frequencyPhase} min</span>
+          </div>
+          <div class="flex justify-between border-b border-border/50 py-1">
+            <span class="text-muted-foreground">Frecuencia msj (safe mode)</span>
+            <span class="font-mono">{viewingEdge.frequencySafeMode} s</span>
+          </div>
+          <div class="flex justify-between border-b border-border/50 py-1">
+            <span class="text-muted-foreground">T. Límite Handshake</span>
+            <span class="font-mono">{viewingEdge.timeoutHandshake} s</span>
+          </div>
+          <div class="flex justify-between border-b border-border/50 py-1">
+            <span class="text-muted-foreground">T. Límite Fases</span>
+            <span class="font-mono">{viewingEdge.timeoutPhase} s</span>
+          </div>
+          <div class="flex justify-between border-b border-border/50 py-1">
+            <span class="text-muted-foreground">T. Límite Safe mode</span>
+            <span class="font-mono">{viewingEdge.timeoutSafeMode} s</span>
+          </div>
+          <div class="flex justify-between border-b border-border/50 py-1">
+            <span class="text-muted-foreground">Heartbeat (Balance)</span>
+            <span class="font-mono">{viewingEdge.timeBetweenHeartbeatsBalanceMode} s</span>
+          </div>
+          <div class="flex justify-between border-b border-border/50 py-1">
+            <span class="text-muted-foreground">Heartbeat (Normal)</span>
+            <span class="font-mono">{viewingEdge.timeBetweenHeartbeatsNormal} s</span>
+          </div>
+          <div class="flex justify-between pt-1">
+            <span class="text-muted-foreground">Heartbeat (Safe)</span>
+            <span class="font-mono">{viewingEdge.timeBetweenHeartbeatsSafeMode} s</span>
+          </div>
         </div>
       </div>
 
       <div class="pt-4">
-        <button
-          onclick={() => (showViewEdgeModal = false)}
-          class="btn-primary w-full rounded-xl py-3 text-sm"
-        >
+        <button onclick={() => (showViewEdgeModal = false)} class="btn-primary w-full rounded-xl py-3 text-sm">
           Cerrar Visualizador
         </button>
       </div>
@@ -472,29 +508,39 @@
 >
   {#if targetDeleteEdge}
     <div class="space-y-4 pt-2">
-        <div class="flex flex-col items-center justify-center p-6 bg-destructive/10 border border-destructive/20 rounded-xl text-center">
-            <div class="bg-destructive text-destructive-foreground p-3 rounded-full mb-3">
-                <Trash2 class="h-8 w-8" />
-            </div>
-            <p class="text-sm font-bold text-destructive">Eliminación Destructiva</p>
+      <div class="flex flex-col items-center justify-center p-6 bg-destructive/10 border border-destructive/20 rounded-xl text-center">
+        <div class="bg-destructive text-destructive-foreground p-3 rounded-full mb-3">
+          <Trash2 class="h-8 w-8" />
         </div>
+        <p class="text-sm font-bold text-destructive">Eliminación Destructiva</p>
+      </div>
 
-        <p class="text-card-foreground text-center text-sm px-2">
-            ¿Estás seguro que quieres eliminar el edge <strong class="font-bold underline decoration-destructive underline-offset-2">{targetDeleteEdge.id_edge}</strong>?
-        </p>
+      <p class="text-card-foreground text-center text-sm px-2">
+        ¿Estás seguro que quieres eliminar el edge <strong class="font-bold underline decoration-destructive underline-offset-2">{targetDeleteEdge.edgeId}</strong>?
+      </p>
 
-        <p class="text-xs text-muted-foreground text-center bg-muted/50 p-3 rounded-lg border border-border mx-2">
-            Perderás automáticamente todas sus {targetDeleteEdge.networks.length} redes y hubs anexados imposibilitando su recuperación local.
-        </p>
+      <p class="text-xs text-muted-foreground text-center bg-muted/50 p-3 rounded-lg border border-border mx-2">
+        Se eliminarán también todas sus redes y hubs asociados de forma irreversible.
+      </p>
 
-        <div class="flex gap-3 pt-4">
-            <button type="button" onclick={() => (showDeleteEdgeModal = false)} class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">
-                Cancelar
-            </button>
-            <button type="button" onclick={confirmDeleteEdge} class="bg-destructive hover:bg-destructive/90 text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] flex-1 rounded-xl py-3 text-sm font-medium">
-                Confirmar
-            </button>
+      {#if actionError}
+        <div class="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
+          <AlertCircle class="h-3.5 w-3.5 shrink-0" />
+          {actionError}
         </div>
+      {/if}
+
+      <div class="flex gap-3 pt-4">
+        <button type="button" onclick={() => (showDeleteEdgeModal = false)} class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">
+          Cancelar
+        </button>
+        <button type="button" onclick={confirmDeleteEdge} disabled={isSubmitting} class="bg-destructive hover:bg-destructive/90 text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] flex-1 rounded-xl py-3 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-60">
+          {#if isSubmitting}
+            <Loader class="h-4 w-4 animate-spin" />
+          {/if}
+          Confirmar
+        </button>
+      </div>
     </div>
   {/if}
 </Modal>

@@ -1,41 +1,96 @@
 <script lang="ts">
   import { theme } from '$lib/stores/theme';
-  import { auth } from '$lib/stores/auth';
+  import { login } from '$lib/stores/auth';
   import ThemeToggle from '$lib/components/theme-toggle.svelte';
-  import { Server, Mail, Lock, ArrowRight, Eye, EyeOff, LayoutDashboard } from 'lucide-svelte';
+  import { Mail, Lock, ArrowRight, Eye, EyeOff, LayoutDashboard, WifiOff, ShieldAlert, UserX, AlertCircle } from 'lucide-svelte';
 
   let email = $state('');
   let password = $state('');
   let showPassword = $state(false);
   let isLoading = $state(false);
-  let error = $state('');
+
+  interface ErrorState {
+    type: 'invalid_credentials' | 'user_disabled' | 'profile_not_found' | 'email_not_confirmed' | 'network' | 'unknown';
+    message: string;
+  }
+
+  let errorState = $state<ErrorState | null>(null);
 
   let { onLogin }: { onLogin?: () => void } = $props();
 
+  /** Map error codes to user-facing messages (never ambiguous). */
+  function resolveError(code: string): ErrorState {
+    switch (code) {
+      case 'INVALID_CREDENTIALS':
+        return {
+          type: 'invalid_credentials',
+          message: 'Credenciales incorrectas. Verificá el correo y la contraseña.'
+        };
+      case 'USER_DISABLED':
+        return {
+          type: 'user_disabled',
+          message: 'Tu cuenta está deshabilitada. Contactá al administrador.'
+        };
+      case 'PROFILE_NOT_FOUND':
+        return {
+          type: 'profile_not_found',
+          message: 'No se encontró un perfil de usuario asociado a esta cuenta.'
+        };
+      case 'EMAIL_NOT_CONFIRMED':
+        return {
+          type: 'email_not_confirmed',
+          message: 'El correo electrónico no ha sido confirmado. Revisá tu bandeja de entrada.'
+        };
+      case 'NETWORK_ERROR':
+        return {
+          type: 'network',
+          message: 'Sin conexión al servidor. Verificá tu red e intentá de nuevo.'
+        };
+      default:
+        return {
+          type: 'unknown',
+          message: 'Ocurrió un error inesperado. Intentá de nuevo más tarde.'
+        };
+    }
+  }
+
   async function handleLogin() {
-    if (!email || !password) {
-      error = 'Por favor, completa todos los campos';
+    if (!email.trim() || !password) {
+      errorState = {
+        type: 'invalid_credentials',
+        message: 'Por favor, completá todos los campos.'
+      };
       return;
     }
 
     isLoading = true;
-    error = '';
+    errorState = null;
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    auth.login({
-      id: '1',
-      name: 'Admin Usuario',
-      email: email,
-      role: 'admin'
-    });
-
-    isLoading = false;
-    onLogin?.();
+    try {
+      await login(email.trim(), password);
+      // NOTE: password is never stored in global state — only email & session go to the store
+      onLogin?.();
+    } catch (err: unknown) {
+      const code = err instanceof Error ? err.message : 'UNKNOWN';
+      errorState = resolveError(code);
+    } finally {
+      isLoading = false;
+      // Clear the password field for security — never keep it in component state after attempt
+      password = '';
+    }
   }
+
+  const errorIcons: Record<ErrorState['type'], typeof AlertCircle> = {
+    invalid_credentials: AlertCircle,
+    user_disabled: UserX,
+    profile_not_found: ShieldAlert,
+    email_not_confirmed: Mail,
+    network: WifiOff,
+    unknown: AlertCircle,
+  };
 </script>
 
-<!-- Complete login page redesign with modern styling -->
+<!-- Login page -->
 <div class="relative flex min-h-screen items-center justify-center bg-background p-4 overflow-hidden">
   <!-- Animated background elements -->
   <div class="pointer-events-none absolute inset-0">
@@ -74,9 +129,16 @@
 
       <!-- Form -->
       <form onsubmit={(e) => { e.preventDefault(); handleLogin(); }} class="mt-8 space-y-5">
-        {#if error}
-          <div class="rounded-xl bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive animate-shake">
-            {error}
+        {#if errorState}
+          {@const ErrorIcon = errorIcons[errorState.type]}
+          <div class="rounded-xl border p-4 text-sm animate-shake flex items-start gap-3
+            {errorState.type === 'user_disabled'
+              ? 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400'
+              : errorState.type === 'network'
+                ? 'bg-blue-500/10 border-blue-500/30 text-blue-700 dark:text-blue-400'
+                : 'bg-destructive/10 border-destructive/20 text-destructive'}">
+            <ErrorIcon class="h-4 w-4 mt-0.5 shrink-0" />
+            <span>{errorState.message}</span>
           </div>
         {/if}
 
@@ -93,7 +155,9 @@
               bind:value={email}
               placeholder="correo@gmail.com"
               class="input-field pl-11"
+              autocomplete="email"
               required
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -111,11 +175,14 @@
               bind:value={password}
               placeholder="••••••••"
               class="input-field pl-11 pr-12"
+              autocomplete="current-password"
               required
+              disabled={isLoading}
             />
             <button
               type="button"
               onclick={() => showPassword = !showPassword}
+              aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
               class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg
                      text-muted-foreground transition-all duration-200
                      hover:text-foreground hover:bg-secondary"
@@ -130,6 +197,7 @@
         </div>
 
         <button
+          id="login-submit-btn"
           type="submit"
           disabled={isLoading}
           class="btn-primary w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold

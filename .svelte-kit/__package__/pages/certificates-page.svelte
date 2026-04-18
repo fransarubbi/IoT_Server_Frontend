@@ -1,153 +1,141 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import PageHeader from '../components/page-header.svelte';
   import Modal from '../components/modal.svelte';
-  import StatusBadge from '../components/status-badge.svelte';
   import EmptyState from '../components/empty-state.svelte';
-  import type { Certificate } from '../types';
-  import { 
-    Plus, 
-    ShieldCheck, 
-    Download, 
-    Trash2, 
-    Copy,
-    Check,
-    Key,
+  import type { CertificateRequest } from '../types';
+  import {
+    certificates,
+    certificatesLoading,
+    certificatesError,
+    certificatesGenerating,
+    certificatesActions,
+  } from '../stores/certificates';
+  import {
+    Plus,
+    ShieldCheck,
+    ShieldOff,
     FileKey,
-    Building
+    AlertCircle,
+    Loader,
+    CheckCircle,
   } from 'lucide-svelte';
 
-  let certificates = $state<Certificate[]>([
-    {
-      id: '1',
-      name: 'Root CA Certificate',
-      type: 'ca',
-      status: 'valid',
-      issuedAt: new Date('2024-01-15'),
-      expiresAt: new Date('2034-01-15'),
-      fingerprint: 'SHA256:a1b2c3d4e5f6...'
-    },
-    {
-      id: '2',
-      name: 'Server Gateway mTLS',
-      type: 'server',
-      status: 'valid',
-      issuedAt: new Date('2024-06-01'),
-      expiresAt: new Date('2025-06-01'),
-      fingerprint: 'SHA256:f6e5d4c3b2a1...'
-    },
-    {
-      id: '3',
-      name: 'Client Device Auth',
-      type: 'client',
-      status: 'expired',
-      issuedAt: new Date('2023-01-01'),
-      expiresAt: new Date('2024-01-01'),
-      fingerprint: 'SHA256:1a2b3c4d5e6f...'
-    },
-    {
-      id: '4',
-      name: 'Legacy System Cert',
-      type: 'client',
-      status: 'revoked',
-      issuedAt: new Date('2023-06-15'),
-      expiresAt: new Date('2025-06-15'),
-      fingerprint: 'SHA256:6f5e4d3c2b1a...'
-    },
-  ]);
+  onMount(() => {
+    certificatesActions.load();
+  });
 
   let showCreateModal = $state(false);
-  let copiedId = $state<string | null>(null);
+  let revokeConfirmId = $state<string | null>(null);
+  let actionError = $state<string | null>(null);
 
-  let newCertName = $state('');
-  let newCertType = $state<'client' | 'server' | 'ca'>('client');
+  // Full CertificateRequest form
+  let form = $state<CertificateRequest>({
+    displayName: '',
+    deviceType: 'edge',
+    commonName: '',
+    organization: '',
+    country: '',
+    sanDomain: '',
+    validityDays: 365,
+  });
 
-  function createCertificate() {
-    if (!newCertName.trim()) return;
-    
-    const newCert: Certificate = {
-      id: crypto.randomUUID(),
-      name: newCertName,
-      type: newCertType,
-      status: 'valid',
-      issuedAt: new Date(),
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-      fingerprint: `SHA256:${crypto.randomUUID().substring(0, 12)}...`
+  function resetForm() {
+    form = {
+      displayName: '',
+      deviceType: 'edge',
+      commonName: '',
+      organization: '',
+      country: '',
+      sanDomain: '',
+      validityDays: 365,
     };
-    
-    certificates = [...certificates, newCert];
-    newCertName = '';
-    newCertType = 'client';
-    showCreateModal = false;
+    actionError = null;
   }
 
-  function deleteCertificate(id: string) {
-    certificates = certificates.filter(c => c.id !== id);
+  async function generateCertificate() {
+    if (!form.displayName.trim() || !form.commonName.trim()) return;
+    actionError = null;
+    try {
+      await certificatesActions.generate({ ...form });
+      resetForm();
+      showCreateModal = false;
+    } catch (err) {
+      actionError = err instanceof Error ? err.message : String(err);
+    }
   }
 
-  function copyFingerprint(cert: Certificate) {
-    navigator.clipboard.writeText(cert.fingerprint);
-    copiedId = cert.id;
-    setTimeout(() => copiedId = null, 2000);
+  async function revokeCertificate(id: string) {
+    actionError = null;
+    try {
+      await certificatesActions.revoke(id);
+      revokeConfirmId = null;
+    } catch (err) {
+      actionError = err instanceof Error ? err.message : String(err);
+    }
   }
 
-  function formatDate(date: Date): string {
-    return new Intl.DateTimeFormat('es', { dateStyle: 'medium' }).format(date);
+  function formatDate(iso: string): string {
+    return new Intl.DateTimeFormat('es', { dateStyle: 'medium' }).format(new Date(iso));
   }
 
-  function getDaysUntilExpiry(date: Date): number {
-    return Math.ceil((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  function getDaysUntilExpiry(iso: string): number {
+    return Math.ceil((new Date(iso).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   }
 
-  const typeConfig: Record<string, { icon: typeof Key; label: string; color: string }> = {
-    ca: { icon: Building, label: 'CA', color: 'text-accent' },
-    server: { icon: ShieldCheck, label: 'Servidor', color: 'text-primary' },
-    client: { icon: Key, label: 'Cliente', color: 'text-success' },
+  const statusConfig: Record<string, { color: string; label: string }> = {
+    valid:   { color: 'text-success',     label: 'Válido' },
+    expired: { color: 'text-destructive', label: 'Expirado' },
+    revoked: { color: 'text-muted-foreground', label: 'Revocado' },
   };
 </script>
 
 <div class="space-y-6">
-  <PageHeader 
-    title="Certificados mTLS"
+  <PageHeader
+    title="Certificados Digitales"
     description="Gestiona los certificados de autenticación mutua del sistema"
   />
 
-  <!-- Enhanced stats bar with animations -->
+  <!-- Stats bar -->
   <div class="flex items-center justify-between animate-slide-in">
     <div class="flex items-center gap-3">
-      <div class="flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2.5
-                  transition-all duration-200 hover:border-primary/30">
+      <div class="flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2.5 transition-all duration-200 hover:border-primary/30">
         <span class="text-sm text-muted-foreground">Total:</span>
-        <span class="font-bold text-card-foreground">{certificates.length}</span>
+        <span class="font-bold text-card-foreground">{$certificates.length}</span>
       </div>
       <div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5">
         <span class="h-2 w-2 rounded-full bg-success"></span>
-        <span class="text-sm font-semibold text-success">{certificates.filter(c => c.status === 'valid').length} válidos</span>
+        <span class="text-sm font-semibold text-success">{$certificates.filter((c) => c.status === 'valid').length} válidos</span>
       </div>
       <div class="flex items-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-2.5">
         <span class="h-2 w-2 rounded-full bg-destructive"></span>
-        <span class="text-sm font-semibold text-destructive">{certificates.filter(c => c.status === 'expired').length} expirados</span>
+        <span class="text-sm font-semibold text-destructive">{$certificates.filter((c) => c.status === 'expired').length} expirados</span>
       </div>
     </div>
-    
+
     <button
-      onclick={() => showCreateModal = true}
+      onclick={() => { resetForm(); showCreateModal = true; }}
       class="btn-primary flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm"
     >
       <Plus class="h-4 w-4" />
-      Nuevo Certificado
+      Generar Certificado
     </button>
   </div>
 
-  {#if certificates.length === 0}
+  {#if $certificatesLoading}
+    <div class="flex items-center justify-center py-20 text-muted-foreground gap-3">
+      <Loader class="h-6 w-6 animate-spin" />
+      <span class="text-sm">Cargando certificados...</span>
+    </div>
+  {:else if $certificates.length === 0}
     <EmptyState
       icon={ShieldCheck}
       title="Sin certificados"
-      description="No hay certificados mTLS configurados. Crea uno para asegurar las comunicaciones de tu sistema."
-      actionLabel="Crear Certificado"
-      onAction={() => showCreateModal = true}
+      description="No hay certificados mTLS configurados. Genera uno para asegurar las comunicaciones de tu sistema."
+      actionLabel="Generar Certificado"
+      onAction={() => { resetForm(); showCreateModal = true; }}
     />
   {:else}
-    <!-- Enhanced table with modern styling -->
     <div class="rounded-2xl border border-border bg-card overflow-hidden shadow-sm animate-fade-in">
       <table class="w-full">
         <thead>
@@ -157,32 +145,34 @@
             <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Estado</th>
             <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Emisión</th>
             <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Expiración</th>
-            <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">Fingerprint</th>
             <th class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-border">
-          {#each certificates as cert, i}
-            {@const config = typeConfig[cert.type]}
+          {#each $certificates as cert, i}
+            {@const sc = statusConfig[cert.status] ?? statusConfig.revoked}
             {@const daysUntil = getDaysUntilExpiry(cert.expiresAt)}
             <tr class="stagger-item group transition-colors hover:bg-muted/20" style="animation-delay: {i * 0.03}s">
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/50
-                              transition-all duration-200 group-hover:bg-primary/10">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/50 transition-all duration-200 group-hover:bg-primary/10">
                     <FileKey class="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
-                  <span class="font-medium text-card-foreground">{cert.name}</span>
+                  <div>
+                    <span class="font-medium text-card-foreground block">{cert.displayName}</span>
+                    {#if cert.commonName}
+                      <span class="text-xs text-muted-foreground font-mono">{cert.commonName}</span>
+                    {/if}
+                  </div>
                 </div>
               </td>
               <td class="px-6 py-4">
-                <div class="flex items-center gap-2">
-                  <config.icon class="h-4 w-4 {config.color}" />
-                  <span class="text-sm text-card-foreground">{config.label}</span>
-                </div>
+                <span class="inline-flex items-center rounded-md bg-muted/50 px-2.5 py-1 text-xs font-medium text-card-foreground capitalize">
+                  {cert.deviceType}
+                </span>
               </td>
               <td class="px-6 py-4">
-                <StatusBadge status={cert.status} />
+                <span class="text-sm font-semibold {sc.color}">{sc.label}</span>
               </td>
               <td class="px-6 py-4 text-sm text-muted-foreground">
                 {formatDate(cert.issuedAt)}
@@ -192,39 +182,42 @@
                   <span class="text-card-foreground">{formatDate(cert.expiresAt)}</span>
                   {#if cert.status === 'valid' && daysUntil <= 30}
                     <span class="ml-2 rounded-md bg-warning/10 px-1.5 py-0.5 text-xs font-medium text-warning">
-                      {daysUntil} días
+                      {daysUntil}d
                     </span>
                   {/if}
                 </div>
               </td>
               <td class="px-6 py-4">
-                <button
-                  onclick={() => copyFingerprint(cert)}
-                  class="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-1.5 
-                         font-mono text-xs text-muted-foreground 
-                         transition-all duration-200 hover:bg-primary/10 hover:text-primary"
-                >
-                  <span class="max-w-[100px] truncate">{cert.fingerprint}</span>
-                  {#if copiedId === cert.id}
-                    <Check class="h-3.5 w-3.5 text-success" />
-                  {:else}
-                    <Copy class="h-3.5 w-3.5" />
-                  {/if}
-                </button>
-              </td>
-              <td class="px-6 py-4">
                 <div class="flex items-center justify-end gap-1">
-                  <button class="rounded-lg p-2 text-muted-foreground transition-all duration-200
-                                 hover:bg-primary/10 hover:text-primary hover:scale-110">
-                    <Download class="h-4 w-4" />
-                  </button>
-                  <button 
-                    onclick={() => deleteCertificate(cert.id)}
-                    class="rounded-lg p-2 text-muted-foreground transition-all duration-200
-                           hover:bg-destructive/10 hover:text-destructive hover:scale-110"
-                  >
-                    <Trash2 class="h-4 w-4" />
-                  </button>
+                  {#if cert.status === 'valid'}
+                    {#if revokeConfirmId === cert.id}
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs text-muted-foreground">¿Confirmar?</span>
+                        <button
+                          onclick={() => revokeCertificate(cert.id)}
+                          class="rounded-lg px-2.5 py-1 text-xs font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-all"
+                        >
+                          Sí
+                        </button>
+                        <button
+                          onclick={() => (revokeConfirmId = null)}
+                          class="rounded-lg px-2.5 py-1 text-xs font-semibold btn-secondary"
+                        >
+                          No
+                        </button>
+                      </div>
+                    {:else}
+                      <button
+                        onclick={() => (revokeConfirmId = cert.id)}
+                        title="Revocar certificado"
+                        class="rounded-lg p-2 text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive hover:scale-110"
+                      >
+                        <ShieldOff class="h-4 w-4" />
+                      </button>
+                    {/if}
+                  {:else}
+                    <span class="text-xs text-muted-foreground italic px-2">—</span>
+                  {/if}
                 </div>
               </td>
             </tr>
@@ -235,58 +228,85 @@
   {/if}
 </div>
 
-<!-- Create Certificate Modal -->
-<Modal open={showCreateModal} title="Nuevo Certificado mTLS" onClose={() => showCreateModal = false}>
-  <form onsubmit={(e) => { e.preventDefault(); createCertificate(); }} class="space-y-5">
-    <div class="space-y-2">
-      <label for="cert-name" class="block text-sm font-medium text-card-foreground">
-        Nombre del Certificado
-      </label>
-      <input
-        id="cert-name"
-        type="text"
-        bind:value={newCertName}
-        placeholder="Mi Certificado..."
-        class="input-field"
-        required
-      />
-    </div>
-    
-    <fieldset class="space-y-2">
-      <legend class="block text-sm font-medium text-card-foreground">
-        Tipo de Certificado
-      </legend>
-      <div class="grid grid-cols-3 gap-3" role="radiogroup" aria-label="Tipo de certificado">
-        {#each Object.entries(typeConfig) as [type, config]}
-          <button
-            type="button"
-            onclick={() => newCertType = type as 'client' | 'server' | 'ca'}
-            role="radio"
-            aria-checked={newCertType === type}
-            class="flex flex-col items-center gap-2 rounded-xl border-2 p-4 
-                   transition-all duration-200
-                   {newCertType === type 
-                     ? 'border-primary bg-primary/5 shadow-md shadow-primary/10' 
-                     : 'border-border hover:border-primary/50 hover:bg-muted/50'}"
-          >
-            <config.icon class="h-6 w-6 {config.color} transition-transform duration-200
-                                {newCertType === type ? 'scale-110' : ''}" />
-            <span class="text-sm font-medium text-card-foreground">{config.label}</span>
-          </button>
-        {/each}
+<!-- Generate Certificate Modal -->
+<Modal open={showCreateModal} title="Generar Nuevo Certificado mTLS" onClose={() => (showCreateModal = false)}>
+  <form onsubmit={(e) => { e.preventDefault(); generateCertificate(); }} class="space-y-4 px-1">
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="col-span-2 space-y-1.5">
+        <label for="cert-displayName" class="block text-sm font-medium text-card-foreground">Nombre para mostrar</label>
+        <input id="cert-displayName" type="text" bind:value={form.displayName} class="input-field" required placeholder="Edge Gateway Alpha — mTLS" />
       </div>
-    </fieldset>
-    
+
+      <div class="space-y-1.5">
+        <label for="cert-deviceType" class="block text-sm font-medium text-card-foreground">Tipo de dispositivo</label>
+        <select id="cert-deviceType" bind:value={form.deviceType} class="input-field bg-background">
+          <option value="edge">Edge</option>
+          <option value="hub">Hub</option>
+          <option value="server">Server</option>
+          <option value="ca">CA</option>
+          <option value="client">Client</option>
+        </select>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="cert-validityDays" class="block text-sm font-medium text-card-foreground">Validez (días)</label>
+        <input id="cert-validityDays" type="number" min="1" max="3650" bind:value={form.validityDays} class="input-field" required />
+      </div>
+
+      <div class="col-span-2 space-y-1.5">
+        <label for="cert-cn" class="block text-sm font-medium text-card-foreground">Common Name (CN)</label>
+        <input id="cert-cn" type="text" bind:value={form.commonName} class="input-field font-mono" required placeholder="edge-alpha.local" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="cert-org" class="block text-sm font-medium text-card-foreground">Organización</label>
+        <input id="cert-org" type="text" bind:value={form.organization} class="input-field" required placeholder="Mi Empresa S.A." />
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="cert-country" class="block text-sm font-medium text-card-foreground">País (código ISO 2)</label>
+        <input id="cert-country" type="text" bind:value={form.country} class="input-field font-mono uppercase" maxlength="2" required placeholder="AR" />
+      </div>
+
+      <div class="col-span-2 space-y-1.5">
+        <label for="cert-san" class="block text-sm font-medium text-card-foreground">SAN Domain</label>
+        <input id="cert-san" type="text" bind:value={form.sanDomain} class="input-field font-mono" required placeholder="edge-alpha.local" />
+        <p class="text-xs text-muted-foreground">Subject Alternative Name — normalmente igual al CN para dispositivos IoT.</p>
+      </div>
+    </div>
+
+    <p class="text-xs text-muted-foreground bg-muted/40 border border-border rounded-lg px-3 py-2">
+      Al confirmar, el certificado se generará y descargará automáticamente como un archivo ZIP.
+    </p>
+
+    {#if actionError}
+      <div class="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
+        <AlertCircle class="h-3.5 w-3.5 shrink-0" />
+        {actionError}
+      </div>
+    {/if}
+
     <div class="flex gap-3 pt-2">
       <button
         type="button"
-        onclick={() => showCreateModal = false}
+        onclick={() => (showCreateModal = false)}
         class="btn-secondary flex-1 rounded-xl py-3 text-sm"
       >
         Cancelar
       </button>
-      <button type="submit" class="btn-primary flex-1 rounded-xl py-3 text-sm">
-        Generar Certificado
+      <button
+        type="submit"
+        disabled={$certificatesGenerating}
+        class="btn-primary flex-1 rounded-xl py-3 text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+      >
+        {#if $certificatesGenerating}
+          <Loader class="h-4 w-4 animate-spin" />
+          Generando…
+        {:else}
+          <CheckCircle class="h-4 w-4" />
+          Generar y Descargar
+        {/if}
       </button>
     </div>
   </form>

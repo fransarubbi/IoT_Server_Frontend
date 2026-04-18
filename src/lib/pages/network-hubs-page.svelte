@@ -1,109 +1,122 @@
 <script lang="ts">
-    import { onMount, tick } from "svelte";
+    import { onMount } from "svelte";
     import { edges } from "$lib/stores/edges";
+    import { networks } from "$lib/stores/networks";
+    import { hubs, hubsLoading, hubsError, hubsSaving, hubsActions } from "$lib/stores/hubs";
     import { pageParams, navigateTo } from "$lib/stores/navigation";
     import PageHeader from "$lib/components/page-header.svelte";
-    import StatusBadge from "$lib/components/status-badge.svelte";
     import EmptyState from "$lib/components/empty-state.svelte";
     import Modal from "$lib/components/modal.svelte";
-    
-    // Icons
+
     import Cpu from "lucide-svelte/icons/cpu";
     import Eye from "lucide-svelte/icons/eye";
     import Settings from "lucide-svelte/icons/settings";
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
-    import Plus from "lucide-svelte/icons/plus";
-    import Trash2 from "lucide-svelte/icons/trash-2";
-    
-    import type { Edge, Network, Hub } from "$lib/types";
+    import Loader from "lucide-svelte/icons/loader";
+    import AlertCircle from "lucide-svelte/icons/alert-circle";
+    import CheckCircle from "lucide-svelte/icons/check-circle";
 
-    let edgeId = $derived($pageParams.edgeId);
-    let networkId = $derived($pageParams.networkId);
-    let currentEdge = $derived($edges.find((e) => e.id_edge === edgeId));
-    let currentNetwork = $derived(currentEdge?.networks.find((n) => n.id === networkId));
+    import type { HubSettings } from "$lib/types";
+
+    let edgeId = $derived($pageParams.edgeId as string);
+    let networkId = $derived($pageParams.networkId as string);
+
+    // Derive current edge name from the edges store (already loaded)
+    let currentEdge = $derived($edges.find((e) => e.edgeId === edgeId));
+    // Derive current network name from the networks store (already loaded if coming from networks page)
+    let currentNetwork = $derived($networks.find((n) => n.networkId === networkId));
+
+    onMount(() => {
+        if (networkId) {
+            hubsActions.load(networkId);
+        }
+        return () => hubsActions.clear();
+    });
 
     function goBack() {
         navigateTo("edge-networks", { edgeId });
     }
 
-    // Modal Info
+    // -- Info Modal --
     let showInfoModal = $state(false);
-    let selectedHub = $state<Hub | null>(null);
+    let selectedHub = $state<HubSettings | null>(null);
 
-    function viewHubInfo(hub: Hub) {
+    function viewHubInfo(hub: HubSettings) {
         selectedHub = hub;
         showInfoModal = true;
     }
 
-    // Modal Create / Edit
+    // -- Edit / Settings Modal --
     let showEditModal = $state(false);
-    let isEditing = $state(false);
-    
-    let formHub = $state<Partial<Hub>>({
-        id: "",
-        network: "",
-        wifi_ssid: "",
-        wifi_password: "",
-        mqtt_uri: "",
-        device_name: "",
+    let saveSuccess = $state(false);
+
+    let formHub = $state<HubSettings>({
+        hubId: "",
+        deviceName: "",
+        wifiSsid: "",
+        wifiPassword: "",
+        mqttUri: "",
         sample: "",
-        energy_mode: "Normal"
+        energyMode: "Normal",
+        networkId: "",
     });
 
-    function openEditModal(hub: Hub) {
-        isEditing = true;
-        // Deep copy
+    function openEditModal(hub: HubSettings) {
         formHub = { ...hub };
+        saveSuccess = false;
         showEditModal = true;
     }
 
-    function saveHub() {
-        if (!currentNetwork) return;
-        
-        edges.updateHub(edgeId, networkId, formHub as Hub);
-
-        showEditModal = false;
-        isEditing = false;
-    }
-
-    function deleteHub(hubId: string) {
-        if (confirm("¿Estás seguro de eliminar este Hub?")) {
-            edges.removeHub(edgeId, networkId, hubId);
+    async function saveHub() {
+        if (!formHub.hubId) return;
+        saveSuccess = false;
+        try {
+            await hubsActions.updateSettings(formHub.hubId, formHub);
+            saveSuccess = true;
+            setTimeout(() => {
+                showEditModal = false;
+                saveSuccess = false;
+            }, 1200);
+        } catch {
+            // error displayed via $hubsError
         }
     }
 </script>
 
 <div class="space-y-6">
-    {#if currentEdge && currentNetwork}
+    {#if networkId}
         <div class="flex items-center gap-4">
             <button
                 onclick={goBack}
                 class="flex items-center gap-2 text-sm text-muted-foreground transition-all duration-200 hover:text-foreground hover:gap-3 group"
             >
                 <ArrowLeft class="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                Volver a Redes ({currentEdge.name})
+                Volver a Redes ({currentEdge?.name ?? edgeId})
             </button>
         </div>
 
         <PageHeader
-            title={`Hubs de la red: ${currentNetwork.id}`}
-            description={`Gestiona los hubs de esta familia de sensores`}
+            title={`Hubs de la red: ${currentNetwork?.name ?? networkId}`}
+            description="Gestiona y configura los hubs de esta familia de sensores"
         />
 
         <div class="card-interactive p-6 animate-fade-in">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-xl font-bold text-card-foreground">
-                        Hubs Activos
-                    </h3>
+                    <h3 class="text-xl font-bold text-card-foreground">Hubs Activos</h3>
                     <p class="text-sm text-muted-foreground mt-1">
-                        {currentNetwork.hubs?.length || 0} dispositivos encontrados
+                        {$hubs.length} dispositivos encontrados
                     </p>
                 </div>
             </div>
         </div>
 
-        {#if !currentNetwork.hubs || currentNetwork.hubs.length === 0}
+        {#if $hubsLoading}
+            <div class="flex items-center justify-center py-20 text-muted-foreground gap-3">
+                <Loader class="h-6 w-6 animate-spin" />
+                <span class="text-sm">Cargando hubs...</span>
+            </div>
+        {:else if $hubs.length === 0}
             <EmptyState
                 icon={Cpu}
                 title="Sin dispositivos Hub"
@@ -113,34 +126,43 @@
             />
         {:else}
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {#each currentNetwork.hubs as hub}
+                {#each $hubs as hub}
                     <div class="card-interactive group p-5 flex flex-col h-full">
                         <div class="flex items-start justify-between">
                             <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10">
                                 <Cpu class="h-6 w-6 text-primary" />
                             </div>
-                            <StatusBadge status="active" />
+                            {#if $hubsSaving === hub.hubId}
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-warning/10 border border-warning/20 px-2.5 py-1 text-xs font-semibold text-warning">
+                                    <Loader class="h-3 w-3 animate-spin" />
+                                    Enviando…
+                                </span>
+                            {:else}
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-success/10 border border-success/20 px-2.5 py-1 text-xs font-semibold text-success">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+                                    Activo
+                                </span>
+                            {/if}
                         </div>
 
                         <div class="mt-4 flex-1">
                             <h4 class="text-2xl font-bold tracking-tight text-card-foreground">
-                                {hub.id}
+                                {hub.hubId}
                             </h4>
                             <div class="mt-2 space-y-1">
-                                <p class="text-xs font-semibold uppercase text-muted-foreground tracking-wider">{hub.network}</p>
-                                <p class="text-sm text-card-foreground/80">{hub.device_name}</p>
+                                <p class="text-sm text-card-foreground/80">{hub.deviceName}</p>
                                 <div class={`inline-block mt-2 px-2.5 py-0.5 rounded-full border ${
-                                    hub.energy_mode === 'Bajo consumo' ? 'bg-success/10 border-success/20 text-success' : 
-                                    hub.energy_mode === 'Balanceado' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' : 
-                                    hub.energy_mode === 'Performance' ? 'bg-destructive/10 border-destructive/20 text-destructive' : 
+                                    hub.energyMode === 'Bajo consumo' ? 'bg-success/10 border-success/20 text-success' :
+                                    hub.energyMode === 'Balanceado' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
+                                    hub.energyMode === 'Performance' ? 'bg-destructive/10 border-destructive/20 text-destructive' :
                                     'bg-accent/10 border-accent/20 text-accent'
                                 }`}>
-                                    <span class="text-[10px] font-medium currentColor">Modo Energía: {hub.energy_mode}</span>
+                                    <span class="text-[10px] font-medium">Modo Energía: {hub.energyMode}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Action Buttons at bottom -->
+                        <!-- Action Buttons -->
                         <div class="mt-6 flex gap-2 border-t border-border pt-4">
                             <button
                                 onclick={() => viewHubInfo(hub)}
@@ -157,20 +179,13 @@
                             >
                                 <Settings class="h-4 w-4" />
                             </button>
-                            <button
-                                onclick={() => deleteHub(hub.id)}
-                                class="flex items-center justify-center rounded-lg border border-border bg-card p-2.5 text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive hover:shadow-lg hover:shadow-destructive/20"
-                                aria-label="Eliminar Hub"
-                            >
-                                <Trash2 class="h-4 w-4" />
-                            </button>
                         </div>
                     </div>
                 {/each}
             </div>
         {/if}
     {:else}
-         <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
+        <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <p>Red o Edge no encontrados.</p>
             <button onclick={() => navigateTo('edge')} class="mt-4 btn-secondary rounded-lg px-4 py-2">Volver a Inicio</button>
         </div>
@@ -187,29 +202,24 @@
         <div class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-card border border-border rounded-lg p-3">
-                    <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">ID</span>
-                    <span class="text-sm font-medium">{selectedHub.id}</span>
-                </div>
-                <div class="bg-card border border-border rounded-lg p-3">
-                    <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Red</span>
-                    <span class="text-sm font-medium">{selectedHub.network}</span>
+                    <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Hub ID</span>
+                    <span class="text-sm font-medium font-mono">{selectedHub.hubId}</span>
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
                     <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Nombre</span>
-                    <span class="text-sm font-medium">{selectedHub.device_name}</span>
+                    <span class="text-sm font-medium">{selectedHub.deviceName}</span>
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
                     <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">WIFI SSID</span>
-                    <span class="text-sm font-medium">{selectedHub.wifi_ssid}</span>
+                    <span class="text-sm font-medium">{selectedHub.wifiSsid}</span>
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
                     <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">WIFI Contraseña</span>
-                     <!-- Hidden or showing bullets usually but since it's an info dialog about a mock hub, we can reveal or mask -->
-                    <span class="text-sm font-medium blur-sm hover:blur-none transition-all cursor-pointer select-all select-all font-mono">{selectedHub.wifi_password || '********'}</span>
+                    <span class="text-sm font-medium blur-sm hover:blur-none transition-all cursor-pointer font-mono">{selectedHub.wifiPassword || '********'}</span>
                 </div>
-                <div class="bg-card border border-border rounded-lg p-3">
+                <div class="bg-card border border-border rounded-lg p-3 md:col-span-2">
                     <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">MQTT URI</span>
-                    <span class="text-sm font-medium font-mono break-all" title={selectedHub.mqtt_uri}>{selectedHub.mqtt_uri}</span>
+                    <span class="text-sm font-medium font-mono break-all">{selectedHub.mqttUri}</span>
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
                     <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Sample (min)</span>
@@ -217,49 +227,58 @@
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
                     <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Modo Energía</span>
-                    <span class="text-sm font-medium">{selectedHub.energy_mode}</span>
+                    <span class="text-sm font-medium">{selectedHub.energyMode}</span>
                 </div>
             </div>
-            
+
             <div class="pt-4 flex justify-end">
-                 <button onclick={() => (showInfoModal = false)} class="btn-primary px-5 py-2.5 rounded-xl text-sm">Cerrar</button>
+                <button onclick={() => (showInfoModal = false)} class="btn-primary px-5 py-2.5 rounded-xl text-sm">Cerrar</button>
             </div>
         </div>
     {/if}
 </Modal>
 
-<!-- Edit Modal -->
+<!-- Edit / Settings Modal -->
 <Modal
     open={showEditModal}
-    title={`Configurando Hub ID: ${formHub.id}`}
+    title={`Configurando Hub: ${formHub.hubId}`}
     onClose={() => (showEditModal = false)}
 >
-    <!-- Use preventDefault properly -->
     <form onsubmit={(e) => { e.preventDefault(); saveHub(); }} class="space-y-4 px-1">
-        <div class="space-y-1.5">
-            <label for="hub-network" class="block text-sm font-medium text-card-foreground">Red</label>
-            <input id="hub-network" type="text" bind:value={formHub.network} class="input-field" required placeholder="Red Industrial Beta..." />
-        </div>
+
+        {#if $hubsError}
+            <div class="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
+                <AlertCircle class="h-3.5 w-3.5 shrink-0" />
+                {$hubsError}
+            </div>
+        {/if}
+
+        {#if saveSuccess}
+            <div class="flex items-center gap-2 rounded-lg bg-success/10 border border-success/20 px-3 py-2 text-xs text-success">
+                <CheckCircle class="h-3.5 w-3.5 shrink-0" />
+                Configuración enviada — el hardware la procesará en breve.
+            </div>
+        {/if}
 
         <div class="space-y-1.5">
-            <label for="hub-name" class="block text-sm font-medium text-card-foreground">Nombre</label>
-            <input id="hub-name" type="text" bind:value={formHub.device_name} class="input-field" required placeholder="Sensor Temperatura Planta 1" />
+            <label for="hub-name" class="block text-sm font-medium text-card-foreground">Nombre del dispositivo</label>
+            <input id="hub-name" type="text" bind:value={formHub.deviceName} class="input-field" required placeholder="Sensor Temperatura Planta 1" />
         </div>
-        
+
         <div class="grid grid-cols-2 gap-3">
-             <div class="space-y-1.5">
+            <div class="space-y-1.5">
                 <label for="hub-ssid" class="block text-sm font-medium text-card-foreground">WIFI SSID</label>
-                <input id="hub-ssid" type="text" bind:value={formHub.wifi_ssid} class="input-field" required placeholder="IoT_Network_5G" />
+                <input id="hub-ssid" type="text" bind:value={formHub.wifiSsid} class="input-field" required placeholder="IoT_Network_5G" />
             </div>
             <div class="space-y-1.5">
                 <label for="hub-password" class="block text-sm font-medium text-card-foreground">WIFI Contraseña</label>
-                <input id="hub-password" type="text" bind:value={formHub.wifi_password} class="input-field" required placeholder="***********" />
+                <input id="hub-password" type="text" bind:value={formHub.wifiPassword} class="input-field" required placeholder="***********" />
             </div>
         </div>
 
         <div class="space-y-1.5">
             <label for="hub-mqtt" class="block text-sm font-medium text-card-foreground">MQTT URI</label>
-            <input id="hub-mqtt" type="text" bind:value={formHub.mqtt_uri} class="input-field font-mono" required placeholder="mqtt://broker.hivemq.com" />
+            <input id="hub-mqtt" type="text" bind:value={formHub.mqttUri} class="input-field font-mono" required placeholder="mqtt://broker.hivemq.com:1883" />
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -269,14 +288,18 @@
             </div>
             <div class="space-y-1.5">
                 <label for="hub-energy" class="block text-sm font-medium text-card-foreground">Modo Energía</label>
-                <select id="hub-energy" bind:value={formHub.energy_mode} class="input-field">
+                <select id="hub-energy" bind:value={formHub.energyMode} class="input-field">
                     <option value="Bajo consumo">Bajo consumo</option>
                     <option value="Balanceado">Balanceado</option>
                     <option value="Performance">Performance</option>
                 </select>
             </div>
         </div>
-        
+
+        <p class="text-xs text-muted-foreground bg-muted/40 border border-border rounded-lg px-3 py-2">
+            <strong>Nota:</strong> La respuesta 202 indica que la solicitud fue aceptada. El servidor esperará hasta 5 minutos la confirmación del hardware.
+        </p>
+
         <div class="flex gap-3 pt-6 pb-2">
             <button
                 type="button"
@@ -287,9 +310,15 @@
             </button>
             <button
                 type="submit"
-                class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium"
+                disabled={$hubsSaving === formHub.hubId}
+                class="btn-primary flex-1 rounded-xl py-3 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-60"
             >
-                Guardar
+                {#if $hubsSaving === formHub.hubId}
+                    <Loader class="h-4 w-4 animate-spin" />
+                    Enviando…
+                {:else}
+                    Enviar al Hardware
+                {/if}
             </button>
         </div>
     </form>

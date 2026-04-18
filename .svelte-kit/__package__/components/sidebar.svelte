@@ -9,7 +9,7 @@
     HardDrive,
     LogOut,
     ChevronRight,
-    Cpu,
+    LayoutDashboard,
   } from "lucide-svelte";
 
   const navItems: { id: Page; label: string; icon: typeof Server }[] = [
@@ -36,7 +36,7 @@
     <div
       class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/30"
     >
-      <Cpu class="h-5 w-5 text-primary-foreground" />
+      <LayoutDashboard class="h-5 w-5 text-primary-foreground" />
       <!-- Pulse animation -->
       <span class="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">
         <span
@@ -47,7 +47,7 @@
       </span>
     </div>
     <div>
-      <span class="text-lg font-bold text-sidebar-foreground">IoT Hub</span>
+      <span class="text-lg font-bold text-sidebar-foreground">Manager</span>
       <span
         class="block text-[10px] font-medium text-primary uppercase tracking-wider"
         >Dashboard</span
