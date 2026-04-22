@@ -1,6 +1,6 @@
-import { writable, derived } from 'svelte/store';
 import { supabase } from '$lib/supabase';
 import type { Session } from '@supabase/supabase-js';
+import { goto } from '$app/navigation';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -27,17 +27,19 @@ export function initials(p: UserProfile): string {
   return (f + l).toUpperCase() || 'U';
 }
 
-// ─── Stores ───────────────────────────────────────────────────────────────────
+// ─── Auth State Class (Svelte 5 Runes) ────────────────────────────────────────
 
-export const session = writable<Session | null>(null);
-export const profile = writable<UserProfile | null>(null);
-export const authLoading = writable<boolean>(true);
+class AuthState {
+  session: Session | null = $state(null);
+  profile: UserProfile | null = $state(null);
+  loading: boolean = $state(true);
 
-/** Derived: true when there is an active session AND the profile is loaded */
-export const isAuthenticated = derived(
-  [session, profile],
-  ([$session, $profile]) => !!$session && !!$profile
-);
+  get isAuthenticated() {
+    return !!this.session && !!this.profile;
+  }
+}
+
+export const auth = new AuthState();
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -73,7 +75,7 @@ async function recordLastLogin(userId: string): Promise<void> {
 // ─── Auth Actions ─────────────────────────────────────────────────────────────
 
 /**
- * Sign in with Supabase Auth and populate profile store.
+ * Sign in with Supabase Auth and populate auth state.
  * Throws typed errors so callers can show differentiated messages.
  */
 export async function login(email: string, password: string): Promise<void> {
@@ -98,27 +100,30 @@ export async function login(email: string, password: string): Promise<void> {
   // Fetch public profile — throws PROFILE_NOT_FOUND if missing
   const userProfile = await fetchProfile(userId);
 
-  // Block disabled users BEFORE setting any store
+  // Block disabled users BEFORE setting any state
   if (!userProfile.is_active) {
     await supabase.auth.signOut();
     throw new Error('USER_DISABLED');
   }
 
   // Persist session and profile
-  session.set(data.session);
-  profile.set(userProfile);
+  auth.session = data.session;
+  auth.profile = userProfile;
 
   // Non-fatal: record login time
   await recordLastLogin(userId);
 }
 
 /**
- * Sign out from Supabase Auth and clear all stores.
+ * Sign out from Supabase Auth and clear all state.
  */
 export async function logout(): Promise<void> {
   await supabase.auth.signOut();
-  session.set(null);
-  profile.set(null);
+  auth.session = null;
+  auth.profile = null;
+  if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
+    goto('/login');
+  }
 }
 
 // ─── Session Hydration ────────────────────────────────────────────────────────
@@ -135,8 +140,8 @@ export async function initAuth(): Promise<void> {
     try {
       const userProfile = await fetchProfile(data.session.user.id);
       if (userProfile.is_active) {
-        session.set(data.session);
-        profile.set(userProfile);
+        auth.session = data.session;
+        auth.profile = userProfile;
       } else {
         // Profile disabled — force sign out
         await supabase.auth.signOut();
@@ -147,18 +152,21 @@ export async function initAuth(): Promise<void> {
     }
   }
 
-  authLoading.set(false);
+  auth.loading = false;
 
   // Listen for token refresh / sign-out events from Supabase
   supabase.auth.onAuthStateChange(async (event, newSession) => {
     if (event === 'SIGNED_OUT' || !newSession) {
-      session.set(null);
-      profile.set(null);
+      auth.session = null;
+      auth.profile = null;
+      if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
+        goto('/login');
+      }
       return;
     }
 
     if (event === 'TOKEN_REFRESHED' && newSession) {
-      session.set(newSession);
+      auth.session = newSession;
     }
   });
 }

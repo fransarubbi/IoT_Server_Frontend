@@ -1,15 +1,9 @@
 <script lang="ts">
   import { theme } from '$lib/stores/theme';
-  import { login, isAuthenticated, authLoading } from '$lib/stores/auth';
+  import { login } from '$lib/stores/auth.svelte';
   import { goto } from '$app/navigation';
   import ThemeToggle from '$lib/components/theme-toggle.svelte';
   import { Mail, Lock, ArrowRight, Eye, EyeOff, LayoutDashboard, WifiOff, ShieldAlert, UserX, AlertCircle } from 'lucide-svelte';
-
-  $effect(() => {
-    if (!$authLoading && $isAuthenticated) {
-      goto('/edge');
-    }
-  });
 
   let email = $state('');
   let password = $state('');
