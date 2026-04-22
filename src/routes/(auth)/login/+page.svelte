@@ -1,8 +1,15 @@
 <script lang="ts">
   import { theme } from '$lib/stores/theme';
-  import { login } from '$lib/stores/auth';
+  import { login, isAuthenticated, authLoading } from '$lib/stores/auth';
+  import { goto } from '$app/navigation';
   import ThemeToggle from '$lib/components/theme-toggle.svelte';
   import { Mail, Lock, ArrowRight, Eye, EyeOff, LayoutDashboard, WifiOff, ShieldAlert, UserX, AlertCircle } from 'lucide-svelte';
+
+  $effect(() => {
+    if (!$authLoading && $isAuthenticated) {
+      goto('/edge');
+    }
+  });
 
   let email = $state('');
   let password = $state('');
@@ -16,7 +23,7 @@
 
   let errorState = $state<ErrorState | null>(null);
 
-  let { onLogin }: { onLogin?: () => void } = $props();
+
 
   /** Map error codes to user-facing messages (never ambiguous). */
   function resolveError(code: string): ErrorState {
@@ -69,7 +76,7 @@
     try {
       await login(email.trim(), password);
       // NOTE: password is never stored in global state — only email & session go to the store
-      onLogin?.();
+      goto('/edge');
     } catch (err: unknown) {
       const code = err instanceof Error ? err.message : 'UNKNOWN';
       errorState = resolveError(code);

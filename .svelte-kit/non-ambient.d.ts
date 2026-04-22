@@ -29,14 +29,28 @@ declare module "$app/types" {
 	type MatcherParam<M> = M extends (param : string) => param is (infer U extends string) ? U : string;
 
 	export interface AppTypes {
-		RouteId(): "/";
+		RouteId(): "/(auth)" | "/(app)" | "/" | "/(app)/certificates" | "/(app)/edge" | "/(app)/edge/[edgeId]" | "/(app)/edge/[edgeId]/networks" | "/(app)/edge/[edgeId]/networks/[networkId]" | "/(app)/edge/[edgeId]/networks/[networkId]/hubs" | "/(app)/firmware" | "/(auth)/login" | "/(app)/notifications";
 		RouteParams(): {
-			
+			"/(app)/edge/[edgeId]": { edgeId: string };
+			"/(app)/edge/[edgeId]/networks": { edgeId: string };
+			"/(app)/edge/[edgeId]/networks/[networkId]": { edgeId: string; networkId: string };
+			"/(app)/edge/[edgeId]/networks/[networkId]/hubs": { edgeId: string; networkId: string }
 		};
 		LayoutParams(): {
-			"/": Record<string, never>
+			"/(auth)": Record<string, never>;
+			"/(app)": { edgeId?: string; networkId?: string };
+			"/": { edgeId?: string; networkId?: string };
+			"/(app)/certificates": Record<string, never>;
+			"/(app)/edge": { edgeId?: string; networkId?: string };
+			"/(app)/edge/[edgeId]": { edgeId: string; networkId?: string };
+			"/(app)/edge/[edgeId]/networks": { edgeId: string; networkId?: string };
+			"/(app)/edge/[edgeId]/networks/[networkId]": { edgeId: string; networkId: string };
+			"/(app)/edge/[edgeId]/networks/[networkId]/hubs": { edgeId: string; networkId: string };
+			"/(app)/firmware": Record<string, never>;
+			"/(auth)/login": Record<string, never>;
+			"/(app)/notifications": Record<string, never>
 		};
-		Pathname(): "/";
+		Pathname(): "/" | "/certificates" | "/edge" | `/edge/${string}/networks` & {} | `/edge/${string}/networks/${string}/hubs` & {} | "/firmware" | "/login" | "/notifications";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): string & {};
 	}

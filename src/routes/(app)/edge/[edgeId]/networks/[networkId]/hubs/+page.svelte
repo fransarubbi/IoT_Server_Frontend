@@ -3,7 +3,8 @@
     import { edges } from "$lib/stores/edges";
     import { networks } from "$lib/stores/networks";
     import { hubs, hubsLoading, hubsError, hubsSaving, hubsActions } from "$lib/stores/hubs";
-    import { pageParams, navigateTo } from "$lib/stores/navigation";
+    import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
     import PageHeader from "$lib/components/page-header.svelte";
     import EmptyState from "$lib/components/empty-state.svelte";
     import Modal from "$lib/components/modal.svelte";
@@ -18,8 +19,8 @@
 
     import type { HubSettings } from "$lib/types";
 
-    let edgeId = $derived($pageParams.edgeId as string);
-    let networkId = $derived($pageParams.networkId as string);
+    let edgeId = $derived($page.params.edgeId);
+    let networkId = $derived($page.params.networkId);
 
     // Derive current edge name from the edges store (already loaded)
     let currentEdge = $derived($edges.find((e) => e.edgeId === edgeId));
@@ -34,7 +35,7 @@
     });
 
     function goBack() {
-        navigateTo("edge-networks", { edgeId });
+        goto(`/edge/${edgeId}/networks`);
     }
 
     // -- Info Modal --
@@ -187,7 +188,7 @@
     {:else}
         <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
             <p>Red o Edge no encontrados.</p>
-            <button onclick={() => navigateTo('edge')} class="mt-4 btn-secondary rounded-lg px-4 py-2">Volver a Inicio</button>
+            <button onclick={() => goto('/edge')} class="mt-4 btn-secondary rounded-lg px-4 py-2">Volver a Inicio</button>
         </div>
     {/if}
 </div>

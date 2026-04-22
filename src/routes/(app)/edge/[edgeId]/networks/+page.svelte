@@ -2,7 +2,8 @@
     import { onMount } from "svelte";
     import { edges } from "$lib/stores/edges";
     import { networks, networksLoading, networksError, networksActions } from "$lib/stores/networks";
-    import { pageParams, navigateTo } from "$lib/stores/navigation";
+    import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
     import PageHeader from "$lib/components/page-header.svelte";
     import EmptyState from "$lib/components/empty-state.svelte";
     import Modal from "$lib/components/modal.svelte";
@@ -18,7 +19,7 @@
     import ToggleLeft from "lucide-svelte/icons/toggle-left";
     import ToggleRight from "lucide-svelte/icons/toggle-right";
 
-    let edgeId = $derived($pageParams.edgeId as string);
+    let edgeId = $derived($page.params.edgeId);
     let currentEdge = $derived($edges.find((e) => e.edgeId === edgeId));
 
     // Load networks whenever the edgeId changes
@@ -44,7 +45,7 @@
     let firmwareTarget = $state<NetworkSummary | null>(null);
 
     function goBack() {
-        navigateTo("edge");
+        goto("/edge");
     }
 
     async function createNetwork() {
@@ -182,7 +183,7 @@
 
                         <div class="mt-5 border-t border-border pt-4">
                             <button
-                                onclick={() => navigateTo('network-hubs', { edgeId, networkId: network.networkId })}
+                                onclick={() => goto(`/edge/${edgeId}/networks/${network.networkId}/hubs`)}
                                 class="w-full btn-primary flex flex-1 items-center justify-between gap-1.5 rounded-lg py-2.5 px-4 text-xs font-semibold mb-2"
                             >
                                 <span>Ver Hubs</span>

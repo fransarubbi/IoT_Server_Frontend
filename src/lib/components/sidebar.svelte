@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentPage, type Page } from "$lib/stores/navigation";
+  import { page } from "$app/stores";
   import { profile, fullName, initials } from "$lib/stores/auth";
   import ThemeToggle from "./theme-toggle.svelte";
   import {
@@ -12,15 +12,11 @@
     LayoutDashboard,
   } from "lucide-svelte";
 
-  const navItems: { id: Page; label: string; icon: typeof Server }[] = [
+  const navItems: { id: string; label: string; icon: typeof Server }[] = [
     { id: "edge", label: "Edge", icon: Server },
     { id: "certificates", label: "Certificados", icon: ShieldCheck },
     { id: "notifications", label: "Notificaciones", icon: Bell },
   ];
-
-  function navigate(page: Page) {
-    currentPage.set(page);
-  }
 
   let { onLogout }: { onLogout?: () => void } = $props();
 </script>
@@ -64,29 +60,27 @@
     </p>
     <div class="space-y-1">
       {#each navItems as item, i}
-        <button
-          onclick={() => navigate(item.id)}
+        <a
+          href="/{item.id}"
           class="stagger-item group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium
                  transition-all duration-200 ease-out
-                 {$currentPage === item.id ||
-          ($currentPage === 'edge-networks' && item.id === 'edge')
+                 {$page.url.pathname.startsWith('/' + item.id)
             ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
             : 'text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent'}"
           style="animation-delay: {i * 0.05}s"
         >
           <div class="relative">
             <item.icon
-              class="h-4.5 w-4.5 transition-transform duration-200 {$currentPage ===
-              item.id
+              class="h-4.5 w-4.5 transition-transform duration-200 {$page.url.pathname.startsWith('/' + item.id)
                 ? ''
                 : 'group-hover:scale-110'}"
             />
           </div>
           <span class="flex-1 text-left">{item.label}</span>
-          {#if $currentPage === item.id}
+          {#if $page.url.pathname.startsWith('/' + item.id)}
             <ChevronRight class="h-4 w-4 animate-slide-in" />
           {/if}
-        </button>
+        </a>
       {/each}
     </div>
   </nav>

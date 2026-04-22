@@ -38,6 +38,7 @@
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/private' {
+	export const VITE_API_BASE_URL: string;
 	export const SHELL: string;
 	export const npm_command: string;
 	export const LSCOLORS: string;
@@ -60,6 +61,7 @@ declare module '$env/static/private' {
 	export const XDG_SESSION_DESKTOP: string;
 	export const LOGNAME: string;
 	export const XDG_SESSION_TYPE: string;
+	export const PNPM_HOME: string;
 	export const npm_config_init_module: string;
 	export const SYSTEMD_EXEC_PID: string;
 	export const _: string;
@@ -191,6 +193,7 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		VITE_API_BASE_URL: string;
 		SHELL: string;
 		npm_command: string;
 		LSCOLORS: string;
@@ -213,6 +216,7 @@ declare module '$env/dynamic/private' {
 		XDG_SESSION_DESKTOP: string;
 		LOGNAME: string;
 		XDG_SESSION_TYPE: string;
+		PNPM_HOME: string;
 		npm_config_init_module: string;
 		SYSTEMD_EXEC_PID: string;
 		_: string;

@@ -1,3 +1,11 @@
 {
-	"/": []
+	"/(app)": [],
+	"/": [],
+	"/(app)/certificates": [],
+	"/(app)/edge": [],
+	"/(app)/edge/[edgeId]/networks": [],
+	"/(app)/edge/[edgeId]/networks/[networkId]/hubs": [],
+	"/(app)/firmware": [],
+	"/(auth)/login": [],
+	"/(app)/notifications": []
 }

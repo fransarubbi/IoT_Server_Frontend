@@ -1,3 +1,5 @@
+import { supabase } from '$lib/supabase';
+
 /**
  * Central API configuration and fetch utilities.
  * Set VITE_API_BASE_URL in your .env file to override (e.g. http://localhost:3000/api).
@@ -43,12 +45,20 @@ export async function apiFetch(
 ): Promise<Response> {
   const url = `${API_BASE}${path}`;
 
+  const { data: { session } } = await supabase.auth.getSession();
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string> ?? {}),
+  };
+
+  if (session?.access_token) {
+    headers['Authorization'] = `Bearer ${session.access_token}`;
+  }
+
   const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers ?? {}),
-    },
     ...options,
+    headers,
   });
 
   if (!response.ok) {

@@ -6,7 +6,7 @@
   import EmptyState from "$lib/components/empty-state.svelte";
   import type { Edge } from "$lib/types";
   import { edges, edgesLoading, edgesActions } from "$lib/stores/edges";
-  import { navigateTo } from "$lib/stores/navigation";
+  import { goto } from "$app/navigation";
   import Plus from "lucide-svelte/icons/plus";
   import Server from "lucide-svelte/icons/server";
   import NetworkIcon from "lucide-svelte/icons/network";
@@ -114,7 +114,7 @@
   }
 
   function goToNetworks(edgeId: string) {
-    navigateTo("edge-networks", { edgeId });
+    goto(`/edge/${edgeId}/networks`);
   }
 
   function formatDate(iso: string): string {
