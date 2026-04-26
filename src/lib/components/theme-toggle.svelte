@@ -1,6 +1,7 @@
 <script lang="ts">
   import { theme } from '$lib/stores/theme';
-  import { Sun, Moon } from 'lucide-svelte';
+  import Sun from 'lucide-svelte/icons/sun';
+  import Moon from 'lucide-svelte/icons/moon';
 </script>
 
 <!-- Complete redesign with modern animated toggle -->

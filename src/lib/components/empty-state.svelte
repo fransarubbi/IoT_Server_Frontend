@@ -1,18 +1,20 @@
 <script lang="ts">
-  import type { ComponentType } from 'svelte';
+  import type { ComponentType, Snippet } from 'svelte';
 
   let { 
     icon, 
     title, 
     description, 
     actionLabel, 
-    onAction 
+    onAction,
+    children
   }: { 
     icon: ComponentType; 
     title: string; 
     description: string; 
     actionLabel?: string; 
-    onAction?: () => void 
+    onAction?: () => void;
+    children?: Snippet;
   } = $props();
 
   const SvelteComponent = $derived(icon);
@@ -38,5 +40,10 @@
     >
       {actionLabel}
     </button>
+  {/if}
+  {#if children}
+    <div class="mt-4 w-full">
+      {@render children()}
+    </div>
   {/if}
 </div>

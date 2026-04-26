@@ -11,15 +11,13 @@
     certificatesGenerating,
     certificatesActions,
   } from '$lib/stores/certificates';
-  import {
-    Plus,
-    ShieldCheck,
-    ShieldOff,
-    FileKey,
-    AlertCircle,
-    Loader,
-    CheckCircle,
-  } from 'lucide-svelte';
+  import Plus from 'lucide-svelte/icons/plus';
+  import ShieldCheck from 'lucide-svelte/icons/shield-check';
+  import ShieldOff from 'lucide-svelte/icons/shield-off';
+  import FileKey from 'lucide-svelte/icons/file-key';
+  import AlertCircle from 'lucide-svelte/icons/alert-circle';
+  import Loader from 'lucide-svelte/icons/loader';
+  import CheckCircle from 'lucide-svelte/icons/check-circle';
 
   onMount(() => {
     certificatesActions.load();
@@ -32,7 +30,7 @@
   // Full CertificateRequest form
   let form = $state<CertificateRequest>({
     displayName: '',
-    deviceType: 'edge',
+    deviceType: 'EDGE',
     commonName: '',
     organization: '',
     country: '',
@@ -43,7 +41,7 @@
   function resetForm() {
     form = {
       displayName: '',
-      deviceType: 'edge',
+      deviceType: 'EDGE',
       commonName: '',
       organization: '',
       country: '',
@@ -75,18 +73,18 @@
     }
   }
 
-  function formatDate(iso: string): string {
-    return new Intl.DateTimeFormat('es', { dateStyle: 'medium' }).format(new Date(iso));
+  function formatDate(ts: number): string {
+    return new Intl.DateTimeFormat('es', { dateStyle: 'medium' }).format(new Date(ts));
   }
 
-  function getDaysUntilExpiry(iso: string): number {
-    return Math.ceil((new Date(iso).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  function getDaysUntilExpiry(ts: number): number {
+    return Math.ceil((ts - Date.now()) / (1000 * 60 * 60 * 24));
   }
 
   const statusConfig: Record<string, { color: string; label: string }> = {
-    valid:   { color: 'text-success',     label: 'Válido' },
-    expired: { color: 'text-destructive', label: 'Expirado' },
-    revoked: { color: 'text-muted-foreground', label: 'Revocado' },
+    VALID:   { color: 'text-success',     label: 'Válido' },
+    EXPIRED: { color: 'text-destructive', label: 'Expirado' },
+    REVOKED: { color: 'text-muted-foreground', label: 'Revocado' },
   };
 </script>
 
@@ -105,11 +103,11 @@
       </div>
       <div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5">
         <span class="h-2 w-2 rounded-full bg-success"></span>
-        <span class="text-sm font-semibold text-success">{$certificates.filter((c) => c.status === 'valid').length} válidos</span>
+        <span class="text-sm font-semibold text-success">{$certificates.filter((c) => c.status === 'VALID').length} válidos</span>
       </div>
       <div class="flex items-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-2.5">
         <span class="h-2 w-2 rounded-full bg-destructive"></span>
-        <span class="text-sm font-semibold text-destructive">{$certificates.filter((c) => c.status === 'expired').length} expirados</span>
+        <span class="text-sm font-semibold text-destructive">{$certificates.filter((c) => c.status === 'EXPIRED').length} expirados</span>
       </div>
     </div>
 
@@ -150,8 +148,8 @@
         </thead>
         <tbody class="divide-y divide-border">
           {#each $certificates as cert, i}
-            {@const sc = statusConfig[cert.status] ?? statusConfig.revoked}
-            {@const daysUntil = getDaysUntilExpiry(cert.expiresAt)}
+            {@const sc = statusConfig[cert.status] ?? statusConfig.REVOKED}
+            {@const daysUntil = getDaysUntilExpiry(cert.expirationDate)}
             <tr class="stagger-item group transition-colors hover:bg-muted/20" style="animation-delay: {i * 0.03}s">
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
@@ -160,9 +158,8 @@
                   </div>
                   <div>
                     <span class="font-medium text-card-foreground block">{cert.displayName}</span>
-                    {#if cert.commonName}
-                      <span class="text-xs text-muted-foreground font-mono">{cert.commonName}</span>
-                    {/if}
+                    <!-- commonName no longer available in GET DTO unless embedded, we hide or remove it. 
+                         If we have it in our store we can keep it. -->
                   </div>
                 </div>
               </td>
@@ -175,12 +172,12 @@
                 <span class="text-sm font-semibold {sc.color}">{sc.label}</span>
               </td>
               <td class="px-6 py-4 text-sm text-muted-foreground">
-                {formatDate(cert.issuedAt)}
+                {formatDate(cert.emissionDate)}
               </td>
               <td class="px-6 py-4">
                 <div class="text-sm">
-                  <span class="text-card-foreground">{formatDate(cert.expiresAt)}</span>
-                  {#if cert.status === 'valid' && daysUntil <= 30}
+                  <span class="text-card-foreground">{formatDate(cert.expirationDate)}</span>
+                  {#if cert.status === 'VALID' && daysUntil <= 30}
                     <span class="ml-2 rounded-md bg-warning/10 px-1.5 py-0.5 text-xs font-medium text-warning">
                       {daysUntil}d
                     </span>
@@ -189,7 +186,7 @@
               </td>
               <td class="px-6 py-4">
                 <div class="flex items-center justify-end gap-1">
-                  {#if cert.status === 'valid'}
+                  {#if cert.status === 'VALID'}
                     {#if revokeConfirmId === cert.id}
                       <div class="flex items-center gap-2">
                         <span class="text-xs text-muted-foreground">¿Confirmar?</span>
@@ -241,11 +238,9 @@
       <div class="space-y-1.5">
         <label for="cert-deviceType" class="block text-sm font-medium text-card-foreground">Tipo de dispositivo</label>
         <select id="cert-deviceType" bind:value={form.deviceType} class="input-field bg-background">
-          <option value="edge">Edge</option>
-          <option value="hub">Hub</option>
-          <option value="server">Server</option>
-          <option value="ca">CA</option>
-          <option value="client">Client</option>
+          <option value="EDGE">Edge</option>
+          <option value="HUB">Hub</option>
+          <option value="ROUTER">Router</option>
         </select>
       </div>
 

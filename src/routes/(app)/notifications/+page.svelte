@@ -3,25 +3,22 @@
   import PageHeader from '$lib/components/page-header.svelte';
   import EmptyState from '$lib/components/empty-state.svelte';
   import { notifications, notificationsLoading, notificationsError, notificationsActions } from '$lib/stores/notifications';
-  import {
-    Bell,
-    CheckCheck,
-    AlertTriangle,
-    AlertCircle,
-    Info,
-    CheckCircle,
-    Loader,
-  } from 'lucide-svelte';
+  import Bell from 'lucide-svelte/icons/bell';
+  import CheckCheck from 'lucide-svelte/icons/check-check';
+  import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
+  import AlertCircle from 'lucide-svelte/icons/alert-circle';
+  import Info from 'lucide-svelte/icons/info';
+  import CheckCircle from 'lucide-svelte/icons/check-circle';
+  import Loader from 'lucide-svelte/icons/loader';
 
   onMount(() => {
     notificationsActions.load();
   });
 
   const typeConfig: Record<string, { icon: typeof Info; bgColor: string; iconColor: string; borderColor: string }> = {
-    info:    { icon: Info,          bgColor: 'bg-primary/10',     iconColor: 'text-primary',     borderColor: 'border-l-primary' },
-    warning: { icon: AlertTriangle, bgColor: 'bg-warning/10',     iconColor: 'text-warning',     borderColor: 'border-l-warning' },
-    error:   { icon: AlertCircle,   bgColor: 'bg-destructive/10', iconColor: 'text-destructive', borderColor: 'border-l-destructive' },
-    success: { icon: CheckCircle,   bgColor: 'bg-success/10',     iconColor: 'text-success',     borderColor: 'border-l-success' },
+    INFO:    { icon: Info,          bgColor: 'bg-primary/10',     iconColor: 'text-primary',     borderColor: 'border-l-primary' },
+    WARNING: { icon: AlertTriangle, bgColor: 'bg-warning/10',     iconColor: 'text-warning',     borderColor: 'border-l-warning' },
+    ERROR:   { icon: AlertCircle,   bgColor: 'bg-destructive/10', iconColor: 'text-destructive', borderColor: 'border-l-destructive' },
   };
 
   async function markAsRead(id: number) {
@@ -40,8 +37,8 @@
     }
   }
 
-  function formatTimestamp(iso: string): string {
-    const date = new Date(iso);
+  function formatTimestamp(ts: number): string {
+    const date = new Date(ts);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);
@@ -104,7 +101,7 @@
   {:else}
     <div class="space-y-3">
       {#each $notifications as notification, i}
-        {@const config = typeConfig[notification.type] ?? typeConfig.info}
+        {@const config = typeConfig[notification.type] ?? typeConfig.INFO}
         <div
           class="stagger-item group relative rounded-2xl border bg-card p-5
                  transition-all duration-300 hover:shadow-lg
@@ -123,12 +120,7 @@
                   <p class="font-medium text-card-foreground leading-relaxed">
                     {notification.description}
                   </p>
-                  {#if notification.edgeId}
-                    <p class="mt-1 text-xs text-muted-foreground font-mono">
-                      Edge: {notification.edgeId}
-                    </p>
-                  {/if}
-                </div>
+                  </div>
 
                 <div class="flex shrink-0 items-center gap-1 opacity-0 transition-all duration-200
                             translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">

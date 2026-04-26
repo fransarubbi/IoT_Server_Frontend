@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import type { Notification } from '$lib/types';
-import { notificationsService } from '$lib/services/notifications.service';
+import { getActiveNotifications, markNotificationAsRead } from '$lib/services/api';
 
 // ---------------------------------------------------------------------------
 // State stores
@@ -20,7 +20,7 @@ export const notificationsActions = {
     notificationsLoading.set(true);
     notificationsError.set(null);
     try {
-      const data = await notificationsService.getAll();
+      const data = await getActiveNotifications();
       notifications.set(data);
     } catch (err) {
       notificationsError.set(err instanceof Error ? err.message : String(err));
@@ -36,7 +36,7 @@ export const notificationsActions = {
   async markRead(id: number): Promise<void> {
     notificationsError.set(null);
     try {
-      await notificationsService.markRead(id);
+      await markNotificationAsRead(id);
       notifications.update((list) => list.filter((n) => n.id !== id));
     } catch (err) {
       notificationsError.set(err instanceof Error ? err.message : String(err));
@@ -51,7 +51,7 @@ export const notificationsActions = {
     notifications.subscribe((v) => (current = v))();
 
     const results = await Promise.allSettled(
-      current.map((n) => notificationsService.markRead(n.id)),
+      current.map((n) => markNotificationAsRead(n.id)),
     );
 
     // Remove successfully marked notifications from the local list

@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import type { HubSettings } from '$lib/types';
-import { hubsService } from '$lib/services/hubs.service';
+import { getHubsByNetwork, sendHubSettings } from '$lib/services/api';
 
 // ---------------------------------------------------------------------------
 // State stores
@@ -22,7 +22,7 @@ export const hubsActions = {
     hubsLoading.set(true);
     hubsError.set(null);
     try {
-      const data = await hubsService.getByNetwork(networkId);
+      const data = await getHubsByNetwork(networkId);
       hubs.set(data);
     } catch (err) {
       hubsError.set(err instanceof Error ? err.message : String(err));
@@ -40,7 +40,7 @@ export const hubsActions = {
     hubsError.set(null);
     hubsSaving.set(hubId);
     try {
-      await hubsService.updateSettings(hubId, settings);
+      await sendHubSettings(hubId, settings);
       // Optimistic local update
       hubs.update((list) => list.map((h) => (h.hubId === hubId ? settings : h)));
     } catch (err) {

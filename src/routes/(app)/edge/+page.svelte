@@ -36,26 +36,26 @@
   let actionError   = $state<string | null>(null);
 
   // Form state with default values
-  let newEdge = $state<Omit<Edge, "status" | "lastSeen">>({
+  let newEdge = $state<Edge>({
     edgeId: "",
     name: "",
-    ubication: "",
+    location: "",
     hostServer: "127.0.0.1",
-    port: "8080",
+    hostPort: 8080,
     cn: "localhost",
     hostLocal: "127.0.0.1",
-    dbPath: "/var/lib/edge.db",
-    bufferSize: 20,
-    rustLog: "Info",
-    maxAttempts: 3,
-    frequencyPhase: 5,
-    frequencySafeMode: 20,
-    timeoutHandshake: 30,
-    timeoutPhase: 60,
-    timeoutSafeMode: 150,
-    timeBetweenHeartbeatsBalanceMode: 20,
-    timeBetweenHeartbeatsNormal: 45,
-    timeBetweenHeartbeatsSafeMode: 60,
+    dataBasePath: "/var/lib/edge.db",
+    bufferLength: 20,
+    logLevel: "INFO",
+    maxNumberHandshakeAttempts: 3,
+    frequencyMessagesPhase: 5,
+    frequencyMessagesSafeMode: 20,
+    handshakeTimeLimit: 30,
+    phaseTimeLimit: 60,
+    safeModeTimeLimit: 150,
+    heartbeatBalanceModeTime: 20,
+    heartbeatNormalTime: 45,
+    heartbeatSafeModeTime: 60,
   });
 
   async function createEdge() {
@@ -66,7 +66,7 @@
       await edgesActions.add({ ...newEdge });
       newEdge.edgeId = "";
       newEdge.name = "";
-      newEdge.ubication = "";
+      newEdge.location = "";
       showCreateEdgeModal = false;
     } catch (err) {
       actionError = err instanceof Error ? err.message : String(err);
@@ -106,7 +106,7 @@
   async function downloadEdgeConfig(edge: Edge, event: Event) {
     event.stopPropagation();
     try {
-      await edgesActions.downloadConfig(edge.edgeId, edge.name);
+      await edgesActions.downloadConfig(edge.edgeId);
     } catch (err) {
       // non-critical, silent fail
       console.error("Download failed:", err);
@@ -137,17 +137,6 @@
         <span class="text-sm text-muted-foreground">Total:</span>
         <span class="font-bold text-card-foreground">{$edges.length} edges</span>
       </div>
-      {#if $edges.some((e) => e.status === "online")}
-        <div class="flex items-center gap-2 rounded-xl bg-success/10 border border-success/20 px-4 py-2.5">
-          <span class="relative flex h-2 w-2">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75"></span>
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-success"></span>
-          </span>
-          <span class="text-sm font-semibold text-success">
-            {$edges.filter((e) => e.status === "online").length} en línea
-          </span>
-        </div>
-      {/if}
     </div>
 
     <button
@@ -200,19 +189,16 @@
             <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:from-primary/30">
               <Server class="h-7 w-7 text-primary" />
             </div>
-            {#if edge.status}
-              <StatusBadge status={edge.status} />
-            {/if}
           </div>
 
           <h3 class="mt-4 text-lg font-semibold text-card-foreground transition-colors group-hover:text-primary">
             {edge.name}
           </h3>
 
-          {#if edge.ubication}
+          {#if edge.location}
             <div class="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
               <MapPin class="h-4 w-4" />
-              {edge.ubication}
+              {edge.location}
             </div>
           {/if}
 
@@ -278,7 +264,7 @@
           </div>
           <div class="col-span-2 space-y-1.5">
             <label for="create-ubic" class="block text-xs font-semibold text-muted-foreground">Ubicación</label>
-            <input id="create-ubic" type="text" bind:value={newEdge.ubication} class="input-field py-1.5" placeholder="Datacenter Principal" />
+            <input id="create-ubic" type="text" bind:value={newEdge.location} class="input-field py-1.5" placeholder="Datacenter Principal" />
           </div>
           <div class="space-y-1.5">
             <label for="create-cn" class="block text-xs font-semibold text-muted-foreground">CN</label>
@@ -291,7 +277,7 @@
             </div>
             <div class="space-y-1.5 flex-[0.5]">
               <label for="create-port" class="block text-xs font-semibold text-muted-foreground">Puerto</label>
-              <input id="create-port" type="text" bind:value={newEdge.port} class="input-field py-1.5 font-mono" />
+              <input id="create-port" type="number" bind:value={newEdge.hostPort} class="input-field py-1.5 font-mono" />
             </div>
             <div class="space-y-1.5 flex-1">
               <label for="create-hostLocal" class="block text-xs font-semibold text-muted-foreground">Host Local</label>
@@ -300,18 +286,18 @@
           </div>
           <div class="col-span-2 space-y-1.5">
             <label for="create-db" class="block text-xs font-semibold text-muted-foreground">Ruta Base de Datos</label>
-            <input id="create-db" type="text" bind:value={newEdge.dbPath} class="input-field py-1.5 font-mono text-xs" />
+            <input id="create-db" type="text" bind:value={newEdge.dataBasePath} class="input-field py-1.5 font-mono text-xs" />
           </div>
           <div class="space-y-1.5">
             <label for="create-buffer" class="block text-xs font-semibold text-muted-foreground">Tamaño Buffer (5-50)</label>
-            <input id="create-buffer" type="number" min="5" max="50" bind:value={newEdge.bufferSize} class="input-field py-1.5" />
+            <input id="create-buffer" type="number" min="5" max="50" bind:value={newEdge.bufferLength} class="input-field py-1.5" />
           </div>
           <div class="space-y-1.5">
             <label for="create-log" class="block text-xs font-semibold text-muted-foreground">Log</label>
-            <select id="create-log" bind:value={newEdge.rustLog} class="input-field py-1.5 bg-background">
-              <option value="Debug">Debug</option>
-              <option value="Info">Info</option>
-              <option value="Error">Error</option>
+            <select id="create-log" bind:value={newEdge.logLevel} class="input-field py-1.5 bg-background">
+              <option value="DEBUG">Debug</option>
+              <option value="INFO">Info</option>
+              <option value="WARN">Warn</option>
             </select>
           </div>
         </div>
@@ -325,39 +311,39 @@
         <div class="grid grid-cols-2 gap-3 text-xs">
           <div class="space-y-1">
             <label for="p-max-a" class="block font-semibold text-muted-foreground">Nº máximo intentos (1-10)</label>
-            <input id="p-max-a" type="number" min="1" max="10" bind:value={newEdge.maxAttempts} class="input-field py-1" />
+            <input id="p-max-a" type="number" min="1" max="10" bind:value={newEdge.maxNumberHandshakeAttempts} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-fp" class="block font-semibold text-muted-foreground">Frec. msjs en fase (1-10m)</label>
-            <input id="p-fp" type="number" min="1" max="10" bind:value={newEdge.frequencyPhase} class="input-field py-1" />
+            <input id="p-fp" type="number" min="1" max="10" bind:value={newEdge.frequencyMessagesPhase} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-fs" class="block font-semibold text-muted-foreground">Frec. safe mode (10-40s)</label>
-            <input id="p-fs" type="number" min="10" max="40" bind:value={newEdge.frequencySafeMode} class="input-field py-1" />
+            <input id="p-fs" type="number" min="10" max="40" bind:value={newEdge.frequencyMessagesSafeMode} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-th" class="block font-semibold text-muted-foreground">T Límite handshake (15-60s)</label>
-            <input id="p-th" type="number" min="15" max="60" bind:value={newEdge.timeoutHandshake} class="input-field py-1" />
+            <input id="p-th" type="number" min="15" max="60" bind:value={newEdge.handshakeTimeLimit} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-tp" class="block font-semibold text-muted-foreground">T Límite fases (30-120s)</label>
-            <input id="p-tp" type="number" min="30" max="120" bind:value={newEdge.timeoutPhase} class="input-field py-1" />
+            <input id="p-tp" type="number" min="30" max="120" bind:value={newEdge.phaseTimeLimit} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-ts" class="block font-semibold text-muted-foreground">T Límite safe mode (120-300s)</label>
-            <input id="p-ts" type="number" min="120" max="300" bind:value={newEdge.timeoutSafeMode} class="input-field py-1" />
+            <input id="p-ts" type="number" min="120" max="300" bind:value={newEdge.safeModeTimeLimit} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-hbb" class="block font-semibold text-muted-foreground">Heartbeat b-mode (10-40s)</label>
-            <input id="p-hbb" type="number" min="10" max="40" bind:value={newEdge.timeBetweenHeartbeatsBalanceMode} class="input-field py-1" />
+            <input id="p-hbb" type="number" min="10" max="40" bind:value={newEdge.heartbeatBalanceModeTime} class="input-field py-1" />
           </div>
           <div class="space-y-1">
             <label for="p-hbn" class="block font-semibold text-muted-foreground">Heartbeat normal (30-60s)</label>
-            <input id="p-hbn" type="number" min="30" max="60" bind:value={newEdge.timeBetweenHeartbeatsNormal} class="input-field py-1" />
+            <input id="p-hbn" type="number" min="30" max="60" bind:value={newEdge.heartbeatNormalTime} class="input-field py-1" />
           </div>
           <div class="space-y-1 col-span-2">
             <label for="p-hbs" class="block font-semibold text-muted-foreground">Heartbeat safe mode (40-80s)</label>
-            <input id="p-hbs" type="number" min="40" max="80" bind:value={newEdge.timeBetweenHeartbeatsSafeMode} class="input-field py-1" />
+            <input id="p-hbs" type="number" min="40" max="80" bind:value={newEdge.heartbeatSafeModeTime} class="input-field py-1" />
           </div>
         </div>
       </div>
@@ -395,18 +381,6 @@
   {#if viewingEdge}
     <div class="space-y-6">
 
-      {#if viewingEdge.status}
-        <div class="flex items-center gap-3 bg-muted/30 p-3 rounded-lg border border-border">
-          <StatusBadge status={viewingEdge.status} />
-          {#if viewingEdge.lastSeen}
-            <div class="text-xs text-muted-foreground ml-auto pr-1 text-right">
-              <div>Últ. vez visto:</div>
-              <div class="font-medium text-card-foreground">{formatDate(viewingEdge.lastSeen)}</div>
-            </div>
-          {/if}
-        </div>
-      {/if}
-
       <div>
         <h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Sistema</h3>
         <div class="grid grid-cols-2 gap-y-3 gap-x-4 text-sm bg-card border border-border p-4 rounded-xl">
@@ -420,11 +394,11 @@
           </div>
           <div>
             <span class="text-muted-foreground block text-xs mb-0.5">Ubicación</span>
-            <span class="text-card-foreground">{viewingEdge.ubication}</span>
+            <span class="text-card-foreground">{viewingEdge.location}</span>
           </div>
           <div>
             <span class="text-muted-foreground block text-xs mb-0.5">Host Server</span>
-            <span class="font-mono text-xs">{viewingEdge.hostServer}:{viewingEdge.port}</span>
+            <span class="font-mono text-xs">{viewingEdge.hostServer}:{viewingEdge.hostPort}</span>
           </div>
           <div>
             <span class="text-muted-foreground block text-xs mb-0.5">Host Local</span>
@@ -436,15 +410,15 @@
           </div>
           <div class="col-span-2">
             <span class="text-muted-foreground block text-xs mb-0.5">Ruta Base de Datos</span>
-            <span class="text-xs font-mono break-all text-secondary-foreground">{viewingEdge.dbPath}</span>
+            <span class="text-xs font-mono break-all text-secondary-foreground">{viewingEdge.dataBasePath}</span>
           </div>
           <div>
             <span class="text-muted-foreground block text-xs mb-0.5">Tamaño del Buffer</span>
-            <span class="text-card-foreground">{viewingEdge.bufferSize}</span>
+            <span class="text-card-foreground">{viewingEdge.bufferLength}</span>
           </div>
           <div>
             <span class="text-muted-foreground block text-xs mb-0.5">Nivel de Log</span>
-            <span class="text-card-foreground">{viewingEdge.rustLog}</span>
+            <span class="text-card-foreground">{viewingEdge.logLevel}</span>
           </div>
         </div>
       </div>
@@ -454,39 +428,39 @@
         <div class="space-y-2 bg-card border border-border p-4 rounded-xl text-sm">
           <div class="flex justify-between border-b border-border/50 pb-2">
             <span class="text-muted-foreground">Número máx. intentos</span>
-            <span class="font-mono">{viewingEdge.maxAttempts} s</span>
+            <span class="font-mono">{viewingEdge.maxNumberHandshakeAttempts} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
             <span class="text-muted-foreground">Frecuencia msj (fase)</span>
-            <span class="font-mono">{viewingEdge.frequencyPhase} min</span>
+            <span class="font-mono">{viewingEdge.frequencyMessagesPhase} min</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
             <span class="text-muted-foreground">Frecuencia msj (safe mode)</span>
-            <span class="font-mono">{viewingEdge.frequencySafeMode} s</span>
+            <span class="font-mono">{viewingEdge.frequencyMessagesSafeMode} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
             <span class="text-muted-foreground">T. Límite Handshake</span>
-            <span class="font-mono">{viewingEdge.timeoutHandshake} s</span>
+            <span class="font-mono">{viewingEdge.handshakeTimeLimit} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
             <span class="text-muted-foreground">T. Límite Fases</span>
-            <span class="font-mono">{viewingEdge.timeoutPhase} s</span>
+            <span class="font-mono">{viewingEdge.phaseTimeLimit} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
             <span class="text-muted-foreground">T. Límite Safe mode</span>
-            <span class="font-mono">{viewingEdge.timeoutSafeMode} s</span>
+            <span class="font-mono">{viewingEdge.safeModeTimeLimit} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
             <span class="text-muted-foreground">Heartbeat (Balance)</span>
-            <span class="font-mono">{viewingEdge.timeBetweenHeartbeatsBalanceMode} s</span>
+            <span class="font-mono">{viewingEdge.heartbeatBalanceModeTime} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
             <span class="text-muted-foreground">Heartbeat (Normal)</span>
-            <span class="font-mono">{viewingEdge.timeBetweenHeartbeatsNormal} s</span>
+            <span class="font-mono">{viewingEdge.heartbeatNormalTime} s</span>
           </div>
           <div class="flex justify-between pt-1">
             <span class="text-muted-foreground">Heartbeat (Safe)</span>
-            <span class="font-mono">{viewingEdge.timeBetweenHeartbeatsSafeMode} s</span>
+            <span class="font-mono">{viewingEdge.heartbeatSafeModeTime} s</span>
           </div>
         </div>
       </div>

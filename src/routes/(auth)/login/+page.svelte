@@ -3,7 +3,16 @@
   import { login } from '$lib/stores/auth.svelte';
   import { goto } from '$app/navigation';
   import ThemeToggle from '$lib/components/theme-toggle.svelte';
-  import { Mail, Lock, ArrowRight, Eye, EyeOff, LayoutDashboard, WifiOff, ShieldAlert, UserX, AlertCircle } from 'lucide-svelte';
+  import Mail from 'lucide-svelte/icons/mail';
+  import Lock from 'lucide-svelte/icons/lock';
+  import ArrowRight from 'lucide-svelte/icons/arrow-right';
+  import Eye from 'lucide-svelte/icons/eye';
+  import EyeOff from 'lucide-svelte/icons/eye-off';
+  import LayoutDashboard from 'lucide-svelte/icons/layout-dashboard';
+  import WifiOff from 'lucide-svelte/icons/wifi-off';
+  import ShieldAlert from 'lucide-svelte/icons/shield-alert';
+  import UserX from 'lucide-svelte/icons/user-x';
+  import AlertCircle from 'lucide-svelte/icons/alert-circle';
 
   let email = $state('');
   let password = $state('');

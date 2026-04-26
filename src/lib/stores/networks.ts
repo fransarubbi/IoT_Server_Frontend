@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
-import type { NetworkSummary } from '$lib/types';
-import { networksService } from '$lib/services/networks.service';
+import type { NetworkSummary, Network } from '$lib/types';
+import { getNetworksSummary, createNetwork, updateNetworkStatus, deleteNetwork } from '$lib/services/api';
 
 // ---------------------------------------------------------------------------
 // State stores
@@ -20,7 +20,7 @@ export const networksActions = {
     networksLoading.set(true);
     networksError.set(null);
     try {
-      const data = await networksService.getByEdge(edgeId);
+      const data = await getNetworksSummary(edgeId);
       networks.set(data);
     } catch (err) {
       networksError.set(err instanceof Error ? err.message : String(err));
@@ -31,14 +31,14 @@ export const networksActions = {
 
   /** Create a new Network and reload the list. */
   async add(
-    network: { networkId: string; name: string; edgeId: string },
+    network: Omit<Network, 'active'>,
     edgeId: string,
   ): Promise<void> {
     networksLoading.set(true);
     networksError.set(null);
     try {
-      await networksService.create({ ...network, active: true });
-      const data = await networksService.getByEdge(edgeId);
+      await createNetwork({ ...network, active: true });
+      const data = await getNetworksSummary(edgeId);
       networks.set(data);
     } catch (err) {
       networksError.set(err instanceof Error ? err.message : String(err));
@@ -58,7 +58,7 @@ export const networksActions = {
       list.map((n) => (n.networkId === networkId ? { ...n, active: !n.active } : n)),
     );
     try {
-      await networksService.toggle(networkId);
+      await updateNetworkStatus(networkId);
     } catch (err) {
       // Revert on failure
       networks.update((list) =>
@@ -73,7 +73,7 @@ export const networksActions = {
   async remove(networkId: string): Promise<void> {
     networksError.set(null);
     try {
-      await networksService.delete(networkId);
+      await deleteNetwork(networkId);
       networks.update((list) => list.filter((n) => n.networkId !== networkId));
     } catch (err) {
       networksError.set(err instanceof Error ? err.message : String(err));

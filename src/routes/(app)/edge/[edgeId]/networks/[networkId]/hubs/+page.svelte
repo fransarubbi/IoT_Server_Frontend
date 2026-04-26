@@ -57,8 +57,8 @@
         wifiSsid: "",
         wifiPassword: "",
         mqttUri: "",
-        sample: "",
-        energyMode: "Normal",
+        sample: 5,
+        energyMode: 1,
         networkId: "",
     });
 
@@ -153,12 +153,12 @@
                             <div class="mt-2 space-y-1">
                                 <p class="text-sm text-card-foreground/80">{hub.deviceName}</p>
                                 <div class={`inline-block mt-2 px-2.5 py-0.5 rounded-full border ${
-                                    hub.energyMode === 'Bajo consumo' ? 'bg-success/10 border-success/20 text-success' :
-                                    hub.energyMode === 'Balanceado' ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
-                                    hub.energyMode === 'Performance' ? 'bg-destructive/10 border-destructive/20 text-destructive' :
+                                    hub.energyMode === 0 ? 'bg-success/10 border-success/20 text-success' :
+                                    hub.energyMode === 1 ? 'bg-blue-500/10 border-blue-500/20 text-blue-500' :
+                                    hub.energyMode === 2 ? 'bg-destructive/10 border-destructive/20 text-destructive' :
                                     'bg-accent/10 border-accent/20 text-accent'
                                 }`}>
-                                    <span class="text-[10px] font-medium">Modo Energía: {hub.energyMode}</span>
+                                    <span class="text-[10px] font-medium">Modo Energía: {hub.energyMode === 0 ? 'Bajo consumo' : hub.energyMode === 1 ? 'Balanceado' : hub.energyMode === 2 ? 'Performance' : hub.energyMode}</span>
                                 </div>
                             </div>
                         </div>
@@ -228,7 +228,7 @@
                 </div>
                 <div class="bg-card border border-border rounded-lg p-3">
                     <span class="block text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">Modo Energía</span>
-                    <span class="text-sm font-medium">{selectedHub.energyMode}</span>
+                    <span class="text-sm font-medium">{selectedHub.energyMode === 0 ? 'Bajo consumo' : selectedHub.energyMode === 1 ? 'Balanceado' : selectedHub.energyMode === 2 ? 'Performance' : selectedHub.energyMode}</span>
                 </div>
             </div>
 
@@ -290,9 +290,9 @@
             <div class="space-y-1.5">
                 <label for="hub-energy" class="block text-sm font-medium text-card-foreground">Modo Energía</label>
                 <select id="hub-energy" bind:value={formHub.energyMode} class="input-field">
-                    <option value="Bajo consumo">Bajo consumo</option>
-                    <option value="Balanceado">Balanceado</option>
-                    <option value="Performance">Performance</option>
+                    <option value={0}>Bajo consumo</option>
+                    <option value={1}>Balanceado</option>
+                    <option value={2}>Performance</option>
                 </select>
             </div>
         </div>

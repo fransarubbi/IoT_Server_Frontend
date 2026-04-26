@@ -4,17 +4,15 @@
   import StatusBadge from '$lib/components/status-badge.svelte';
   import EmptyState from '$lib/components/empty-state.svelte';
   import type { Firmware } from '$lib/types';
-  import { 
-    Plus, 
-    HardDrive, 
-    Download, 
-    Trash2, 
-    Upload,
-    Package,
-    Cpu,
-    Clock,
-    FileCode
-  } from 'lucide-svelte';
+  import Plus from 'lucide-svelte/icons/plus';
+  import HardDrive from 'lucide-svelte/icons/hard-drive';
+  import Download from 'lucide-svelte/icons/download';
+  import Trash2 from 'lucide-svelte/icons/trash-2';
+  import Upload from 'lucide-svelte/icons/upload';
+  import Package from 'lucide-svelte/icons/package';
+  import Cpu from 'lucide-svelte/icons/cpu';
+  import Clock from 'lucide-svelte/icons/clock';
+  import FileCode from 'lucide-svelte/icons/file-code';
 
   let firmwares = $state<Firmware[]>([
     {

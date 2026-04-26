@@ -34,6 +34,8 @@
     let showCreateNetworkModal = $state(false);
     let newNetworkId = $state("");
     let newNetworkName = $state("");
+    let newNetworkDescription = $state("");
+    let newNetworkLocation = $state("");
     let actionError = $state<string | null>(null);
 
     // Delete Network Modal
@@ -53,11 +55,19 @@
         actionError = null;
         try {
             await networksActions.add(
-                { networkId: newNetworkId, name: newNetworkName, edgeId },
+                { 
+                    networkId: newNetworkId, 
+                    name: newNetworkName, 
+                    description: newNetworkDescription,
+                    location: newNetworkLocation,
+                    edgeId 
+                },
                 edgeId,
             );
             newNetworkId = "";
             newNetworkName = "";
+            newNetworkDescription = "";
+            newNetworkLocation = "";
             showCreateNetworkModal = false;
         } catch (err) {
             actionError = err instanceof Error ? err.message : String(err);
@@ -67,7 +77,7 @@
     async function toggleNetwork(network: NetworkSummary) {
         actionError = null;
         try {
-            await networksActions.toggle(network.networkId, edgeId);
+            await networksActions.toggle(network.networkId, edgeId as string);
         } catch (err) {
             actionError = err instanceof Error ? err.message : String(err);
         }
@@ -246,6 +256,16 @@
         <div class="space-y-1.5">
             <label for="new-network-name" class="block text-sm font-medium text-card-foreground">Nombre</label>
             <input id="new-network-name" type="text" bind:value={newNetworkName} class="input-field" required placeholder="Red de Sensores Planta A" />
+        </div>
+
+        <div class="space-y-1.5">
+            <label for="new-network-desc" class="block text-sm font-medium text-card-foreground">Descripción</label>
+            <input id="new-network-desc" type="text" bind:value={newNetworkDescription} class="input-field" placeholder="Red encargada de..." />
+        </div>
+
+        <div class="space-y-1.5">
+            <label for="new-network-loc" class="block text-sm font-medium text-card-foreground">Ubicación</label>
+            <input id="new-network-loc" type="text" bind:value={newNetworkLocation} class="input-field" placeholder="Planta Baja" />
         </div>
 
         {#if actionError}

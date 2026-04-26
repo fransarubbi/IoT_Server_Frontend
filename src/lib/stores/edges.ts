@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import type { Edge } from '$lib/types';
-import { edgesService } from '$lib/services/edges.service';
+import { getAllEdges, createEdge, deleteEdge, downloadEdgeConfig } from '$lib/services/api';
 
 // ---------------------------------------------------------------------------
 // State stores
@@ -20,7 +20,7 @@ export const edgesActions = {
     edgesLoading.set(true);
     edgesError.set(null);
     try {
-      const data = await edgesService.getAll();
+      const data = await getAllEdges();
       edges.set(data);
     } catch (err) {
       edgesError.set(err instanceof Error ? err.message : String(err));
@@ -31,10 +31,10 @@ export const edgesActions = {
 
   /** Create a new Edge via the API, then reload the list.
    * Does NOT touch edgesLoading — the caller manages its own submitting state. */
-  async add(edge: Omit<Edge, 'status' | 'lastSeen'>): Promise<void> {
+  async add(edge: Edge): Promise<void> {
     try {
-      await edgesService.create(edge);
-      const data = await edgesService.getAll();
+      await createEdge(edge);
+      const data = await getAllEdges();
       edges.set(data);
     } catch (err) {
       throw err; // re-throw so the page can show the error in the modal
@@ -45,7 +45,7 @@ export const edgesActions = {
    * Does NOT touch edgesLoading — the caller manages its own submitting state. */
   async remove(edgeId: string): Promise<void> {
     try {
-      await edgesService.delete(edgeId);
+      await deleteEdge(edgeId);
       edges.update((list) => list.filter((e) => e.edgeId !== edgeId));
     } catch (err) {
       throw err;
@@ -53,7 +53,7 @@ export const edgesActions = {
   },
 
   /** Download the Edge configuration ZIP from the API. */
-  downloadConfig(edgeId: string, name: string): Promise<void> {
-    return edgesService.downloadConfig(edgeId, name);
+  downloadConfig(edgeId: string): Promise<Blob> {
+    return downloadEdgeConfig(edgeId);
   },
 };
