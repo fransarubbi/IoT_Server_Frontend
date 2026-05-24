@@ -17,6 +17,7 @@
   import Loader from "lucide-svelte/icons/loader";
   import AlertCircle from "lucide-svelte/icons/alert-circle";
   import RefreshCw from "lucide-svelte/icons/refresh-cw";
+  import Info from "lucide-svelte/icons/info";
 
   onMount(() => {
     edgesActions.load();
@@ -242,9 +243,25 @@
 </div>
 
 <!-- Create Edge Modal -->
+{#snippet infoLabel(forId: string, labelText: string, infoText: string)}
+  <div class="flex items-center gap-1.5">
+    <label for={forId} class="block text-xs font-semibold text-muted-foreground">{labelText}</label>
+    <div class="group relative flex items-center justify-center">
+      <Info class="h-3.5 w-3.5 text-muted-foreground cursor-help transition-colors hover:text-primary" />
+      <div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-6 scale-95 opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
+        <div class="rounded-lg bg-popover text-popover-foreground shadow-md border border-border p-3 text-xs text-left leading-relaxed font-normal whitespace-pre-line z-50">
+          {infoText}
+        </div>
+        <div class="absolute -bottom-1.5 left-6 h-3 w-3 -translate-x-1/2 rotate-45 border-b border-r border-border bg-popover z-50"></div>
+      </div>
+    </div>
+  </div>
+{/snippet}
+
 <Modal
   open={showCreateEdgeModal}
   title="Nuevo Edge Device"
+  maxWidth="max-w-3xl"
   onClose={() => (showCreateEdgeModal = false)}
 >
   <form onsubmit={(e) => { e.preventDefault(); createEdge(); }} class="px-1 text-left">
@@ -253,47 +270,47 @@
       <!-- System Specs -->
       <div>
         <h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Sistema</h3>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label for="create-edgeId" class="block text-xs font-semibold text-muted-foreground">ID del Edge</label>
+            {@render infoLabel('create-edgeId', 'ID del Edge', 'Identificador unico del dispositivo Edge')}
             <input id="create-edgeId" type="text" bind:value={newEdge.edgeId} class="input-field py-1.5 font-mono" required placeholder="edge-001" />
           </div>
           <div class="space-y-1.5">
-            <label for="create-name" class="block text-xs font-semibold text-muted-foreground">Nombre</label>
+            {@render infoLabel('create-name', 'Nombre', 'Identificacion informal para facilitar reconocimiento de los dispositivos')}
             <input id="create-name" type="text" bind:value={newEdge.name} class="input-field py-1.5" required placeholder="Edge Gateway Sur" />
           </div>
           <div class="col-span-2 space-y-1.5">
-            <label for="create-ubic" class="block text-xs font-semibold text-muted-foreground">Ubicación</label>
+            {@render infoLabel('create-ubic', 'Ubicación', 'Descripcion de la ubicacion donde esta el dispositivo fisicamente')}
             <input id="create-ubic" type="text" bind:value={newEdge.location} class="input-field py-1.5" placeholder="Datacenter Principal" />
           </div>
           <div class="space-y-1.5">
-            <label for="create-cn" class="block text-xs font-semibold text-muted-foreground">CN</label>
+            {@render infoLabel('create-cn', 'CN del certificado de router', 'Dominio del servidor al que se conecta el dispositivo Edge')}
             <input id="create-cn" type="text" bind:value={newEdge.cn} class="input-field py-1.5 font-mono" placeholder="device.local" />
           </div>
-          <div class="col-span-2 grid grid-cols-3 gap-2">
+          <div class="col-span-2 grid grid-cols-3 gap-3">
             <div class="space-y-1.5 flex-1">
-              <label for="create-hostServer" class="block text-xs font-semibold text-muted-foreground">Host Server</label>
+              {@render infoLabel('create-hostServer', 'Host Server', 'Direccion IP o Hostname del servidor al que se conecta el dispositivo Edge')}
               <input id="create-hostServer" type="text" bind:value={newEdge.hostServer} class="input-field py-1.5 font-mono" />
             </div>
             <div class="space-y-1.5 flex-[0.5]">
-              <label for="create-port" class="block text-xs font-semibold text-muted-foreground">Puerto</label>
+              {@render infoLabel('create-port', 'Puerto', 'Puerto para la conexion gRPC con el servidor (50051)')}
               <input id="create-port" type="number" bind:value={newEdge.hostPort} class="input-field py-1.5 font-mono" />
             </div>
             <div class="space-y-1.5 flex-1">
-              <label for="create-hostLocal" class="block text-xs font-semibold text-muted-foreground">Host Local</label>
+              {@render infoLabel('create-hostLocal', 'Host Local', 'Direccion IP o Hostname local del dispositivo Edge')}
               <input id="create-hostLocal" type="text" bind:value={newEdge.hostLocal} class="input-field py-1.5 font-mono" />
             </div>
           </div>
           <div class="col-span-2 space-y-1.5">
-            <label for="create-db" class="block text-xs font-semibold text-muted-foreground">Ruta Base de Datos</label>
+            {@render infoLabel('create-db', 'Ruta Base de Datos', 'Path para la ubicacion de la base de datos en el almacenamiento del dispositivo Edge')}
             <input id="create-db" type="text" bind:value={newEdge.dataBasePath} class="input-field py-1.5 font-mono text-xs" />
           </div>
           <div class="space-y-1.5">
-            <label for="create-buffer" class="block text-xs font-semibold text-muted-foreground">Tamaño Buffer (5-50)</label>
+            {@render infoLabel('create-buffer', 'Tamaño Buffer', 'Tamaño maximo del buffer de procesamiento batch')}
             <input id="create-buffer" type="number" min="5" max="50" bind:value={newEdge.bufferLength} class="input-field py-1.5" />
           </div>
           <div class="space-y-1.5">
-            <label for="create-log" class="block text-xs font-semibold text-muted-foreground">Log</label>
+            {@render infoLabel('create-log', 'Log', 'Nivel de log del dispositivo Edge')}
             <select id="create-log" bind:value={newEdge.logLevel} class="input-field py-1.5 bg-background">
               <option value="DEBUG">Debug</option>
               <option value="INFO">Info</option>
@@ -308,41 +325,41 @@
       <!-- Protocol Specs -->
       <div>
         <h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Protocolo</h3>
-        <div class="grid grid-cols-2 gap-3 text-xs">
+        <div class="grid grid-cols-2 gap-4 text-xs">
           <div class="space-y-1">
-            <label for="p-max-a" class="block font-semibold text-muted-foreground">Nº máximo intentos (1-10)</label>
-            <input id="p-max-a" type="number" min="1" max="10" bind:value={newEdge.maxNumberHandshakeAttempts} class="input-field py-1" />
+            {@render infoLabel('p-max-a', 'Numero maximo de intentos en handshake (1-14)', 'Numero maximo de intentos que hara el Edge para sincronizarse en el handshake con los dispositivos Hub')}
+            <input id="p-max-a" type="number" min="1" max="14" bind:value={newEdge.maxNumberHandshakeAttempts} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-fp" class="block font-semibold text-muted-foreground">Frec. msjs en fase (1-10m)</label>
-            <input id="p-fp" type="number" min="1" max="10" bind:value={newEdge.frequencyMessagesPhase} class="input-field py-1" />
+            {@render infoLabel('p-fp', 'Frecuencia de envio de mensajes en cualquier fase (seg)', 'Cada cuanto tiempo en segundos deben enviarse mensajes cuando el protocolo se encuentra en alguna de las fases')}
+            <input id="p-fp" type="number" min="1" bind:value={newEdge.frequencyMessagesPhase} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-fs" class="block font-semibold text-muted-foreground">Frec. safe mode (10-40s)</label>
-            <input id="p-fs" type="number" min="10" max="40" bind:value={newEdge.frequencyMessagesSafeMode} class="input-field py-1" />
+            {@render infoLabel('p-fs', 'Frecuencia de envio de mensajes en safe mode (seg)', 'Cada cuanto tiempo en segundos deben enviarse mensajes en safe mode')}
+            <input id="p-fs" type="number" min="1" bind:value={newEdge.frequencyMessagesSafeMode} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-th" class="block font-semibold text-muted-foreground">T Límite handshake (15-60s)</label>
+            {@render infoLabel('p-th', 'Tiempo limite de espera en handshake (15-60seg)', 'Tiempo limite que el Edge espera para recibir las confirmaciones tras enviar un mensaje de HandshakeToHub al entrar en estados relacionados al handshake')}
             <input id="p-th" type="number" min="15" max="60" bind:value={newEdge.handshakeTimeLimit} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-tp" class="block font-semibold text-muted-foreground">T Límite fases (30-120s)</label>
+            {@render infoLabel('p-tp', 'Tiempo limite de duracion de cualquier fase (30-120seg)', 'Es el tiempo máximo asignado para que las fases activas (Alert, Data, Monitor) concluyan. El sistema espera recibir confirmaciones de colas vacías de al menos el 80% de los hubs dentro de este límite de tiempo antes de dar por expirada la fase')}
             <input id="p-tp" type="number" min="30" max="120" bind:value={newEdge.phaseTimeLimit} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-ts" class="block font-semibold text-muted-foreground">T Límite safe mode (120-300s)</label>
+            {@render infoLabel('p-ts', 'Tiempo limite de duracion del modo safe mode (120-300seg)', 'Es el tiempo máximo asignado para que el safe mode concluya. El sistema espera recibir confirmaciones de colas vacías de al menos el 70% de los hubs dentro de este límite de tiempo antes de dar por expirado el modo')}
             <input id="p-ts" type="number" min="120" max="300" bind:value={newEdge.safeModeTimeLimit} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-hbb" class="block font-semibold text-muted-foreground">Heartbeat b-mode (10-40s)</label>
+            {@render infoLabel('p-hbb', 'Heartbeat en balance mode (10-40seg)', 'Cada cuanto tiempo el Edge envia el mensaje heartbeat a los hubs en estado de balanceo. Debe configurar este mismo tiempo en los dispositivos hubs a traves de la interfaz de configuracion')}
             <input id="p-hbb" type="number" min="10" max="40" bind:value={newEdge.heartbeatBalanceModeTime} class="input-field py-1" />
           </div>
           <div class="space-y-1">
-            <label for="p-hbn" class="block font-semibold text-muted-foreground">Heartbeat normal (30-60s)</label>
+            {@render infoLabel('p-hbn', 'Heartbeat en normal (30-60seg)', 'Cada cuanto tiempo el Edge envia el mensaje heartbeat a los hubs en estado normal. Debe configurar este mismo tiempo en los dispositivos hubs a traves de la interfaz de configuracion')}
             <input id="p-hbn" type="number" min="30" max="60" bind:value={newEdge.heartbeatNormalTime} class="input-field py-1" />
           </div>
           <div class="space-y-1 col-span-2">
-            <label for="p-hbs" class="block font-semibold text-muted-foreground">Heartbeat safe mode (40-80s)</label>
+            {@render infoLabel('p-hbs', 'Heartbeat en safe mode (40-80seg)', 'Cada cuanto tiempo el Edge envia el mensaje heartbeat a los hubs en safe mode. Debe configurar este mismo tiempo en los dispositivos hubs a traves de la interfaz de configuracion')}
             <input id="p-hbs" type="number" min="40" max="80" bind:value={newEdge.heartbeatSafeModeTime} class="input-field py-1" />
           </div>
         </div>
@@ -376,6 +393,7 @@
 <Modal
   open={showViewEdgeModal}
   title="Configuración del Edge"
+  maxWidth="max-w-2xl"
   onClose={() => (showViewEdgeModal = false)}
 >
   {#if viewingEdge}
@@ -405,7 +423,7 @@
             <span class="font-mono text-xs">{viewingEdge.hostLocal}</span>
           </div>
           <div class="col-span-2">
-            <span class="text-muted-foreground block text-xs mb-0.5">CN</span>
+            <span class="text-muted-foreground block text-xs mb-0.5">CN del certificado de router</span>
             <span class="text-xs font-mono">{viewingEdge.cn}</span>
           </div>
           <div class="col-span-2">
@@ -427,39 +445,39 @@
         <h3 class="text-sm uppercase tracking-wider font-bold text-primary mb-3">Configuración de Protocolo</h3>
         <div class="space-y-2 bg-card border border-border p-4 rounded-xl text-sm">
           <div class="flex justify-between border-b border-border/50 pb-2">
-            <span class="text-muted-foreground">Número máx. intentos</span>
-            <span class="font-mono">{viewingEdge.maxNumberHandshakeAttempts} s</span>
+            <span class="text-muted-foreground">Numero maximo de intentos en handshake</span>
+            <span class="font-mono">{viewingEdge.maxNumberHandshakeAttempts}</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
-            <span class="text-muted-foreground">Frecuencia msj (fase)</span>
-            <span class="font-mono">{viewingEdge.frequencyMessagesPhase} min</span>
+            <span class="text-muted-foreground">Frecuencia de envio de mensajes en cualquier fase</span>
+            <span class="font-mono">{viewingEdge.frequencyMessagesPhase} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
-            <span class="text-muted-foreground">Frecuencia msj (safe mode)</span>
+            <span class="text-muted-foreground">Frecuencia de envio de mensajes en safe mode</span>
             <span class="font-mono">{viewingEdge.frequencyMessagesSafeMode} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
-            <span class="text-muted-foreground">T. Límite Handshake</span>
+            <span class="text-muted-foreground">Tiempo limite de espera en handshake</span>
             <span class="font-mono">{viewingEdge.handshakeTimeLimit} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
-            <span class="text-muted-foreground">T. Límite Fases</span>
+            <span class="text-muted-foreground">Tiempo limite de duracion de cualquier fase</span>
             <span class="font-mono">{viewingEdge.phaseTimeLimit} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
-            <span class="text-muted-foreground">T. Límite Safe mode</span>
+            <span class="text-muted-foreground">Tiempo limite de duracion del modo safe mode</span>
             <span class="font-mono">{viewingEdge.safeModeTimeLimit} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
-            <span class="text-muted-foreground">Heartbeat (Balance)</span>
+            <span class="text-muted-foreground">Heartbeat en balance mode</span>
             <span class="font-mono">{viewingEdge.heartbeatBalanceModeTime} s</span>
           </div>
           <div class="flex justify-between border-b border-border/50 py-1">
-            <span class="text-muted-foreground">Heartbeat (Normal)</span>
+            <span class="text-muted-foreground">Heartbeat en normal</span>
             <span class="font-mono">{viewingEdge.heartbeatNormalTime} s</span>
           </div>
           <div class="flex justify-between pt-1">
-            <span class="text-muted-foreground">Heartbeat (Safe)</span>
+            <span class="text-muted-foreground">Heartbeat en safe mode</span>
             <span class="font-mono">{viewingEdge.heartbeatSafeModeTime} s</span>
           </div>
         </div>

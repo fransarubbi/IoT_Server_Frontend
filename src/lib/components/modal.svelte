@@ -6,6 +6,7 @@
     children: Snippet;
     open?: boolean;
     title: string;
+    maxWidth?: string;
     onClose: () => void;
   }
 
@@ -13,6 +14,7 @@
     children,
     open = false,
     title,
+    maxWidth = 'max-w-lg',
     onClose
   }: Props = $props();
 
@@ -38,7 +40,7 @@
     ></div>
 
     <!-- Modal -->
-    <div class="relative z-10 m-auto w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-border 
+    <div class="relative z-10 m-auto w-full {maxWidth} max-h-[90vh] overflow-y-auto rounded-2xl border border-border 
                 bg-card p-6 shadow-2xl shadow-black/20 animate-scale-in">
       <div class="flex items-center justify-between mb-5">
         <h2 class="text-lg font-semibold text-card-foreground">{title}</h2>

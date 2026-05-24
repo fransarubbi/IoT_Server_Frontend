@@ -86,6 +86,11 @@
     EXPIRED: { color: 'text-destructive', label: 'Expirado' },
     REVOKED: { color: 'text-muted-foreground', label: 'Revocado' },
   };
+
+  let sortedCertificates = $derived([...$certificates].sort((a, b) => {
+    const order: Record<string, number> = { 'VALID': 1, 'REVOKED': 2, 'EXPIRED': 3 };
+    return (order[a.status] ?? 4) - (order[b.status] ?? 4);
+  }));
 </script>
 
 <div class="space-y-6">
@@ -108,6 +113,10 @@
       <div class="flex items-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-2.5">
         <span class="h-2 w-2 rounded-full bg-destructive"></span>
         <span class="text-sm font-semibold text-destructive">{$certificates.filter((c) => c.status === 'EXPIRED').length} expirados</span>
+      </div>
+      <div class="flex items-center gap-2 rounded-xl bg-muted/10 border border-border px-4 py-2.5">
+        <span class="h-2 w-2 rounded-full bg-muted-foreground"></span>
+        <span class="text-sm font-semibold text-muted-foreground">{$certificates.filter((c) => c.status === 'REVOKED').length} revocados</span>
       </div>
     </div>
 
@@ -147,7 +156,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-border">
-          {#each $certificates as cert, i}
+          {#each sortedCertificates as cert, i}
             {@const sc = statusConfig[cert.status] ?? statusConfig.REVOKED}
             {@const daysUntil = getDaysUntilExpiry(cert.expirationDate)}
             <tr class="stagger-item group transition-colors hover:bg-muted/20" style="animation-delay: {i * 0.03}s">
