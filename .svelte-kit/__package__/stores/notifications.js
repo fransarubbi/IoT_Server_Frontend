@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { notificationsService } from '../services/notifications.service';
+import { getActiveNotifications, markNotificationAsRead } from '../services/api';
 // ---------------------------------------------------------------------------
 // State stores
 // ---------------------------------------------------------------------------
@@ -10,12 +10,21 @@ export const notificationsError = writable(null);
 // Actions
 // ---------------------------------------------------------------------------
 export const notificationsActions = {
+    /** Add a single notification locally, placing it at the top sorted by descending createdAt */
+    add(notification) {
+        notifications.update((list) => {
+            const newList = [notification, ...list];
+            newList.sort((a, b) => b.createdAt - a.createdAt);
+            return newList;
+        });
+    },
     /** Load all active notifications from the API. */
     async load() {
         notificationsLoading.set(true);
         notificationsError.set(null);
         try {
-            const data = await notificationsService.getAll();
+            const data = await getActiveNotifications();
+            data.sort((a, b) => b.createdAt - a.createdAt);
             notifications.set(data);
         }
         catch (err) {
@@ -32,7 +41,7 @@ export const notificationsActions = {
     async markRead(id) {
         notificationsError.set(null);
         try {
-            await notificationsService.markRead(id);
+            await markNotificationAsRead(id);
             notifications.update((list) => list.filter((n) => n.id !== id));
         }
         catch (err) {
@@ -45,7 +54,7 @@ export const notificationsActions = {
         notificationsError.set(null);
         let current = [];
         notifications.subscribe((v) => (current = v))();
-        const results = await Promise.allSettled(current.map((n) => notificationsService.markRead(n.id)));
+        const results = await Promise.allSettled(current.map((n) => markNotificationAsRead(n.id)));
         // Remove successfully marked notifications from the local list
         const failedIds = new Set(results
             .map((r, i) => (r.status === 'rejected' ? current[i].id : null))

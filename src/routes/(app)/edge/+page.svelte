@@ -5,7 +5,7 @@
   import StatusBadge from "$lib/components/status-badge.svelte";
   import EmptyState from "$lib/components/empty-state.svelte";
   import type { Edge } from "$lib/types";
-  import { edges, edgesLoading, edgesActions } from "$lib/stores/edges";
+  import { edges, edgesLoading, edgesActions, edgeStates } from "$lib/stores/edges";
   import { goto } from "$app/navigation";
   import Plus from "lucide-svelte/icons/plus";
   import Server from "lucide-svelte/icons/server";
@@ -190,6 +190,7 @@
             <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:from-primary/30">
               <Server class="h-7 w-7 text-primary" />
             </div>
+            <StatusBadge status={$edgeStates[edge.edgeId] || 'Inactive'} />
           </div>
 
           <h3 class="mt-4 text-lg font-semibold text-card-foreground transition-colors group-hover:text-primary">

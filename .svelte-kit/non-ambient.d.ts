@@ -29,7 +29,7 @@ declare module "$app/types" {
 	type MatcherParam<M> = M extends (param : string) => param is (infer U extends string) ? U : string;
 
 	export interface AppTypes {
-		RouteId(): "/(auth)" | "/(app)" | "/" | "/(app)/certificates" | "/(app)/edge" | "/(app)/edge/[edgeId]" | "/(app)/edge/[edgeId]/networks" | "/(app)/edge/[edgeId]/networks/[networkId]" | "/(app)/edge/[edgeId]/networks/[networkId]/hubs" | "/(app)/firmware" | "/(auth)/login" | "/(app)/notifications";
+		RouteId(): "/(auth)" | "/(app)" | "/" | "/(app)/certificates" | "/(app)/edge" | "/(app)/edge/[edgeId]" | "/(app)/edge/[edgeId]/networks" | "/(app)/edge/[edgeId]/networks/[networkId]" | "/(app)/edge/[edgeId]/networks/[networkId]/hubs" | "/(app)/firmware" | "/(app)/help" | "/(auth)/login" | "/(app)/notifications";
 		RouteParams(): {
 			"/(app)/edge/[edgeId]": { edgeId: string };
 			"/(app)/edge/[edgeId]/networks": { edgeId: string };
@@ -38,19 +38,20 @@ declare module "$app/types" {
 		};
 		LayoutParams(): {
 			"/(auth)": Record<string, never>;
-			"/(app)": { edgeId?: string; networkId?: string };
-			"/": { edgeId?: string; networkId?: string };
+			"/(app)": { edgeId?: string | undefined; networkId?: string | undefined };
+			"/": { edgeId?: string | undefined; networkId?: string | undefined };
 			"/(app)/certificates": Record<string, never>;
-			"/(app)/edge": { edgeId?: string; networkId?: string };
-			"/(app)/edge/[edgeId]": { edgeId: string; networkId?: string };
-			"/(app)/edge/[edgeId]/networks": { edgeId: string; networkId?: string };
+			"/(app)/edge": { edgeId?: string | undefined; networkId?: string | undefined };
+			"/(app)/edge/[edgeId]": { edgeId: string; networkId?: string | undefined };
+			"/(app)/edge/[edgeId]/networks": { edgeId: string; networkId?: string | undefined };
 			"/(app)/edge/[edgeId]/networks/[networkId]": { edgeId: string; networkId: string };
 			"/(app)/edge/[edgeId]/networks/[networkId]/hubs": { edgeId: string; networkId: string };
 			"/(app)/firmware": Record<string, never>;
+			"/(app)/help": Record<string, never>;
 			"/(auth)/login": Record<string, never>;
 			"/(app)/notifications": Record<string, never>
 		};
-		Pathname(): "/" | "/certificates" | "/edge" | `/edge/${string}/networks` & {} | `/edge/${string}/networks/${string}/hubs` & {} | "/firmware" | "/login" | "/notifications";
+		Pathname(): "/" | "/certificates" | "/edge" | `/edge/${string}/networks` & {} | `/edge/${string}/networks/${string}/hubs` & {} | "/firmware" | "/help" | "/login" | "/notifications";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): string & {};
 	}

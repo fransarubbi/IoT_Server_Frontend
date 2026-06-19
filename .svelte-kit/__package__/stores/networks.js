@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { networksService } from '../services/networks.service';
+import { getNetworksSummary, createNetwork, updateNetworkStatus, deleteNetwork } from '../services/api';
 // ---------------------------------------------------------------------------
 // State stores
 // ---------------------------------------------------------------------------
@@ -15,7 +15,7 @@ export const networksActions = {
         networksLoading.set(true);
         networksError.set(null);
         try {
-            const data = await networksService.getByEdge(edgeId);
+            const data = await getNetworksSummary(edgeId);
             networks.set(data);
         }
         catch (err) {
@@ -30,8 +30,8 @@ export const networksActions = {
         networksLoading.set(true);
         networksError.set(null);
         try {
-            await networksService.create({ ...network, active: true });
-            const data = await networksService.getByEdge(edgeId);
+            await createNetwork({ ...network, active: true });
+            const data = await getNetworksSummary(edgeId);
             networks.set(data);
         }
         catch (err) {
@@ -50,7 +50,7 @@ export const networksActions = {
         // Optimistic update
         networks.update((list) => list.map((n) => (n.networkId === networkId ? { ...n, active: !n.active } : n)));
         try {
-            await networksService.toggle(networkId);
+            await updateNetworkStatus(networkId);
         }
         catch (err) {
             // Revert on failure
@@ -63,7 +63,7 @@ export const networksActions = {
     async remove(networkId) {
         networksError.set(null);
         try {
-            await networksService.delete(networkId);
+            await deleteNetwork(networkId);
             networks.update((list) => list.filter((n) => n.networkId !== networkId));
         }
         catch (err) {

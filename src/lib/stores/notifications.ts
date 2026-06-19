@@ -15,12 +15,22 @@ export const notificationsError = writable<string | null>(null);
 // ---------------------------------------------------------------------------
 
 export const notificationsActions = {
+  /** Add a single notification locally, placing it at the top sorted by descending createdAt */
+  add(notification: Notification): void {
+    notifications.update((list) => {
+      const newList = [notification, ...list];
+      newList.sort((a, b) => b.createdAt - a.createdAt);
+      return newList;
+    });
+  },
+
   /** Load all active notifications from the API. */
   async load(): Promise<void> {
     notificationsLoading.set(true);
     notificationsError.set(null);
     try {
       const data = await getActiveNotifications();
+      data.sort((a, b) => b.createdAt - a.createdAt);
       notifications.set(data);
     } catch (err) {
       notificationsError.set(err instanceof Error ? err.message : String(err));

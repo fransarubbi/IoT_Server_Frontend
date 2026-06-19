@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { certificatesService } from '../services/certificates.service';
+import { getCertificates, generateCertificate, revokeCertificate } from '../services/api';
 // ---------------------------------------------------------------------------
 // State stores
 // ---------------------------------------------------------------------------
@@ -16,7 +16,7 @@ export const certificatesActions = {
         certificatesLoading.set(true);
         certificatesError.set(null);
         try {
-            const data = await certificatesService.getAll();
+            const data = await getCertificates();
             certificates.set(data);
         }
         catch (err) {
@@ -34,9 +34,9 @@ export const certificatesActions = {
         certificatesGenerating.set(true);
         certificatesError.set(null);
         try {
-            await certificatesService.generate(request);
+            await generateCertificate(request);
             // Reload list so the new entry appears in the table
-            const data = await certificatesService.getAll();
+            const data = await getCertificates();
             certificates.set(data);
         }
         catch (err) {
@@ -49,13 +49,13 @@ export const certificatesActions = {
     },
     /**
      * Revoke a certificate (logical delete via PATCH).
-     * Updates the local status to 'revoked' immediately.
+     * Updates the local status to 'REVOKED' immediately.
      */
     async revoke(id) {
         certificatesError.set(null);
         try {
-            await certificatesService.revoke(id);
-            certificates.update((list) => list.map((c) => (c.id === id ? { ...c, status: 'revoked' } : c)));
+            await revokeCertificate(id);
+            certificates.update((list) => list.map((c) => (c.id === id ? { ...c, status: 'REVOKED' } : c)));
         }
         catch (err) {
             certificatesError.set(err instanceof Error ? err.message : String(err));

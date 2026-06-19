@@ -116,8 +116,8 @@ export async function downloadBlob(
   const response = await apiFetch(path, {
     ...options,
     headers: {
+      'Accept': 'application/octet-stream',
       ...options.headers,
-      'Accept': 'application/zip',
     }
   });
   const blob = await response.blob();
@@ -222,4 +222,15 @@ export async function getActiveNotifications(): Promise<Notification[]> {
 
 export async function markNotificationAsRead(id: number): Promise<void> {
   await apiFetch(`/notifications/${id}/read`, { method: 'PATCH' });
+}
+
+// --- Documents (/api/documents) ---
+
+export async function downloadDocumentation(): Promise<Blob> {
+  return downloadBlob('/documents/Documentacion/download', 'documentacion_sistema.pdf', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/pdf'
+    }
+  });
 }

@@ -1,15 +1,25 @@
+import * as devalue from "devalue";
 import { json, text } from "@sveltejs/kit";
 import { SvelteKitError, HttpError } from "@sveltejs/kit/internal";
 import { with_request_store } from "@sveltejs/kit/internal/server";
-import * as devalue from "devalue";
-import { t as text_decoder, c as base64_decode, b as base64_encode } from "./utils.js";
-import { g as get_render_context, h as hydratable_serialization_failed } from "./render-context.js";
-import { e as experimental_async_required } from "./errors.js";
-import "clsx";
+import * as set_cookie_parser from "set-cookie-parser";
+import { a as base64_decode, t as text_encoder, b as base64_encode } from "./utils.js";
+function noop() {
+}
+function once(fn) {
+  let done = false;
+  let result;
+  return () => {
+    if (done) return result;
+    done = true;
+    return result = fn();
+  };
+}
 const SVELTE_KIT_ASSETS = "/_svelte_kit_assets";
 const ENDPOINT_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"];
 const MUTATIVE_METHODS = ["POST", "PUT", "PATCH", "DELETE"];
 const PAGE_METHODS = ["GET", "POST", "HEAD"];
+const decoder = new TextDecoder();
 function set_nested_value(object, path_string, value) {
   if (path_string.startsWith("n:")) {
     path_string = path_string.slice(2);
@@ -56,10 +66,6 @@ async function deserialize_binary_form(request) {
   }
   if (!request.body) {
     throw deserialize_error("no body");
-  }
-  const content_length = parseInt(request.headers.get("content-length") ?? "");
-  if (Number.isNaN(content_length)) {
-    throw deserialize_error("invalid Content-Length header");
   }
   const reader = request.body.getReader();
   const chunks = [];
@@ -116,13 +122,7 @@ async function deserialize_binary_form(request) {
   }
   const header_view = new DataView(header.buffer, header.byteOffset, header.byteLength);
   const data_length = header_view.getUint32(1, true);
-  if (HEADER_BYTES + data_length > content_length) {
-    throw deserialize_error("data overflow");
-  }
   const file_offsets_length = header_view.getUint16(5, true);
-  if (HEADER_BYTES + data_length + file_offsets_length > content_length) {
-    throw deserialize_error("file offset table overflow");
-  }
   const data_buffer = await get_buffer(HEADER_BYTES, data_length);
   if (!data_buffer) throw deserialize_error("data too short");
   let file_offsets;
@@ -130,7 +130,7 @@ async function deserialize_binary_form(request) {
   if (file_offsets_length > 0) {
     const file_offsets_buffer = await get_buffer(HEADER_BYTES + data_length, file_offsets_length);
     if (!file_offsets_buffer) throw deserialize_error("file offset table too short");
-    const parsed_offsets = JSON.parse(text_decoder.decode(file_offsets_buffer));
+    const parsed_offsets = JSON.parse(decoder.decode(file_offsets_buffer));
     if (!Array.isArray(parsed_offsets) || parsed_offsets.some((n) => typeof n !== "number" || !Number.isInteger(n) || n < 0)) {
       throw deserialize_error("invalid file offset table");
     }
@@ -139,7 +139,7 @@ async function deserialize_binary_form(request) {
     files_start_offset = HEADER_BYTES + data_length + file_offsets_length;
   }
   const file_spans = [];
-  const [data, meta] = devalue.parse(text_decoder.decode(data_buffer), {
+  const [data, meta] = devalue.parse(decoder.decode(data_buffer), {
     File: ([name, type, size, last_modified, index]) => {
       if (typeof name !== "string" || typeof type !== "string" || typeof size !== "number" || typeof last_modified !== "number" || typeof index !== "number") {
         throw deserialize_error("invalid file metadata");
@@ -150,9 +150,6 @@ async function deserialize_binary_form(request) {
       }
       file_offsets[index] = void 0;
       offset += files_start_offset;
-      if (offset + size > content_length) {
-        throw deserialize_error("file data overflow");
-      }
       file_spans.push({ offset, size });
       return new Proxy(new LazyFile(name, type, size, last_modified, get_chunk, offset), {
         getPrototypeOf() {
@@ -295,7 +292,7 @@ class LazyFile {
     });
   }
   async text() {
-    return text_decoder.decode(await this.arrayBuffer());
+    return decoder.decode(await this.arrayBuffer());
   }
 }
 const path_regex = /^[a-zA-Z_$]\w*(\.[a-zA-Z_$]\w*|\[\d+\])*$/;
@@ -318,8 +315,8 @@ function deep_set(object, keys, value) {
     const key = keys[i];
     check_prototype_pollution(key);
     const is_array = /^\d+$/.test(keys[i + 1]);
-    const exists = Object.hasOwn(current, key);
-    const inner = current[key];
+    const inner = Object.hasOwn(current, key) ? current[key] : void 0;
+    const exists = inner != null;
     if (exists && is_array !== Array.isArray(inner)) {
       throw new Error(`Invalid array key ${keys[i + 1]}`);
     }
@@ -380,6 +377,16 @@ function deep_get(object, path) {
   }
   return current;
 }
+function get_type_prefix(field_type, is_array, input_value) {
+  if (field_type === "number" || field_type === "range") return "n:";
+  if (field_type === "checkbox" && !is_array) return "b:";
+  if (field_type === "hidden" || field_type === "submit") {
+    const input_type = typeof input_value;
+    if (input_type === "number") return "n:";
+    if (input_type === "boolean") return "b:";
+  }
+  return "";
+}
 function create_field_proxy(target, get_input, set_input, get_issues, path = []) {
   const get_value = () => {
     return deep_get(get_input(), path);
@@ -406,7 +413,7 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
       }
       if (prop === "issues" || prop === "allIssues") {
         const issues_func = () => {
-          const all_issues = get_issues()[key === "" ? "$" : key];
+          const all_issues = get_issues(path, prop === "allIssues")[key === "" ? "$" : key];
           if (prop === "allIssues") {
             return all_issues?.map((issue) => ({
               path: issue.path,
@@ -423,7 +430,7 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
       if (prop === "as") {
         const as_func = (type, input_value) => {
           const is_array = type === "file multiple" || type === "select multiple" || type === "checkbox" && typeof input_value === "string";
-          const prefix = type === "number" || type === "range" ? "n:" : type === "checkbox" && !is_array ? "b:" : "";
+          const prefix = get_type_prefix(type, is_array, input_value);
           const base_props = {
             name: prefix + key + (is_array ? "[]" : ""),
             get "aria-invalid"() {
@@ -435,8 +442,9 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
             base_props.type = type === "file multiple" ? "file" : type;
           }
           if (type === "submit" || type === "hidden") {
+            const value = typeof input_value === "boolean" ? input_value ? "on" : "off" : input_value;
             return Object.defineProperties(base_props, {
-              value: { value: input_value, enumerable: true }
+              value: { value, enumerable: true }
             });
           }
           if (type === "select" || type === "select multiple") {
@@ -445,12 +453,28 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
               value: {
                 enumerable: true,
                 get() {
-                  return input_value !== void 0 ? input_value : get_value();
+                  return get_value() ?? input_value;
                 }
               }
             });
           }
           if (type === "checkbox" || type === "radio") {
+            if (type === "checkbox" && !is_array) {
+              return Object.defineProperties(base_props, {
+                defaultChecked: {
+                  enumerable: true,
+                  get() {
+                    return input_value;
+                  }
+                },
+                checked: {
+                  enumerable: true,
+                  get() {
+                    return get_value() ?? input_value;
+                  }
+                }
+              });
+            }
             return Object.defineProperties(base_props, {
               value: { value: input_value ?? "on", enumerable: true },
               checked: {
@@ -460,10 +484,7 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
                   if (type === "radio") {
                     return value === input_value;
                   }
-                  if (is_array) {
-                    return (value ?? []).includes(input_value);
-                  }
-                  return value;
+                  return (value ?? []).includes(input_value);
                 }
               }
             });
@@ -501,10 +522,16 @@ function create_field_proxy(target, get_input, set_input, get_issues, path = [])
             });
           }
           return Object.defineProperties(base_props, {
+            defaultValue: {
+              enumerable: true,
+              get() {
+                return input_value;
+              }
+            },
             value: {
               enumerable: true,
               get() {
-                const value = input_value !== void 0 ? input_value : get_value();
+                const value = get_value() ?? input_value;
                 return value != null ? String(value) : "";
               }
             }
@@ -561,6 +588,13 @@ function negotiate(accept, types) {
     }
   }
   return accepted;
+}
+function get_set_cookies(headers) {
+  if (typeof headers.getSetCookie === "function") {
+    return headers.getSetCookie();
+  }
+  const set_cookie = headers.get("set-cookie");
+  return set_cookie ? set_cookie_parser.splitCookiesString(set_cookie) : [];
 }
 function is_content_type(request, ...types) {
   const type = request.headers.get("content-type")?.split(";", 1)[0].trim() ?? "";
@@ -732,57 +766,16 @@ function get_node_type(node_id) {
   const dot_parts = filename.split(".");
   return dot_parts.slice(0, -1).join(".");
 }
-function hydratable(key, fn) {
-  {
-    experimental_async_required();
-  }
-  const { hydratable: hydratable2 } = get_render_context();
-  let entry = hydratable2.lookup.get(key);
-  if (entry !== void 0) {
-    return (
-      /** @type {T} */
-      entry.value
-    );
-  }
-  const value = fn();
-  entry = encode(key, value, hydratable2.unresolved_promises);
-  hydratable2.lookup.set(key, entry);
-  return value;
-}
-function encode(key, value, unresolved) {
-  const entry = { value, serialized: "" };
-  let uid = 1;
-  entry.serialized = devalue.uneval(entry.value, (value2, uneval) => {
-    if (is_promise(value2)) {
-      const placeholder = `"${uid++}"`;
-      const p = value2.then((v) => {
-        entry.serialized = entry.serialized.replace(placeholder, `r(${uneval(v)})`);
-      }).catch(
-        (devalue_error) => hydratable_serialization_failed(
-          key,
-          serialization_stack(entry.stack, devalue_error?.stack)
-        )
-      );
-      p.catch(() => {
-      }).finally(() => unresolved?.delete(p));
-      (entry.promises ??= []).push(p);
-      return placeholder;
+function create_replacer(transport) {
+  const replacer = (thing) => {
+    for (const key in transport) {
+      const encoded = transport[key].encode(thing);
+      if (encoded) {
+        return `app.decode('${key}', ${devalue.uneval(encoded, replacer)})`;
+      }
     }
-  });
-  return entry;
-}
-function is_promise(value) {
-  return Object.prototype.toString.call(value) === "[object Promise]";
-}
-function serialization_stack(root_stack, uneval_stack) {
-  let out = "";
-  if (root_stack) {
-    out += root_stack + "\n";
-  }
-  if (uneval_stack) {
-    out += "Caused by:\n" + uneval_stack + "\n";
-  }
-  return out || "<missing stack trace>";
+  };
+  return replacer;
 }
 const INVALIDATED_PARAM = "x-sveltekit-invalidated";
 const TRAILING_SLASH_PARAM = "x-sveltekit-trailing-slash";
@@ -814,20 +807,19 @@ function to_sorted(value, clones) {
 const remote_object = "__skrao";
 const remote_map = "__skram";
 const remote_set = "__skras";
+const remote_file = "__skraf";
 const remote_regex_guard = "__skrag";
 const remote_arg_marker = Symbol(remote_object);
 function create_remote_arg_reducers(transport, sort, remote_arg_clones) {
   const remote_fns_reducers = {
-    [remote_regex_guard]: (
-      /** @type {(value: unknown) => void} */
-      (value) => {
-        if (value instanceof RegExp) {
-          throw new Error("Regular expressions are not valid remote function arguments");
-        }
+    /** @param {unknown} value */
+    [remote_regex_guard]: (value) => {
+      if (value instanceof RegExp) {
+        throw new Error("Regular expressions are not valid remote function arguments");
       }
-    )
+    }
   };
-  if (sort) {
+  {
     remote_fns_reducers[remote_map] = (value) => {
       if (!(value instanceof Map)) {
         return;
@@ -907,6 +899,14 @@ function create_remote_arg_revivers(transport) {
         set.add(parse(item));
       }
       return set;
+    },
+    /** @type {(value: any) => File} */
+    [remote_file]: (value) => {
+      if (!value || typeof value !== "object" || typeof value.name !== "string" || typeof value.type !== "string" || typeof value.size !== "number" || typeof value.lastModified !== "number" || !(value.data instanceof ArrayBuffer)) {
+        throw new Error("Invalid data for File reviver");
+      }
+      const { data, name, ...meta } = value;
+      return new File([data], name, meta);
     }
   };
   const user_revivers = Object.fromEntries(
@@ -916,18 +916,18 @@ function create_remote_arg_revivers(transport) {
   const parse = (data) => devalue.parse(data, all_revivers);
   return all_revivers;
 }
-function stringify_remote_arg(value, transport, sort = true) {
+function stringify_remote_arg(value, transport) {
   if (value === void 0) return "";
-  const json_string = devalue.stringify(
-    value,
-    create_remote_arg_reducers(transport, sort, /* @__PURE__ */ new Map())
-  );
-  const bytes = new TextEncoder().encode(json_string);
+  const json2 = devalue.stringify(value, create_remote_arg_reducers(transport, true, /* @__PURE__ */ new Map()));
+  return url_friendly_base64_encode(json2);
+}
+function url_friendly_base64_encode(string) {
+  const bytes = text_encoder.encode(string);
   return base64_encode(bytes).replaceAll("=", "").replaceAll("+", "-").replaceAll("/", "_");
 }
 function parse_remote_arg(string, transport) {
   if (!string) return void 0;
-  const json_string = text_decoder.decode(
+  const json_string = new TextDecoder().decode(
     // no need to add back `=` characters, atob can handle it
     base64_decode(string.replaceAll("-", "+").replaceAll("_", "/"))
   );
@@ -946,16 +946,13 @@ function split_remote_key(key) {
     payload: key.slice(i + 1)
   };
 }
-function unfriendly_hydratable(key, fn) {
-  if (!hydratable) {
-    throw new Error("Remote functions require Svelte 5.44.0 or later");
-  }
-  return hydratable(key, fn);
-}
 export {
-  flatten_issues as A,
-  deep_set as B,
+  normalize_issue as A,
+  set_nested_value as B,
+  flatten_issues as C,
+  deep_set as D,
   ENDPOINT_METHODS as E,
+  stringify_remote_arg as F,
   INVALIDATED_PARAM as I,
   MUTATIVE_METHODS as M,
   PAGE_METHODS as P,
@@ -963,28 +960,28 @@ export {
   TRAILING_SLASH_PARAM as T,
   normalize_error as a,
   get_global_name as b,
-  clarify_devalue_error as c,
-  get_node_type as d,
-  escape_html as e,
-  create_remote_key as f,
+  create_replacer as c,
+  clarify_devalue_error as d,
+  get_node_type as e,
+  noop as f,
   get_status as g,
   handle_error_and_jsonify as h,
   is_form_content_type as i,
-  static_error_page as j,
-  stringify as k,
+  escape_html as j,
+  create_remote_key as k,
   deserialize_binary_form as l,
   method_not_allowed as m,
   negotiate as n,
-  split_remote_key as o,
+  stringify as o,
   parse_remote_arg as p,
-  has_prerendered_path as q,
-  redirect_response as r,
+  split_remote_key as q,
+  static_error_page as r,
   serialize_uses as s,
-  handle_fatal_error as t,
-  format_server_error as u,
-  stringify_remote_arg as v,
-  unfriendly_hydratable as w,
-  create_field_proxy as x,
-  normalize_issue as y,
-  set_nested_value as z
+  redirect_response as t,
+  once as u,
+  has_prerendered_path as v,
+  get_set_cookies as w,
+  handle_fatal_error as x,
+  format_server_error as y,
+  create_field_proxy as z
 };

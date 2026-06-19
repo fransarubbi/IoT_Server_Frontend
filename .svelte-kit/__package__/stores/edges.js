@@ -1,11 +1,13 @@
 import { writable } from 'svelte/store';
-import { edgesService } from '../services/edges.service';
+import { getAllEdges, createEdge, deleteEdge, downloadEdgeConfig } from '../services/api';
 // ---------------------------------------------------------------------------
 // State stores
 // ---------------------------------------------------------------------------
 export const edges = writable([]);
 export const edgesLoading = writable(false);
 export const edgesError = writable(null);
+// Store to keep track of dynamic Edge states received via SSE
+export const edgeStates = writable({});
 // ---------------------------------------------------------------------------
 // Actions
 // ---------------------------------------------------------------------------
@@ -15,7 +17,7 @@ export const edgesActions = {
         edgesLoading.set(true);
         edgesError.set(null);
         try {
-            const data = await edgesService.getAll();
+            const data = await getAllEdges();
             edges.set(data);
         }
         catch (err) {
@@ -29,8 +31,8 @@ export const edgesActions = {
      * Does NOT touch edgesLoading — the caller manages its own submitting state. */
     async add(edge) {
         try {
-            await edgesService.create(edge);
-            const data = await edgesService.getAll();
+            await createEdge(edge);
+            const data = await getAllEdges();
             edges.set(data);
         }
         catch (err) {
@@ -41,7 +43,7 @@ export const edgesActions = {
      * Does NOT touch edgesLoading — the caller manages its own submitting state. */
     async remove(edgeId) {
         try {
-            await edgesService.delete(edgeId);
+            await deleteEdge(edgeId);
             edges.update((list) => list.filter((e) => e.edgeId !== edgeId));
         }
         catch (err) {
@@ -49,7 +51,7 @@ export const edgesActions = {
         }
     },
     /** Download the Edge configuration ZIP from the API. */
-    downloadConfig(edgeId, name) {
-        return edgesService.downloadConfig(edgeId, name);
+    downloadConfig(edgeId) {
+        return downloadEdgeConfig(edgeId);
     },
 };

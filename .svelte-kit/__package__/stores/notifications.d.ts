@@ -3,6 +3,8 @@ export declare const notifications: import("svelte/store").Writable<Notification
 export declare const notificationsLoading: import("svelte/store").Writable<boolean>;
 export declare const notificationsError: import("svelte/store").Writable<string | null>;
 export declare const notificationsActions: {
+    /** Add a single notification locally, placing it at the top sorted by descending createdAt */
+    add(notification: Notification): void;
     /** Load all active notifications from the API. */
     load(): Promise<void>;
     /**

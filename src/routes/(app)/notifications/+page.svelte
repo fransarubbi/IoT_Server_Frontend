@@ -10,6 +10,8 @@
   import Info from 'lucide-svelte/icons/info';
   import CheckCircle from 'lucide-svelte/icons/check-circle';
   import Loader from 'lucide-svelte/icons/loader';
+  import MessageSquare from 'lucide-svelte/icons/message-square';
+  import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 
   onMount(() => {
     notificationsActions.load();
@@ -19,6 +21,8 @@
     INFO:    { icon: Info,          bgColor: 'bg-primary/10',     iconColor: 'text-primary',     borderColor: 'border-l-primary' },
     WARNING: { icon: AlertTriangle, bgColor: 'bg-warning/10',     iconColor: 'text-warning',     borderColor: 'border-l-warning' },
     ERROR:   { icon: AlertCircle,   bgColor: 'bg-destructive/10', iconColor: 'text-destructive', borderColor: 'border-l-destructive' },
+    HELLO_WORLD: { icon: MessageSquare, bgColor: 'bg-success/10', iconColor: 'text-success', borderColor: 'border-l-success' },
+    FIRMWARE_OUTCOME: { icon: RefreshCw, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-500', borderColor: 'border-l-indigo-500' },
   };
 
   async function markAsRead(id: number) {
@@ -37,18 +41,21 @@
     }
   }
 
-  function formatTimestamp(ts: number): string {
-    const date = new Date(ts);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
 
-    if (minutes < 60) return `Hace ${minutes} min`;
-    if (hours < 24) return `Hace ${hours}h`;
-    if (days < 7) return `Hace ${days} días`;
-    return new Intl.DateTimeFormat('es', { dateStyle: 'short' }).format(date);
+
+  function formatArgentinaTime(epochSeconds: number | string): string {
+    const date = new Date(Number(epochSeconds) * 1000);
+    const formatter = new Intl.DateTimeFormat('es-AR', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour12: false
+    });
+    
+    const parts = formatter.formatToParts(date);
+    const getPart = (type: string) => parts.find(p => p.type === type)?.value || '';
+    
+    return `${getPart('hour')}:${getPart('minute')}:${getPart('second')} ${getPart('day')}/${getPart('month')}/${getPart('year')}`;
   }
 </script>
 
@@ -117,10 +124,37 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-start justify-between gap-2">
                 <div class="flex-1 min-w-0">
-                  <p class="font-medium text-card-foreground leading-relaxed">
-                    {notification.description}
-                  </p>
-                  </div>
+                  {#if notification.type === 'HELLO_WORLD'}
+                    {@const matchEdge = notification.description.match(/edge_id:\s*(\S+)/)}
+                    {@const matchTs = notification.description.match(/timestamp:\s*(\d+)/)}
+                    {@const edgeId = matchEdge ? matchEdge[1] : 'Desconocido'}
+                    {@const timestampStr = matchTs ? matchTs[1] : '0'}
+                    
+                    <h4 class="font-semibold text-card-foreground text-base">Mensaje de Hello World</h4>
+                    <div class="mt-1.5 flex flex-col gap-1 text-sm text-muted-foreground">
+                      <span><strong class="font-medium">Edge:</strong> {edgeId}</span>
+                      <span><strong class="font-medium">Timestamp:</strong> {formatArgentinaTime(timestampStr)}</span>
+                    </div>
+                  {:else if notification.type === 'FIRMWARE_OUTCOME'}
+                    {@const matchNet = notification.description.match(/network_id:\s*(\S+)/)}
+                    {@const matchPerc = notification.description.match(/percentage:\s*([\d.]+)/)}
+                    {@const matchTs = notification.description.match(/timestamp:\s*(\d+)/)}
+                    {@const networkId = matchNet ? matchNet[1] : 'Desconocido'}
+                    {@const percentage = matchPerc ? matchPerc[1] : '0'}
+                    {@const timestampStr = matchTs ? matchTs[1] : '0'}
+
+                    <h4 class="font-semibold text-card-foreground text-base">Resultado de actualización de firmware remota</h4>
+                    <div class="mt-1.5 flex flex-col gap-1 text-sm text-muted-foreground">
+                      <span><strong class="font-medium">Red:</strong> {networkId}</span>
+                      <span><strong class="font-medium">Porcentaje de éxito:</strong> {percentage}%</span>
+                      <span><strong class="font-medium">Timestamp:</strong> {formatArgentinaTime(timestampStr)}</span>
+                    </div>
+                  {:else}
+                    <p class="font-medium text-card-foreground leading-relaxed">
+                      {notification.description}
+                    </p>
+                  {/if}
+                </div>
 
                 <div class="flex shrink-0 items-center gap-1 opacity-0 transition-all duration-200
                             translate-x-2 group-hover:opacity-100 group-hover:translate-x-0">
@@ -135,9 +169,6 @@
                 </div>
               </div>
 
-              <p class="mt-3 text-xs text-muted-foreground">
-                {formatTimestamp(notification.createdAt)}
-              </p>
             </div>
           </div>
 

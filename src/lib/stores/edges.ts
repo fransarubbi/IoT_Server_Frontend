@@ -10,6 +10,9 @@ export const edges = writable<Edge[]>([]);
 export const edgesLoading = writable(false);
 export const edgesError = writable<string | null>(null);
 
+// Store to keep track of dynamic Edge states received via SSE
+export const edgeStates = writable<Record<string, string>>({});
+
 // ---------------------------------------------------------------------------
 // Actions
 // ---------------------------------------------------------------------------

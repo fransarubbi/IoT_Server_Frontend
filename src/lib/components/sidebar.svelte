@@ -10,12 +10,14 @@
     LogOut,
     ChevronRight,
     LayoutDashboard,
+    HelpCircle,
   } from "lucide-svelte";
 
   const navItems: { id: string; label: string; icon: typeof Server }[] = [
     { id: "edge", label: "Edge", icon: Server },
     { id: "certificates", label: "Certificados", icon: ShieldCheck },
     { id: "notifications", label: "Notificaciones", icon: Bell },
+    { id: "help", label: "Ayuda", icon: HelpCircle },
   ];
 
   let { onLogout }: { onLogout?: () => void } = $props();

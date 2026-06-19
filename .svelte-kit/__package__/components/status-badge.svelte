@@ -3,7 +3,7 @@
     status, 
     size = 'sm' 
   }: { 
-    status: 'online' | 'offline' | 'warning' | 'active' | 'inactive' | 'valid' | 'expired' | 'revoked' | 'available' | 'deploying' | 'deprecated';
+    status: string;
     size?: 'sm' | 'md';
   } = $props();
 
@@ -19,10 +19,14 @@
     available: { bg: 'bg-success/15', text: 'text-success', dot: 'bg-success', label: 'Disponible' },
     deploying: { bg: 'bg-primary/15', text: 'text-primary', dot: 'bg-primary', label: 'Desplegando', pulse: true },
     deprecated: { bg: 'bg-muted', text: 'text-muted-foreground', dot: 'bg-muted-foreground', label: 'Obsoleto' },
+    Inactive: { bg: 'bg-destructive/15', text: 'text-destructive', dot: 'bg-destructive', label: 'Inactivo', pulse: true },
+    Normal: { bg: 'bg-success/15', text: 'text-success', dot: 'bg-success', label: 'Normal' },
+    Balance: { bg: 'bg-warning/15', text: 'text-warning', dot: 'bg-warning', label: 'Balance' },
+    'Safe Mode': { bg: 'bg-orange-500/15', text: 'text-orange-500', dot: 'bg-orange-500', label: 'Safe Mode' },
   };
 
-  const config = statusConfig[status] || statusConfig.offline;
-  const sizeClasses = size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm';
+  const config = $derived(statusConfig[status] || statusConfig.offline);
+  const sizeClasses = $derived(size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm');
 </script>
 
 <!-- Enhanced badge with pulse animation for active states -->

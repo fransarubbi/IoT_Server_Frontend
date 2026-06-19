@@ -51,6 +51,7 @@
 		"svelte"
 	],
 	"dependencies": {
+		"@microsoft/fetch-event-source": "^2.0.1",
 		"@supabase/supabase-js": "^2.103.3"
 	}
 }

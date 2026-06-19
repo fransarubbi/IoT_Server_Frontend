@@ -1,6 +1,7 @@
 import { supabase } from '$lib/supabase';
 import type { Session } from '@supabase/supabase-js';
 import { goto } from '$app/navigation';
+import { initSSE, closeSSE } from '$lib/services/sse';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -109,6 +110,7 @@ export async function login(email: string, password: string): Promise<void> {
   // Persist session and profile
   auth.session = data.session;
   auth.profile = userProfile;
+  initSSE(data.session.access_token);
 
   // Non-fatal: record login time
   await recordLastLogin(userId);
@@ -142,6 +144,7 @@ export async function initAuth(): Promise<void> {
       if (userProfile.is_active) {
         auth.session = data.session;
         auth.profile = userProfile;
+        initSSE(data.session.access_token);
       } else {
         // Profile disabled — force sign out
         await supabase.auth.signOut();
@@ -159,6 +162,7 @@ export async function initAuth(): Promise<void> {
     if (event === 'SIGNED_OUT' || !newSession) {
       auth.session = null;
       auth.profile = null;
+      closeSSE();
       if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
         goto('/login');
       }
@@ -167,6 +171,12 @@ export async function initAuth(): Promise<void> {
 
     if (event === 'TOKEN_REFRESHED' && newSession) {
       auth.session = newSession;
+      initSSE(newSession.access_token);
+    }
+    
+    if (event === 'SIGNED_IN' && newSession) {
+      auth.session = newSession;
+      initSSE(newSession.access_token);
     }
   });
 }

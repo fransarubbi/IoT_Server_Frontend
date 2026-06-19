@@ -1,5 +1,5 @@
 type $$ComponentProps = {
-    status: 'online' | 'offline' | 'warning' | 'active' | 'inactive' | 'valid' | 'expired' | 'revoked' | 'available' | 'deploying' | 'deprecated';
+    status: string;
     size?: 'sm' | 'md';
 };
 declare const StatusBadge: import("svelte").Component<$$ComponentProps, {}, "">;

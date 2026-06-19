@@ -13,7 +13,7 @@ export declare const certificatesActions: {
     generate(request: CertificateRequest): Promise<void>;
     /**
      * Revoke a certificate (logical delete via PATCH).
-     * Updates the local status to 'revoked' immediately.
+     * Updates the local status to 'REVOKED' immediately.
      */
     revoke(id: string): Promise<void>;
 };

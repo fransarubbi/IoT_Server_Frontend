@@ -56,10 +56,10 @@ function make_trackable(url, callback, search_params_callback, allow_hash = fals
     });
   }
   {
-    tracked[/* @__PURE__ */ Symbol.for("nodejs.util.inspect.custom")] = (depth, opts, inspect) => {
+    tracked[/* @__PURE__ */ Symbol.for("nodejs.util.inspect.custom")] = (_depth, opts, inspect) => {
       return inspect(url, opts);
     };
-    tracked.searchParams[/* @__PURE__ */ Symbol.for("nodejs.util.inspect.custom")] = (depth, opts, inspect) => {
+    tracked.searchParams[/* @__PURE__ */ Symbol.for("nodejs.util.inspect.custom")] = (_depth, opts, inspect) => {
       return inspect(url.searchParams, opts);
     };
   }
@@ -90,7 +90,7 @@ function disable_search(url) {
 }
 function allow_nodejs_console_log(url) {
   {
-    url[/* @__PURE__ */ Symbol.for("nodejs.util.inspect.custom")] = (depth, opts, inspect) => {
+    url[/* @__PURE__ */ Symbol.for("nodejs.util.inspect.custom")] = (_depth, opts, inspect) => {
       return inspect(new URL(url), opts);
     };
   }

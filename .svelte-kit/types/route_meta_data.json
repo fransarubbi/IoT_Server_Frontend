@@ -28,6 +28,10 @@
 		"src/routes/(app)/+layout.ts",
 		"src/routes/+layout.ts"
 	],
+	"/(app)/help": [
+		"src/routes/(app)/+layout.ts",
+		"src/routes/+layout.ts"
+	],
 	"/(auth)/login": [
 		"src/routes/(auth)/login/+page.ts",
 		"src/routes/+layout.ts"

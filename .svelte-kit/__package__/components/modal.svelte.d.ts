@@ -3,6 +3,7 @@ interface Props {
     children: Snippet;
     open?: boolean;
     title: string;
+    maxWidth?: string;
     onClose: () => void;
 }
 declare const Modal: import("svelte").Component<Props, {}, "">;

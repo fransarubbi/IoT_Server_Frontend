@@ -201,7 +201,7 @@
                             </button>
                             <button
                                 onclick={() => { firmwareTarget = network; showFirmwareModal = true; }}
-                                class="w-full flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs mb-2 transition-all duration-200 ease-out active:scale-[0.98] font-medium border bg-blue-950/30 hover:bg-blue-900/50 text-white dark:text-blue-400 border-blue-800 shadow-sm hover:shadow-md"
+                                class="w-full flex items-center justify-center gap-1.5 rounded-lg py-2.5 px-3 text-xs mb-2 transition-all duration-200 ease-out active:scale-[0.98] font-medium bg-black border border-white text-white shadow-[0_0_8px_rgba(255,255,255,0.4)] hover:shadow-[0_0_12px_rgba(255,255,255,0.6)] hover:bg-neutral-900"
                             >
                                 <UploadCloud class="h-4 w-4" />
                                 Actualizar Firmware
