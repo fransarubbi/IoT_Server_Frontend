@@ -23,6 +23,7 @@
     ERROR:   { icon: AlertCircle,   bgColor: 'bg-destructive/10', iconColor: 'text-destructive', borderColor: 'border-l-destructive' },
     HELLO_WORLD: { icon: MessageSquare, bgColor: 'bg-success/10', iconColor: 'text-success', borderColor: 'border-l-success' },
     FIRMWARE_OUTCOME: { icon: RefreshCw, bgColor: 'bg-indigo-500/10', iconColor: 'text-indigo-500', borderColor: 'border-l-indigo-500' },
+    NETWORK_RESULT: { icon: Info, bgColor: 'bg-cyan-500/10', iconColor: 'text-cyan-500', borderColor: 'border-l-cyan-500' },
   };
 
   async function markAsRead(id: number) {
@@ -148,6 +149,22 @@
                       <span><strong class="font-medium">Red:</strong> {networkId}</span>
                       <span><strong class="font-medium">Porcentaje de éxito:</strong> {percentage}%</span>
                       <span><strong class="font-medium">Timestamp:</strong> {formatArgentinaTime(timestampStr)}</span>
+                    </div>
+                  {:else if notification.type === 'NETWORK_RESULT'}
+                    {@const matchNet = notification.description.match(/network_id:\s*(\S+)/)}
+                    {@const matchSucc = notification.description.match(/success:\s*(true|false)/)}
+                    {@const matchTs = notification.description.match(/timestamp:\s*(\d+)/)}
+                    {@const matchMsg = notification.description.match(/message:\s*(.*)/)}
+                    {@const networkId = matchNet ? matchNet[1] : 'Desconocido'}
+                    {@const successStr = matchSucc ? matchSucc[1] : 'false'}
+                    {@const timestampStr = matchTs ? matchTs[1] : '0'}
+                    {@const message = matchMsg ? matchMsg[1] : ''}
+
+                    <h4 class="font-semibold text-card-foreground text-base">Notificacion de Red</h4>
+                    <div class="mt-1.5 flex flex-col gap-1 text-sm text-muted-foreground">
+                      <span><strong class="font-medium">Red:</strong> {networkId}</span>
+                      <span><strong class="font-medium">Timestamp:</strong> {formatArgentinaTime(timestampStr)}</span>
+                      <span><strong class="font-medium">Mensaje:</strong> {message}</span>
                     </div>
                   {:else}
                     <p class="font-medium text-card-foreground leading-relaxed">

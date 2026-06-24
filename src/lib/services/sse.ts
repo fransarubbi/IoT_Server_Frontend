@@ -2,6 +2,7 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { notificationsActions } from '$lib/stores/notifications';
 import { edgeStates } from '$lib/stores/edges';
 import { API_BASE } from '$lib/services/api';
+import { toasts } from '$lib/stores/toasts.svelte';
 
 let sseAbortController: AbortController | null = null;
 
@@ -31,8 +32,25 @@ export function initSSE(token: string) {
         try {
           const data = JSON.parse(ev.data);
           notificationsActions.add(data);
+          toasts.add(data);
         } catch (e) {
           console.error('Error parsing NOTIFICATION', e);
+        }
+      } else if (ev.event === 'NETWORK_RESULT') {
+        try {
+          const data = JSON.parse(ev.data);
+          const tsSeconds = Math.floor(Date.now() / 1000);
+          const notification = {
+            id: Date.now(),
+            type: 'NETWORK_RESULT',
+            description: `network_id: ${data.networkId} success: ${data.success} timestamp: ${tsSeconds} message: ${data.message}`,
+            active: true,
+            createdAt: Date.now()
+          };
+          notificationsActions.add(notification);
+          toasts.add(notification);
+        } catch (e) {
+          console.error('Error parsing NETWORK_RESULT', e);
         }
       }
     },
