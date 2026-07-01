@@ -7,6 +7,7 @@
     import PageHeader from "$lib/components/page-header.svelte";
     import EmptyState from "$lib/components/empty-state.svelte";
     import Modal from "$lib/components/modal.svelte";
+    import { updateNetworkFirmware } from "$lib/services/api";
     import Wifi from "lucide-svelte/icons/wifi";
     import ArrowLeft from "lucide-svelte/icons/arrow-left";
     import Trash2 from "lucide-svelte/icons/trash-2";
@@ -45,6 +46,8 @@
     // Firmware Update Modal
     let showFirmwareModal = $state(false);
     let firmwareTarget = $state<NetworkSummary | null>(null);
+    let firmwareLoading = $state(false);
+    let firmwareError = $state<string | null>(null);
 
     function goBack() {
         goto("/edge");
@@ -101,10 +104,19 @@
         }
     }
 
-    function triggerFirmwareUpdate() {
-        // Firmware endpoint not yet available in the backend contract.
-        showFirmwareModal = false;
-        firmwareTarget = null;
+    async function triggerFirmwareUpdate() {
+        if (!firmwareTarget || !edgeId) return;
+        firmwareLoading = true;
+        firmwareError = null;
+        try {
+            await updateNetworkFirmware(firmwareTarget.networkId, edgeId);
+            showFirmwareModal = false;
+            firmwareTarget = null;
+        } catch (err) {
+            firmwareError = err instanceof Error ? err.message : String(err);
+        } finally {
+            firmwareLoading = false;
+        }
     }
 </script>
 
@@ -293,7 +305,7 @@
 <Modal
     open={showFirmwareModal}
     title="Actualización de Firmware"
-    onClose={() => (showFirmwareModal = false)}
+    onClose={() => { if (!firmwareLoading) { showFirmwareModal = false; firmwareError = null; } }}
 >
     {#if firmwareTarget}
     <div class="space-y-5">
@@ -312,11 +324,31 @@
             Esta acción enviará la instrucción a {firmwareTarget.hubCount} dispositivo(s). Los equipos se reiniciarán automáticamente si la actualización es exitosa.
         </p>
 
+        {#if firmwareError}
+            <div class="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
+                <AlertCircle class="h-3.5 w-3.5 shrink-0" />
+                {firmwareError}
+            </div>
+        {/if}
+
         <div class="flex gap-3 pt-4">
-            <button type="button" onclick={() => (showFirmwareModal = false)} class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium">
+            <button
+                type="button"
+                onclick={() => { showFirmwareModal = false; firmwareError = null; }}
+                disabled={firmwareLoading}
+                class="btn-secondary flex-1 rounded-xl py-3 text-sm font-medium disabled:opacity-60"
+            >
                 Cancelar
             </button>
-            <button type="button" onclick={triggerFirmwareUpdate} class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-200 ease-out active:scale-[0.98] flex-1 rounded-xl py-3 text-sm font-medium">
+            <button
+                type="button"
+                onclick={triggerFirmwareUpdate}
+                disabled={firmwareLoading}
+                class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-200 ease-out active:scale-[0.98] flex-1 rounded-xl py-3 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-60"
+            >
+                {#if firmwareLoading}
+                    <Loader class="h-4 w-4 animate-spin" />
+                {/if}
                 Confirmar
             </button>
         </div>

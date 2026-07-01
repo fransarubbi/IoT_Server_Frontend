@@ -1,8 +1,10 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { notificationsActions } from '$lib/stores/notifications';
 import { edgeStates } from '$lib/stores/edges';
+import { hubsActions } from '$lib/stores/hubs';
 import { API_BASE } from '$lib/services/api';
 import { toasts } from '$lib/stores/toasts.svelte';
+
 
 let sseAbortController: AbortController | null = null;
 
@@ -51,6 +53,13 @@ export function initSSE(token: string) {
           toasts.add(notification);
         } catch (e) {
           console.error('Error parsing NETWORK_RESULT', e);
+        }
+      } else if (ev.event === 'HUB_UPDATED') {
+        try {
+          const data = JSON.parse(ev.data);
+          hubsActions.upsert(data);
+        } catch (e) {
+          console.error('Error parsing HUB_UPDATED', e);
         }
       }
     },

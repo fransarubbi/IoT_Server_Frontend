@@ -51,6 +51,31 @@ export const hubsActions = {
     }
   },
 
+  /**
+   * Upsert a hub received via SSE (HUB_UPDATED event).
+   * If a hub with the same hubId already exists it is replaced with the
+   * incoming data; otherwise the hub is appended to the list.
+   * Only mutates the store when the networkId matches the currently loaded
+   * network – callers can still rely on `hubsActions.load` for a full refresh.
+   */
+  upsert(incoming: HubSettings): void {
+    hubs.update((list) => {
+      const idx = list.findIndex((h) => h.hubId === incoming.hubId);
+      if (idx !== -1) {
+        // Replace existing hub with up-to-date data
+        const updated = [...list];
+        updated[idx] = incoming;
+        return updated;
+      }
+      // Only append if the hub belongs to the network currently in the store
+      const currentNetworkId = list[0]?.networkId ?? incoming.networkId;
+      if (incoming.networkId === currentNetworkId) {
+        return [...list, incoming];
+      }
+      return list;
+    });
+  },
+
   /** Clear the hub list (e.g. when navigating away). */
   clear(): void {
     hubs.set([]);

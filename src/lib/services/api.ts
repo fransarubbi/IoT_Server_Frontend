@@ -214,6 +214,16 @@ export async function deleteNetwork(id: string): Promise<void> {
   await apiFetch(`/networks/${id}`, { method: 'DELETE' });
 }
 
+export async function updateNetworkFirmware(networkId: string, edgeId: string): Promise<void> {
+  await apiFetch(`/networks/${networkId}/update-firmware`, {
+    method: 'POST',
+    body: JSON.stringify({
+      edge: edgeId,
+      network: networkId,
+    }),
+  });
+}
+
 // --- Notifications (/api/notifications) ---
 
 export async function getActiveNotifications(): Promise<Notification[]> {
